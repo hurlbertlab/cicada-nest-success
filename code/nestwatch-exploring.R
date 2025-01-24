@@ -8,7 +8,7 @@ library(ggplot2)
 
 ## Load in nestwatch data 
 
-nest_summaries <- read.csv("../data/attempts_locs_20240125.csv/nestwatch-summaries-2023.csv")
+nest_summaries <- read.csv("data/attempts_locs_20240125.csv/nestwatch-summaries-2023.csv")
 
 ## total count for each species 
 species.totals <- nest_summaries %>% 
@@ -45,7 +45,7 @@ ggplot() +
 
   
 # Load in cicada data 
-cicada_emergence_years <- read.csv("../data/cicada_emergence_years.csv") %>%
+cicada_emergence_years <- read.csv("data/cicada_emergence_years.csv") %>%
   rename(Year = emergence_year)
 
 # Associate brood with nest observations 
@@ -55,6 +55,9 @@ cicada_nest_summaries <- left_join(nest_summaries, cicada_emergence_years, by = 
 
 
 
+# foo = filter(nest_summaries, Longitude > -100, Latitude < 47, Year > 2006, Latitude > 25, Longitude < -60, Species.Name %in% c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow"))
 
+# Rearrange Ivara's data to have one row for every county, and 2 most recent outbreak years in 2 columns. Join to nestwatch by county.
 
-
+# map('state', xlim = c(-100, -60), ylim = c(25, 50))
+# points(foo$Longitude, foo$Latitude, pch = 16, cex = .5, col = 'red')
