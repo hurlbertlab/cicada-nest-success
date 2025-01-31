@@ -8,7 +8,17 @@ library(ggplot2)
 
 ## Load in nestwatch data 
 
-nest_summaries <- read.csv("data/attempts_locs_20240125.csv/nestwatch-summaries-2023.csv")
+nestwatch <- read.csv("data/attempts_locs_20240125.csv/nestwatch-summaries-2023.csv")
+
+## create new file with relevant data 
+filter_nest_sum <- filter(nestwatch, Longitude > -100, Latitude < 47, Year > 2006, Latitude > 25, Longitude < -60, Species.Name 
+                          %in% 
+                           c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow"))
+
+write.csv(filter_nest_sum, "data/filtered_summaries.csv", row.names = FALSE)
+
+nest_summaries <- read.csv("data/filtered_summaries.csv") %>%
+  filter(startsWith(Subnational.Code, "US-")) 
 
 ## total count for each species 
 species.totals <- nest_summaries %>% 
@@ -30,34 +40,40 @@ most_obs_year <- nest_summaries %>%
   arrange(desc(n)) %>%
   slice_head(n=20)
 
-## Map of locations of 2023 Nest Boxes
+# Map of locations of 2023 Nest Boxes
 library(maps)
 
-world_map <- map_data("world") 
+east_map <- map_data("state") %>%
+  filter(long > -100 & long < -50, lat > 20 & lat < 60)
 
 nests_2023 <- nest_summaries %>%
-  filter(Year == 2023) 
+  filter(Year == 2023, startsWith(Subnational.Code, "US-")) 
 
 ggplot() +
-  geom_polygon(data = world_map, aes(x = long, y = lat, group = group), fill = "#6B8E23", color = "gray70") +
-  geom_point(data = nests_2023, aes(x = Longitude, y = Latitude), size = 3) +
+  geom_polygon(data = east_map, aes(x = long, y = lat, group = group), fill = "lightblue", color = "navy") +
+  geom_point(data = nests_2023, aes(x = Longitude, y = Latitude), size = 1) +
   labs(title = "Nestbox Locations 2023", x = "Longitude", y = "Latitude") 
 
   
 # Load in cicada data 
-cicada_emergence_years <- read.csv("data/cicada_emergence_years.csv") %>%
-  rename(Year = emergence_year)
+cicada_emergence_years <- read.csv("data/cicada_emergence_years_wide.csv") ## this has broods with 4 emergence years in 4 separate columns
+cicada <- st_read(dsn = "copperheads/data/cicada/periodical_cicada_with_county.gdb")
 
-# Associate brood with nest observations 
-cicada_nest_summaries <- left_join(nest_summaries, cicada_emergence_years, by = "Year")
-
-
-
+# Merge and Filter to create cicada table 
+cicada_county <- left_join(cicada_emergence_years, cicada, by ="BROOD_NAME")
+cicada_county <- subset(cicada_county, select = -c(cycle, emergence_2019_through_2024,YEAR_NEXT_EMERGENCE,CYCLE))
 
 
-# foo = filter(nest_summaries, Longitude > -100, Latitude < 47, Year > 2006, Latitude > 25, Longitude < -60, Species.Name %in% c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow"))
+# Okay, now the nestwatch data needs county based on coordinates
+
+
+
+
+
+
+
+
 
 # Rearrange Ivara's data to have one row for every county, and 2 most recent outbreak years in 2 columns. Join to nestwatch by county.
 
-# map('state', xlim = c(-100, -60), ylim = c(25, 50))
-# points(foo$Longitude, foo$Latitude, pch = 16, cex = .5, col = 'red')
+

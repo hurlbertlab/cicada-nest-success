@@ -1,0 +1,211 @@
+"","BROOD_NAME","year","YEAR_NEXT_EMERGENCE","CYCLE","n_snakes","scientific_name","n_copper","perc_copper","last_emergence","emergence_year"
+"1","Brood I","2016",2029,17,30,"Agkistrodon contortrix",1,0.0333333333333333,2012,0
+"2","Brood I","2017",2029,17,65,"Agkistrodon contortrix",3,0.0461538461538462,2012,0
+"3","Brood I","2018",2029,17,87,"Agkistrodon contortrix",9,0.103448275862069,2012,0
+"4","Brood I","2019",2029,17,167,"Agkistrodon contortrix",10,0.0598802395209581,2012,0
+"5","Brood I","2020",2029,17,314,"Agkistrodon contortrix",15,0.0477707006369427,2012,0
+"6","Brood I","2021",2029,17,286,"Agkistrodon contortrix",14,0.048951048951049,2012,0
+"7","Brood I","2022",2029,17,328,"Agkistrodon contortrix",17,0.0518292682926829,2012,0
+"8","Brood I","2023",2029,17,348,"Agkistrodon contortrix",16,0.0459770114942529,2012,0
+"9","Brood I","2024",2029,17,351,"Agkistrodon contortrix",28,0.0797720797720798,2012,0
+"10","Brood II","2005",2030,17,23,"Agkistrodon contortrix",1,0.0434782608695652,2013,0
+"11","Brood II","2006",2030,17,28,"Agkistrodon contortrix",2,0.0714285714285714,2013,0
+"12","Brood II","2007",2030,17,39,NA,NA,NA,2013,0
+"13","Brood II","2008",2030,17,52,"Agkistrodon contortrix",1,0.0192307692307692,2013,0
+"14","Brood II","2009",2030,17,153,"Agkistrodon contortrix",1,0.0065359477124183,2013,0
+"15","Brood II","2010",2030,17,72,"Agkistrodon contortrix",2,0.0277777777777778,2013,0
+"16","Brood II","2011",2030,17,108,"Agkistrodon contortrix",7,0.0648148148148148,2013,0
+"17","Brood II","2012",2030,17,151,"Agkistrodon contortrix",7,0.0463576158940397,2013,0
+"18","Brood II","2013",2030,17,125,"Agkistrodon contortrix",3,0.024,2013,1
+"19","Brood II","2014",2030,17,230,"Agkistrodon contortrix",7,0.0304347826086957,2013,0
+"20","Brood II","2015",2030,17,292,"Agkistrodon contortrix",5,0.0171232876712329,2013,0
+"21","Brood II","2016",2030,17,616,"Agkistrodon contortrix",14,0.0227272727272727,2013,0
+"22","Brood II","2017",2030,17,995,"Agkistrodon contortrix",32,0.0321608040201005,2013,0
+"23","Brood II","2018",2030,17,2046,"Agkistrodon contortrix",97,0.0474095796676442,2013,0
+"24","Brood II","2019",2030,17,3283,"Agkistrodon contortrix",101,0.0307645446238197,2013,0
+"25","Brood II","2020",2030,17,6554,"Agkistrodon contortrix",151,0.0230393652731157,2013,0
+"26","Brood II","2021",2030,17,6093,"Agkistrodon contortrix",150,0.0246184145741014,2013,0
+"27","Brood II","2022",2030,17,5950,"Agkistrodon contortrix",168,0.0282352941176471,2013,0
+"28","Brood II","2023",2030,17,6750,"Agkistrodon contortrix",197,0.0291851851851852,2013,0
+"29","Brood II","2024",2030,17,6437,"Agkistrodon contortrix",168,0.0260991144943297,2013,0
+"30","Brood III","2014",2014,17,21,NA,NA,NA,2014,1
+"31","Brood III","2016",2014,17,35,NA,NA,NA,2014,0
+"32","Brood III","2017",2014,17,60,NA,NA,NA,2014,0
+"33","Brood III","2018",2014,17,78,NA,NA,NA,2014,0
+"34","Brood III","2019",2014,17,215,NA,NA,NA,2014,0
+"35","Brood III","2020",2014,17,263,NA,NA,NA,2014,0
+"36","Brood III","2021",2014,17,442,NA,NA,NA,2014,0
+"37","Brood III","2022",2014,17,300,NA,NA,NA,2014,0
+"38","Brood III","2023",2014,17,708,NA,NA,NA,2014,0
+"39","Brood III","2024",2014,17,314,NA,NA,NA,2014,0
+"40","Brood IV","2009",2015,17,21,NA,NA,NA,2015,0
+"41","Brood IV","2011",2015,17,32,"Agkistrodon contortrix",1,0.03125,2015,0
+"42","Brood IV","2012",2015,17,22,"Agkistrodon contortrix",1,0.0454545454545455,2015,0
+"43","Brood IV","2013",2015,17,62,"Agkistrodon contortrix",1,0.0161290322580645,2015,0
+"44","Brood IV","2014",2015,17,58,NA,NA,NA,2015,0
+"45","Brood IV","2015",2015,17,71,"Agkistrodon contortrix",1,0.0140845070422535,2015,1
+"46","Brood IV","2016",2015,17,178,"Agkistrodon contortrix",4,0.0224719101123595,2015,0
+"47","Brood IV","2017",2015,17,303,"Agkistrodon contortrix",11,0.0363036303630363,2015,0
+"48","Brood IV","2018",2015,17,397,"Agkistrodon contortrix",10,0.0251889168765743,2015,0
+"49","Brood IV","2019",2015,17,598,"Agkistrodon contortrix",19,0.0317725752508361,2015,0
+"50","Brood IV","2020",2015,17,1428,"Agkistrodon contortrix",36,0.0252100840336134,2015,0
+"51","Brood IV","2021",2015,17,1705,"Agkistrodon contortrix",41,0.0240469208211144,2015,0
+"52","Brood IV","2022",2015,17,1287,"Agkistrodon contortrix",40,0.0310800310800311,2015,0
+"53","Brood IV","2023",2015,17,1781,"Agkistrodon contortrix",77,0.0432341381246491,2015,0
+"54","Brood IV","2024",2015,17,1647,"Agkistrodon contortrix",129,0.0783242258652095,2015,0
+"55","Brood IX","2016",2020,17,33,"Agkistrodon contortrix",4,0.121212121212121,2020,0
+"56","Brood IX","2017",2020,17,61,"Agkistrodon contortrix",3,0.0491803278688525,2020,0
+"57","Brood IX","2018",2020,17,163,"Agkistrodon contortrix",4,0.0245398773006135,2020,0
+"58","Brood IX","2019",2020,17,202,"Agkistrodon contortrix",17,0.0841584158415842,2020,0
+"59","Brood IX","2020",2020,17,384,"Agkistrodon contortrix",19,0.0494791666666667,2020,1
+"60","Brood IX","2021",2020,17,384,"Agkistrodon contortrix",15,0.0390625,2020,0
+"61","Brood IX","2022",2020,17,334,"Agkistrodon contortrix",17,0.0508982035928144,2020,0
+"62","Brood IX","2023",2020,17,450,"Agkistrodon contortrix",27,0.06,2020,0
+"63","Brood IX","2024",2020,17,382,"Agkistrodon contortrix",25,0.0654450261780105,2020,0
+"64","Brood V","2011",2016,17,32,"Agkistrodon contortrix",2,0.0625,2016,0
+"65","Brood V","2012",2016,17,127,"Agkistrodon contortrix",1,0.0078740157480315,2016,0
+"66","Brood V","2013",2016,17,104,"Agkistrodon contortrix",2,0.0192307692307692,2016,0
+"67","Brood V","2014",2016,17,151,"Agkistrodon contortrix",2,0.0132450331125828,2016,0
+"68","Brood V","2015",2016,17,206,NA,NA,NA,2016,0
+"69","Brood V","2016",2016,17,331,"Agkistrodon contortrix",6,0.0181268882175227,2016,1
+"70","Brood V","2017",2016,17,422,"Agkistrodon contortrix",3,0.00710900473933649,2016,0
+"71","Brood V","2018",2016,17,702,"Agkistrodon contortrix",10,0.0142450142450142,2016,0
+"72","Brood V","2019",2016,17,1029,"Agkistrodon contortrix",11,0.010689990281827,2016,0
+"73","Brood V","2020",2016,17,1861,"Agkistrodon contortrix",27,0.0145083288554541,2016,0
+"74","Brood V","2021",2016,17,1815,"Agkistrodon contortrix",20,0.0110192837465565,2016,0
+"75","Brood V","2022",2016,17,1858,"Agkistrodon contortrix",34,0.0182992465016146,2016,0
+"76","Brood V","2023",2016,17,2504,"Agkistrodon contortrix",37,0.014776357827476,2016,0
+"77","Brood V","2024",2016,17,2209,"Agkistrodon contortrix",31,0.0140334993209597,2016,0
+"78","Brood VI","2016",2017,17,26,"Agkistrodon contortrix",5,0.192307692307692,2017,0
+"79","Brood VI","2017",2017,17,65,"Agkistrodon contortrix",8,0.123076923076923,2017,1
+"80","Brood VI","2018",2017,17,133,"Agkistrodon contortrix",20,0.150375939849624,2017,0
+"81","Brood VI","2019",2017,17,167,"Agkistrodon contortrix",15,0.0898203592814371,2017,0
+"82","Brood VI","2020",2017,17,379,"Agkistrodon contortrix",51,0.134564643799472,2017,0
+"83","Brood VI","2021",2017,17,388,"Agkistrodon contortrix",35,0.0902061855670103,2017,0
+"84","Brood VI","2022",2017,17,338,"Agkistrodon contortrix",31,0.0917159763313609,2017,0
+"85","Brood VI","2023",2017,17,404,"Agkistrodon contortrix",32,0.0792079207920792,2017,0
+"86","Brood VI","2024",2017,17,456,"Agkistrodon contortrix",52,0.114035087719298,2017,0
+"87","Brood VII","2019",2018,17,28,NA,NA,NA,2018,0
+"88","Brood VII","2020",2018,17,44,NA,NA,NA,2018,0
+"89","Brood VII","2021",2018,17,45,NA,NA,NA,2018,0
+"90","Brood VII","2022",2018,17,54,NA,NA,NA,2018,0
+"91","Brood VII","2023",2018,17,72,NA,NA,NA,2018,0
+"92","Brood VII","2024",2018,17,60,NA,NA,NA,2018,0
+"93","Brood VIII","2013",2019,17,35,NA,NA,NA,2019,0
+"94","Brood VIII","2014",2019,17,65,NA,NA,NA,2019,0
+"95","Brood VIII","2015",2019,17,53,"Agkistrodon contortrix",1,0.0188679245283019,2019,0
+"96","Brood VIII","2016",2019,17,94,NA,NA,NA,2019,0
+"97","Brood VIII","2017",2019,17,176,"Agkistrodon contortrix",2,0.0113636363636364,2019,0
+"98","Brood VIII","2018",2019,17,256,"Agkistrodon contortrix",1,0.00390625,2019,0
+"99","Brood VIII","2019",2019,17,576,NA,NA,NA,2019,1
+"100","Brood VIII","2020",2019,17,872,"Agkistrodon contortrix",4,0.00458715596330275,2019,0
+"101","Brood VIII","2021",2019,17,774,NA,NA,NA,2019,0
+"102","Brood VIII","2022",2019,17,788,NA,NA,NA,2019,0
+"103","Brood VIII","2023",2019,17,762,"Agkistrodon contortrix",3,0.00393700787401575,2019,0
+"104","Brood VIII","2024",2019,17,854,"Agkistrodon contortrix",1,0.00117096018735363,2019,0
+"105","Brood X","2004",2021,17,32,NA,NA,NA,2021,0
+"106","Brood X","2005",2021,17,28,NA,NA,NA,2021,0
+"107","Brood X","2006",2021,17,47,"Agkistrodon contortrix",5,0.106382978723404,2021,0
+"108","Brood X","2007",2021,17,54,"Agkistrodon contortrix",2,0.037037037037037,2021,0
+"109","Brood X","2008",2021,17,59,"Agkistrodon contortrix",1,0.0169491525423729,2021,0
+"110","Brood X","2009",2021,17,155,"Agkistrodon contortrix",6,0.0387096774193548,2021,0
+"111","Brood X","2010",2021,17,105,"Agkistrodon contortrix",8,0.0761904761904762,2021,0
+"112","Brood X","2011",2021,17,175,"Agkistrodon contortrix",11,0.0628571428571429,2021,0
+"113","Brood X","2012",2021,17,199,"Agkistrodon contortrix",8,0.0402010050251256,2021,0
+"114","Brood X","2013",2021,17,220,"Agkistrodon contortrix",4,0.0181818181818182,2021,0
+"115","Brood X","2014",2021,17,372,"Agkistrodon contortrix",12,0.032258064516129,2021,0
+"116","Brood X","2015",2021,17,429,"Agkistrodon contortrix",18,0.041958041958042,2021,0
+"117","Brood X","2016",2021,17,920,"Agkistrodon contortrix",18,0.0195652173913043,2021,0
+"118","Brood X","2017",2021,17,1456,"Agkistrodon contortrix",53,0.0364010989010989,2021,0
+"119","Brood X","2018",2021,17,2570,"Agkistrodon contortrix",83,0.032295719844358,2021,0
+"120","Brood X","2019",2021,17,4384,"Agkistrodon contortrix",124,0.0282846715328467,2021,0
+"121","Brood X","2020",2021,17,8880,"Agkistrodon contortrix",194,0.0218468468468468,2021,0
+"122","Brood X","2021",2021,17,8831,"Agkistrodon contortrix",193,0.0218548295776243,2021,1
+"123","Brood X","2022",2021,17,8683,"Agkistrodon contortrix",178,0.0204998272486468,2021,0
+"124","Brood X","2023",2021,17,9705,"Agkistrodon contortrix",237,0.0244204018547141,2021,0
+"125","Brood X","2024",2021,17,9146,"Agkistrodon contortrix",166,0.0181500109337415,2021,0
+"126","Brood XIII","2010",2024,17,25,NA,NA,NA,2024,0
+"127","Brood XIII","2011",2024,17,25,NA,NA,NA,2024,0
+"128","Brood XIII","2012",2024,17,22,NA,NA,NA,2024,0
+"129","Brood XIII","2013",2024,17,62,NA,NA,NA,2024,0
+"130","Brood XIII","2014",2024,17,55,NA,NA,NA,2024,0
+"131","Brood XIII","2015",2024,17,74,NA,NA,NA,2024,0
+"132","Brood XIII","2016",2024,17,174,NA,NA,NA,2024,0
+"133","Brood XIII","2017",2024,17,342,NA,NA,NA,2024,0
+"134","Brood XIII","2018",2024,17,394,NA,NA,NA,2024,0
+"135","Brood XIII","2019",2024,17,834,NA,NA,NA,2024,0
+"136","Brood XIII","2020",2024,17,1371,NA,NA,NA,2024,0
+"137","Brood XIII","2021",2024,17,1597,NA,NA,NA,2024,0
+"138","Brood XIII","2022",2024,17,1598,NA,NA,NA,2024,0
+"139","Brood XIII","2023",2024,17,2209,NA,NA,NA,2024,0
+"140","Brood XIII","2024",2024,17,1936,NA,NA,NA,2024,1
+"141","Brood XIV","2007",2025,17,27,"Agkistrodon contortrix",1,0.037037037037037,2008,0
+"142","Brood XIV","2008",2025,17,28,"Agkistrodon contortrix",3,0.107142857142857,2008,1
+"143","Brood XIV","2009",2025,17,56,"Agkistrodon contortrix",5,0.0892857142857143,2008,0
+"144","Brood XIV","2010",2025,17,46,"Agkistrodon contortrix",2,0.0434782608695652,2008,0
+"145","Brood XIV","2011",2025,17,73,"Agkistrodon contortrix",1,0.0136986301369863,2008,0
+"146","Brood XIV","2012",2025,17,99,"Agkistrodon contortrix",7,0.0707070707070707,2008,0
+"147","Brood XIV","2013",2025,17,112,"Agkistrodon contortrix",10,0.0892857142857143,2008,0
+"148","Brood XIV","2014",2025,17,157,"Agkistrodon contortrix",20,0.127388535031847,2008,0
+"149","Brood XIV","2015",2025,17,260,"Agkistrodon contortrix",24,0.0923076923076923,2008,0
+"150","Brood XIV","2016",2025,17,438,"Agkistrodon contortrix",13,0.0296803652968037,2008,0
+"151","Brood XIV","2017",2025,17,745,"Agkistrodon contortrix",43,0.0577181208053691,2008,0
+"152","Brood XIV","2018",2025,17,1170,"Agkistrodon contortrix",100,0.0854700854700855,2008,0
+"153","Brood XIV","2019",2025,17,2091,"Agkistrodon contortrix",128,0.0612147297943568,2008,0
+"154","Brood XIV","2020",2025,17,3584,"Agkistrodon contortrix",166,0.0463169642857143,2008,0
+"155","Brood XIV","2021",2025,17,3703,"Agkistrodon contortrix",209,0.0564407237375101,2008,0
+"156","Brood XIV","2022",2025,17,3642,"Agkistrodon contortrix",166,0.0455793520043932,2008,0
+"157","Brood XIV","2023",2025,17,4649,"Agkistrodon contortrix",225,0.0483975048397505,2008,0
+"158","Brood XIV","2024",2025,17,4258,"Agkistrodon contortrix",190,0.0446218882104274,2008,0
+"159","Brood XIX","2002",2024,13,31,"Agkistrodon contortrix",2,0.0645161290322581,2024,0
+"160","Brood XIX","2003",2024,13,24,"Agkistrodon contortrix",1,0.0416666666666667,2024,0
+"161","Brood XIX","2004",2024,13,43,"Agkistrodon contortrix",3,0.0697674418604651,2024,0
+"162","Brood XIX","2005",2024,13,49,"Agkistrodon contortrix",3,0.0612244897959184,2024,0
+"163","Brood XIX","2006",2024,13,56,"Agkistrodon contortrix",4,0.0714285714285714,2024,0
+"164","Brood XIX","2007",2024,13,37,"Agkistrodon contortrix",2,0.0540540540540541,2024,0
+"165","Brood XIX","2008",2024,13,116,"Agkistrodon contortrix",6,0.0517241379310345,2024,0
+"166","Brood XIX","2009",2024,13,122,"Agkistrodon contortrix",8,0.0655737704918033,2024,0
+"167","Brood XIX","2010",2024,13,159,"Agkistrodon contortrix",20,0.125786163522013,2024,0
+"168","Brood XIX","2011",2024,13,184,"Agkistrodon contortrix",10,0.0543478260869565,2024,0
+"169","Brood XIX","2012",2024,13,312,"Agkistrodon contortrix",21,0.0673076923076923,2024,0
+"170","Brood XIX","2013",2024,13,326,"Agkistrodon contortrix",31,0.0950920245398773,2024,0
+"171","Brood XIX","2014",2024,13,445,"Agkistrodon contortrix",34,0.0764044943820225,2024,0
+"172","Brood XIX","2015",2024,13,541,"Agkistrodon contortrix",35,0.0646950092421442,2024,0
+"173","Brood XIX","2016",2024,13,851,"Agkistrodon contortrix",58,0.0681551116333725,2024,0
+"174","Brood XIX","2017",2024,13,1608,"Agkistrodon contortrix",122,0.0758706467661692,2024,0
+"175","Brood XIX","2018",2024,13,2498,"Agkistrodon contortrix",195,0.078062449959968,2024,0
+"176","Brood XIX","2019",2024,13,4483,"Agkistrodon contortrix",302,0.0673656033905867,2024,0
+"177","Brood XIX","2020",2024,13,8291,"Agkistrodon contortrix",546,0.0658545410686286,2024,0
+"178","Brood XIX","2021",2024,13,7774,"Agkistrodon contortrix",468,0.0602006688963211,2024,0
+"179","Brood XIX","2022",2024,13,7878,"Agkistrodon contortrix",492,0.0624523990860625,2024,0
+"180","Brood XIX","2023",2024,13,9224,"Agkistrodon contortrix",627,0.0679748482220295,2024,0
+"181","Brood XIX","2024",2024,13,8694,"Agkistrodon contortrix",578,0.066482631700023,2024,1
+"182","Brood XXII","2013",2014,13,22,"Agkistrodon contortrix",2,0.0909090909090909,2014,0
+"183","Brood XXII","2014",2014,13,20,"Agkistrodon contortrix",1,0.05,2014,1
+"184","Brood XXII","2016",2014,13,79,"Agkistrodon contortrix",2,0.0253164556962025,2014,0
+"185","Brood XXII","2017",2014,13,99,"Agkistrodon contortrix",5,0.0505050505050505,2014,0
+"186","Brood XXII","2018",2014,13,173,"Agkistrodon contortrix",3,0.0173410404624277,2014,0
+"187","Brood XXII","2019",2014,13,276,"Agkistrodon contortrix",3,0.0108695652173913,2014,0
+"188","Brood XXII","2020",2014,13,388,"Agkistrodon contortrix",9,0.0231958762886598,2014,0
+"189","Brood XXII","2021",2014,13,483,"Agkistrodon contortrix",15,0.031055900621118,2014,0
+"190","Brood XXII","2022",2014,13,469,"Agkistrodon contortrix",9,0.0191897654584222,2014,0
+"191","Brood XXII","2023",2014,13,748,"Agkistrodon contortrix",11,0.0147058823529412,2014,0
+"192","Brood XXII","2024",2014,13,562,"Agkistrodon contortrix",16,0.0284697508896797,2014,0
+"193","Brood XXIII","2006",2015,13,31,"Agkistrodon contortrix",3,0.0967741935483871,2015,0
+"194","Brood XXIII","2008",2015,13,77,"Agkistrodon contortrix",5,0.0649350649350649,2015,0
+"195","Brood XXIII","2009",2015,13,24,"Agkistrodon contortrix",2,0.0833333333333333,2015,0
+"196","Brood XXIII","2010",2015,13,85,"Agkistrodon contortrix",6,0.0705882352941176,2015,0
+"197","Brood XXIII","2011",2015,13,107,"Agkistrodon contortrix",6,0.0560747663551402,2015,0
+"198","Brood XXIII","2012",2015,13,100,"Agkistrodon contortrix",7,0.07,2015,0
+"199","Brood XXIII","2013",2015,13,105,"Agkistrodon contortrix",3,0.0285714285714286,2015,0
+"200","Brood XXIII","2014",2015,13,119,"Agkistrodon contortrix",4,0.0336134453781513,2015,0
+"201","Brood XXIII","2015",2015,13,216,"Agkistrodon contortrix",11,0.0509259259259259,2015,1
+"202","Brood XXIII","2016",2015,13,311,"Agkistrodon contortrix",18,0.0578778135048231,2015,0
+"203","Brood XXIII","2017",2015,13,486,"Agkistrodon contortrix",29,0.0596707818930041,2015,0
+"204","Brood XXIII","2018",2015,13,472,"Agkistrodon contortrix",25,0.0529661016949153,2015,0
+"205","Brood XXIII","2019",2015,13,876,"Agkistrodon contortrix",39,0.0445205479452055,2015,0
+"206","Brood XXIII","2020",2015,13,1508,"Agkistrodon contortrix",72,0.0477453580901857,2015,0
+"207","Brood XXIII","2021",2015,13,1632,"Agkistrodon contortrix",55,0.0337009803921569,2015,0
+"208","Brood XXIII","2022",2015,13,1653,"Agkistrodon contortrix",71,0.0429522081064731,2015,0
+"209","Brood XXIII","2023",2015,13,1761,"Agkistrodon contortrix",94,0.0533787620670074,2015,0
+"210","Brood XXIII","2024",2015,13,1363,"Agkistrodon contortrix",76,0.0557593543653705,2015,0

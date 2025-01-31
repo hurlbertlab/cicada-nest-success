@@ -1,0 +1,32 @@
+---
+title: "Workflow"
+author: "Ivara Goulden"
+date: "2024-10-08"
+output: html_document
+---
+
+Writing this in markdown so that it doesn't require code comments all the time
+
+Question of interest (data framing)
+To what degree the emergence of a periodical cicada brood influences copperhead activity and population, calculated as the percent of iNat snake observations that are eastern copperheads. Similar to the paper 'Periodical Cicada Emergences Affect Masting Behavior of Oaks' want to conduct a superimposed epoch analysis to see the results of periodical cicada emergence on these snakes.
+
+Steps are as follows:
+
+- download iNat data on all snake observations in all years within the range
+of the eastern copperhead. 
+ Downloaded from GBIF, then filtered to just snakes
+ returns 380,000 observations
+ So, this should definetely be done through iNat instead, sorry iNat downloader, because there's a LOT of data that is missing from the GBIF filter for squamates. To the tune of 7k copperhead observations, eg GBIF says 11k, iNat says 18k
+ For the multi-step iNat download, could double-check that areas weren't missed by also downloading the copperhead data and making sure it's all present in the combined iNat data. (done)
+- download data on the location of periodicial cicada broods (might be available from Koenig et al. 2023) (done)
+- filter snake data to within the counties that have periodical cicada broods 
+- associate snake location data with a county
+- filter both the county, !!!!!!!!!!!!!!!!! AND THE BROOD data !!!!!!!!!!!!!!!!! to counties that have at least one copperhead observation eg. are within the copperhead range. We want to know only within the copperhead range if the emergence of periodical cicadas causes a rise in copperhead observations
+- for both each county and each overall brood emergence area, get the proportion of all snake observations that are copperheads in each year (done)
+- probably ought to filter to only after 2008 as this is when there are about a thousand snake observations a year, seems like a good minimum bound. If it needs to be moved up, 2013 is the first year over 100 copperheads were observed. 
+- Allen comment: just look at recent years, like 2019+ across all the counties, do we see this pattern? Add in the spatial element, it matters
+- filter to years where the number of overall snakes observed is at least 20 - this could and likely should be moved up but it's a good lower bound. 
+- take a casual look at this data to see if there's anything interesting that looks like it might be going on
+- run a superimposed epoch analysis - see oak tree paper for citations that reference it's use and how to run it
+- graph and check out results
+- ?? paper?
