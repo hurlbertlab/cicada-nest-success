@@ -18,7 +18,7 @@ filter_nest_sum <- filter(nestwatch, Longitude > -100, Latitude < 47, Year > 200
 write.csv(filter_nest_sum, "data/filtered_summaries.csv", row.names = FALSE)
 
 nest_summaries <- read.csv("data/filtered_summaries.csv") %>%
-  filter(startsWith(Subnational.Code, "US-")) 
+  filter(startsWith(Subnational.Code, "US-"))
 
 ## total count for each species 
 species.totals <- nest_summaries %>% 
@@ -61,17 +61,24 @@ cicada <- st_read(dsn = "copperheads/data/cicada/periodical_cicada_with_county.g
 
 # Merge and Filter to create cicada table 
 cicada_county <- left_join(cicada_emergence_years, cicada, by ="BROOD_NAME")
-cicada_county <- subset(cicada_county, select = -c(cycle, emergence_2019_through_2024,YEAR_NEXT_EMERGENCE,CYCLE))
+cicada_county <- subset(cicada_county, select = -c(cycle, emergence_2019_through_2024,YEAR_NEXT_EMERGENCE,CYCLE)) %>%
+  filter(!is.na(MTFCC)) #filter out connecticut for now
 
 
 # Okay, now the nestwatch data needs county based on coordinates
+library(sf)
+library(dplyr)
+
+nest_summaries_points <- st_as_sf(nest_summaries, coords = c('Longitude', 'Latitude'), crs = st_crs(cicada))
+subset <- nest_summaries_points[1:100,]
 
 
+nests_county <- 
+  st_join(subset, cicada, join = st_within) %>%
+  filter(!is.na(STATEFP))
 
-
-
-
-
+  plot(nests_county)
+  
 
 
 # Rearrange Ivara's data to have one row for every county, and 2 most recent outbreak years in 2 columns. Join to nestwatch by county.
