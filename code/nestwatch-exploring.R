@@ -2,7 +2,7 @@
 
 library(dplyr)
 library(tidyverse)
-library(tmap)
+library(tmap) #Note: what is tmap being used for? Parts of the page may break from raster being depreciated it looks like. Got a warning when loading the package
 library(sf)
 library(ggplot2)
 
@@ -56,30 +56,35 @@ ggplot() +
 
   
 # Load in cicada data 
-cicada_emergence_years <- read.csv("data/cicada_emergence_years_wide.csv") ## this has broods with 4 emergence years in 4 separate columns
+cicada_emergence_years <- read.csv("data/cicada_emergence_years_wide.csv")  %>% ## this has broods with 4 emergence years in 4 separate columns
+  dplyr::select(-emergence_2019_through_2024, - cycle)
 cicada <- st_read(dsn = "copperheads/data/cicada/periodical_cicada_with_county.gdb")
 
 # Merge and Filter to create cicada table 
 cicada_county <- left_join(cicada_emergence_years, cicada, by ="BROOD_NAME")
-cicada_county <- subset(cicada_county, select = -c(cycle, emergence_2019_through_2024,YEAR_NEXT_EMERGENCE,CYCLE)) %>%
+cicada_county <- subset(cicada_county, select = -c(YEAR_NEXT_EMERGENCE,CYCLE)) %>%
+  #!!!!!!!!! Connecticut has been filtered out for a FIPS data problem. This needs to be fixed so we can use all the data.
   filter(!is.na(MTFCC)) #filter out connecticut for now
 
 
 # Okay, now the nestwatch data needs county based on coordinates
-library(sf)
-library(dplyr)
-
+#turn nest data to points
 nest_summaries_points <- st_as_sf(nest_summaries, coords = c('Longitude', 'Latitude'), crs = st_crs(cicada))
-subset <- nest_summaries_points[1:100,]
 
-
+#join county + cicada information
 nests_county <- 
-  st_join(subset, cicada, join = st_within) %>%
+  st_join(nest_summaries_points, cicada, join = st_within) %>%
   filter(!is.na(STATEFP))
+#Note: this doesn't take too long to run on a lap computer
 
-  plot(nests_county)
-  
+#now join cicada emergence year information
+nests_county <- nests_county %>%
+  left_join(cicada_emergence_years, by = "BROOD_NAME") %>%
+  select(-cycle, -emergence_2019_through)
 
+#save df - !!!! still missing connecticut, change name and re-save after that's fixed
+write.csv(nests_county, "data/nestboxes_county_cicada_MISSINGCT.csv", row.names = FALSE)
+#Note: this is not saved with geometry. If you want geometry, use st_write. Otherwise, later use will have to add the geometry back in
 
 # Rearrange Ivara's data to have one row for every county, and 2 most recent outbreak years in 2 columns. Join to nestwatch by county.
 
