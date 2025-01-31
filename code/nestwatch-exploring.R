@@ -62,10 +62,9 @@ cicada <- st_read(dsn = "copperheads/data/cicada/periodical_cicada_with_county.g
 
 # Merge and Filter to create cicada table 
 cicada_county <- left_join(cicada_emergence_years, cicada, by ="BROOD_NAME")
-cicada_county <- subset(cicada_county, select = -c(YEAR_NEXT_EMERGENCE,CYCLE)) %>%
-  #!!!!!!!!! Connecticut has been filtered out for a FIPS data problem. This needs to be fixed so we can use all the data.
-  filter(!is.na(MTFCC)) #filter out connecticut for now
-
+cicada_county <- subset(cicada_county, select = -c(YEAR_NEXT_EMERGENCE,CYCLE)) 
+#check that there's no missing information
+  assertthat::assert_that(any(is.na(cicada_county) == FALSE))
 
 # Okay, now the nestwatch data needs county based on coordinates
 #turn nest data to points
@@ -73,17 +72,17 @@ nest_summaries_points <- st_as_sf(nest_summaries, coords = c('Longitude', 'Latit
 
 #join county + cicada information
 nests_county <- 
-  st_join(nest_summaries_points, cicada, join = st_within) %>%
-  filter(!is.na(STATEFP))
-#Note: this doesn't take too long to run on a lap computer
+  st_join(nest_summaries_points, cicada, join = st_within) 
+#Note: this doesn't take too long to run on a lab computer, approx. 10 seconds
 
 #now join cicada emergence year information
-nests_county <- nests_county %>%
+nests_county_cicada <- nests_county %>%
   left_join(cicada_emergence_years, by = "BROOD_NAME") %>%
-  select(-cycle, -emergence_2019_through)
+  #filter out some columns we don't need, like really old emergence years etc.
+  dplyr::select(-emergence_one, -LSAD, -CLASSFP, - MTFCC, -ALAND, -AWATER, -INTPTLAT, -INTPTLON)
 
-#save df - !!!! still missing connecticut, change name and re-save after that's fixed
-write.csv(nests_county, "data/nestboxes_county_cicada_MISSINGCT.csv", row.names = FALSE)
+#save df 
+write.csv(nests_county_cicada, "data/nestboxes_county_cicada.csv", row.names = FALSE)
 #Note: this is not saved with geometry. If you want geometry, use st_write. Otherwise, later use will have to add the geometry back in
 
 # Rearrange Ivara's data to have one row for every county, and 2 most recent outbreak years in 2 columns. Join to nestwatch by county.
