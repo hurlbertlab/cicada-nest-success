@@ -107,7 +107,4 @@ for(a in 1:nrow(temp_nbroods)) {
 }
 
 
-## Okay, I'm getting close but not quite there yet 
-
-
 

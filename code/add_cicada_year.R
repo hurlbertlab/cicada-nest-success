@@ -50,6 +50,50 @@ nestboxes_county_cicada <- nestboxes_county_cicada %>%
     em2_cicada_year                                # If FALSE, use em2_cicada_year
   ))
 
-
-
 # hooray ! cicada year ! 
+
+
+
+# Ok so, I want to create some sort of line graph where line for each species of interest and x axis is cicada year and y axis is survial rate (% of young fledged) 
+
+#create % young fledged variable
+nestboxes_county_cicada <- nestboxes_county_cicada %>%
+  mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total)) %>%
+  dplyr::relocate(pct_fledged, .after = Outcome)
+
+# graph mean and standard deviation of pct fledged for each species over cicada year 
+library(ggplot2)
+
+## group, calc mean & stdev
+summary_data <- nestboxes_county_cicada %>%
+  group_by(Species.Name, cicada_year) %>%
+  summarise(
+    mean_pct_survival = mean(pct_fledged, na.rm = TRUE),
+    se_pct_survival = sd(pct_fledged, na.rm = TRUE) / sqrt(n())
+  )
+summary_data <- summary_data %>%
+  filter(cicada_year >= -4 & cicada_year <= 8)
+
+## ok now graph
+ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species.Name)) +
+  geom_line() +
+  geom_errorbar(aes(ymin = mean_pct_survival - se_pct_survival, ymax = mean_pct_survival + se_pct_survival), width = 0.2) +
+  facet_wrap(~ Species.Name, ncol = 2) +  # Create separate plots for each species
+  labs(
+    x = "Cicada Year",
+    y = "Mean Percent Survival",
+    color = "Species"
+  ) +
+  theme_minimal() +
+  # Add arrow at cicada_year = 0
+  annotate(
+    "segment",
+    x = 0, xend = 0,  # Arrow is vertical at cicada_year = 0
+    y = max(filtered_data$mean_pct_survival), yend = max(filtered_data$mean_pct_survival) - 0.2 * diff(range(filtered_data$mean_pct_survival)),  # Arrow points downward
+    arrow = arrow(type = "open", length = unit(0.15, "inches")),  # Shorter arrow
+    color = "black",  # Arrow color
+    size = 1  # Arrow thickness
+  )
+# yay! graph! 
+
+
