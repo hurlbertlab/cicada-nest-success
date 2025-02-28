@@ -89,11 +89,46 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species
   annotate(
     "segment",
     x = 0, xend = 0,  # Arrow is vertical at cicada_year = 0
-    y = max(filtered_data$mean_pct_survival), yend = max(filtered_data$mean_pct_survival) - 0.2 * diff(range(filtered_data$mean_pct_survival)),  # Arrow points downward
+    y = max(summary_data$mean_pct_survival), yend = max(summary_data$mean_pct_survival) - 0.2 * diff(range(summary_data$mean_pct_survival)),  # Arrow points downward
     arrow = arrow(type = "open", length = unit(0.15, "inches")),  # Shorter arrow
     color = "black",  # Arrow color
     size = 1  # Arrow thickness
   )
 # yay! graph! 
+
+# Ok now I want to do the same thing but with mean probability of nest failure instead of pct survival rate
+# so it will be something like # of nests with 0% survival/total nest obs
+summary_data2 <- nestboxes_county_cicada %>%
+  group_by(Species.Name, cicada_year) %>%
+  summarise(
+    total_nests = n(),
+    failed_nests = sum(pct_fledged == 0, na.rm=TRUE),
+    p_nest_failure = (failed_nests / total_nests),
+  )
+
+summary_data2 <- summary_data2 %>%
+  filter(cicada_year >= -4 & cicada_year <= 8)
+
+# graph 
+ggplot(summary_data2, aes(x = cicada_year, y = p_nest_failure, color = Species.Name)) +
+  geom_line() +
+  facet_wrap(~ Species.Name, ncol = 2) +  # Create separate plots for each species
+  labs(
+    x = "Cicada Year",
+    y = "Probability of Nest Failure",
+    color = "Species"
+  ) +
+  theme_minimal() +
+  # Add arrow at cicada_year = 0
+  annotate(
+    "segment",
+    x = 0, xend = 0,  # Arrow is vertical at cicada_year = 0
+    y = max(summary_data2$p_nest_failure), yend = max(summary_data2$p_nest_failure) - 0.1 * diff(range(summary_data2$p_nest_failure)),  # Arrow points downward
+    arrow = arrow(type = "open", length = unit(0.15, "inches")),  # Shorter arrow
+    color = "black",  # Arrow color
+    size = 1  # Arrow thickness
+  )
+# Yay! graph pt.2!!
+
 
 
