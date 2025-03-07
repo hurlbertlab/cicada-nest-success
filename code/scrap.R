@@ -107,4 +107,92 @@ for(a in 1:nrow(temp_nbroods)) {
 }
 
 
+#================================================================#
+#================================================================#
+library(daymetr)
+library(dplyr)
+library(tidyr)
+library(tigris)   
+library(sf)       
+
+# US county shapefile
+county_shapefile <- counties(cb = TRUE) %>%
+  st_transform(county_shapefile, crs = 4326)
+
+# Define a set of latitude and longitude points within the eastern United States
+points <- data.frame(
+  site = c("point1", "point2", "point3", "point4"),
+  lat = c(35.0, 40.0, 30.0, 45.0),
+  lon = c(-80.0, -75.0, -85.0, -70.0)
+)
+
+start_year <- 2007
+end_year <- 2024
+
+data_list <- list()
+
+# Loop through each point and download data
+for (i in 1:nrow(points)) {
+  site <- points$site[i]
+  lat <- points$lat[i]
+  lon <- points$lon[i]
+  
+  daymet_data <- download_daymet(
+    site = site,
+    lat = lat,
+    lon = lon,
+    start = start_year,
+    end = end_year,
+    internal = TRUE
+  )
+  
+  # Add the point's lat and lon to the data
+  daymet_df <- as.data.frame(daymet_data$data)
+  daymet_df$lat <- lat
+  daymet_df$lon <- lon
+  
+  data_list[[i]] <- daymet_df
+}
+
+# Combine all data into a single data frame
+climate_data <- bind_rows(data_list) %>%
+  mutate(date = as.Date(paste(year, yday, sep = "-"), format = "%Y-%j"),
+         month = as.numeric(format(date, "%m"))) %>%
+  mutate(tmean = (tmin..deg.c. + tmax..deg.c.) / 2) %>%
+  filter(month %in% c(5, 6, 7))
+
+# Convert the climate data to an 'sf' object (spatial data)
+climate_data_sf <- st_as_sf(climate_data, coords = c("lon", "lat"), crs = 4326)%>%
+  st_transform(climate_data_sf, crs = 4326)
+
+# Spatial join to add the county information to the climate data
+climate_data_with_county <- st_join(climate_data_sf, county_shapefile, join = st_intersects)
+
+# Convert to a data frame
+climate_data_with_county_df <- as.data.frame(climate_data_with_county)
+
+# Now calculate monthly data by county
+monthly_data_by_county <- climate_data_with_county_df %>%
+  group_by(county_name = NAME) %>%
+  group_by(year, month, county_name) %>%
+  summarise(
+    min_temp = min(tmin..deg.c.),
+    mean_temp = mean(tmean),
+    max_temp = max(tmax..deg.c.),
+    total_precip = sum(prcp..mm.day.)
+  ) %>%
+  ungroup()
+
+# Calculate long-term averages (2007-2024) by county
+long_term_avg_by_county <- monthly_data_by_county %>%
+  filter(year < 2024) %>%
+  group_by(county_name, month) %>%
+  summarise(
+    long_term_min_temp = mean(min_temp),
+    long_term_mean_temp = mean(mean_temp),
+    long_term_max_temp = mean(max_temp),
+    long_term_total_precip = mean(total_precip)
+  )
+#================================================================#
+#================================================================#
 

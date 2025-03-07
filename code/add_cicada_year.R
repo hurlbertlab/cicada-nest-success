@@ -15,11 +15,7 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_county_cicada.csv",
   mutate(em1_cicada_year = NA) %>%
   mutate(em2_cicada_year = NA) %>% #add new columns that we will fill in
   dplyr::select (-emergence_two) %>% # get rid of emergence Years that we dont have nest data for 
-  dplyr::relocate(Year, .before = emergence_three)
-
-# okay so the idea is create cicada year values for both emergence 1 and 2 and then use the minimum absolute value between the two to create a standardized cicada year value. 
-
-nestboxes_county_cicada <- nestboxes_county_cicada %>%
+  dplyr::relocate(Year, .before = emergence_three) %>%
   mutate(
     em1_cicada_year = case_when(
       Year == emergence_three ~ 0,
@@ -29,26 +25,33 @@ nestboxes_county_cicada <- nestboxes_county_cicada %>%
       Year == emergence_four ~ 0,
       FALSE ~ em2_cicada_year
     )
-  )
-# I think that worked ? So now each emergence Year is either 0 or NA, for both emergence 1 and 2... 
-# So now, fill in NA with some integer that indicates how far away it is from an emergence year 
-# em1_cicada_year == Year - emergence_three
-
-nestboxes_county_cicada <- nestboxes_county_cicada %>% 
+  ) %>%
   mutate(em1_cicada_year = ifelse(is.na(em1_cicada_year), Year - emergence_three, em1_cicada_year),
-         em2_cicada_year = ifelse(is.na(em2_cicada_year), Year - emergence_four, em2_cicada_year)) 
-
-# Freaking awesome !! I think that worked !!
-# ok so now take the minimum of the absolute values of those two columns and that is our cicada year 
-
-
-nestboxes_county_cicada <- nestboxes_county_cicada %>%
+         em2_cicada_year = ifelse(is.na(em2_cicada_year), Year - emergence_four, em2_cicada_year)) %>%
   rowwise() %>%
   mutate(cicada_year = ifelse(
     abs(em1_cicada_year) <= abs(em2_cicada_year),  # Condition: Compare absolute values
     em1_cicada_year,                               # If TRUE, use em1_cicada_year
     em2_cicada_year                                # If FALSE, use em2_cicada_year
-  ))
+  )) %>%
+  mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total)) %>%
+  dplyr::relocate(pct_fledged, .after = Outcome)
+
+
+# okay so the idea is create cicada year values for both emergence 1 and 2 and then use the minimum absolute value between the two to create a standardized cicada year value. 
+
+# I think that worked ? So now each emergence Year is either 0 or NA, for both emergence 1 and 2... 
+# So now, fill in NA with some integer that indicates how far away it is from an emergence year 
+# em1_cicada_year == Year - emergence_three
+# ifelse(cicada_year == 0,1,0) # either is cicada year or not 
+# foo$successfulnest = ifelse(foopct_fledged> 0,1,0)
+#fledge = glm(formula = successfulnest ~ cicada + Species.Name + cicada*Species.Name, data = foo, family = binomial(link = "logit")) 
+# run 5 dif glms, one for each species 
+#eablfledge = glm(formula = successfulnest ~ cicada, data = foo[foos$Species.Name == "Eastern Bluebird"], family = binomial(link = "logit")) 
+
+
+# ok so now take the minimum of the absolute values of those two columns and that is our cicada year 
+
 
 # hooray ! cicada year ! 
 
@@ -57,9 +60,6 @@ nestboxes_county_cicada <- nestboxes_county_cicada %>%
 # Ok so, I want to create some sort of line graph where line for each species of interest and x axis is cicada year and y axis is survial rate (% of young fledged) 
 
 #create % young fledged variable
-nestboxes_county_cicada <- nestboxes_county_cicada %>%
-  mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total)) %>%
-  dplyr::relocate(pct_fledged, .after = Outcome)
 
 # graph mean and standard deviation of pct fledged for each species over cicada year 
 library(ggplot2)
@@ -70,9 +70,9 @@ summary_data <- nestboxes_county_cicada %>%
   summarise(
     mean_pct_survival = mean(pct_fledged, na.rm = TRUE),
     se_pct_survival = sd(pct_fledged, na.rm = TRUE) / sqrt(n())
-  )
-summary_data <- summary_data %>%
+  )%>%
   filter(cicada_year >= -4 & cicada_year <= 8)
+
 
 ## ok now graph
 ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species.Name)) +
@@ -104,10 +104,9 @@ summary_data2 <- nestboxes_county_cicada %>%
     total_nests = n(),
     failed_nests = sum(pct_fledged == 0, na.rm=TRUE),
     p_nest_failure = (failed_nests / total_nests),
-  )
-
-summary_data2 <- summary_data2 %>%
+  )%>%
   filter(cicada_year >= -4 & cicada_year <= 8)
+
 
 # graph 
 ggplot(summary_data2, aes(x = cicada_year, y = p_nest_failure, color = Species.Name)) +
