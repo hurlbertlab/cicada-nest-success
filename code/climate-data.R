@@ -6,9 +6,9 @@ library(tidyr)
 
 # Define a set of latitude and longitude points within the eastern United States
 points <- data.frame(
-  site = c("point1", "point2", "point3", "point4"), # Add more points as needed
-  lat = c(35.0, 40.0, 30.0, 45.0),                 # Latitude values
-  lon = c(-80.0, -75.0, -85.0, -70.0)              # Longitude values
+  site = c("point1", "point2", "point3", "point4"), 
+  lat = c(35.0, 40.0, 30.0, 45.0),                 
+  lon = c(-80.0, -75.0, -85.0, -70.0)              
 )
 
 start_year <- 2007
