@@ -18,14 +18,12 @@ data_list <- list()
 
 # Loop through each point and download data
 for (i in 1:nrow(points)) {
-  site <- points$site[i]
-  lat <- points$lat[i]
-  lon <- points$lon[i]
+  
   
   daymet_data <- download_daymet(
-    site = site,
-    lat = lat,
-    lon = lon,
+    site = points$site[i],
+    lat = poinst$lat[i],
+    lon = points$lon[i],
     start = start_year,
     end = end_year,
     internal = TRUE
@@ -33,6 +31,35 @@ for (i in 1:nrow(points)) {
   
   data_list[[i]] <- as.data.frame(daymet_data$data)
 }
+
+# Get raw daymet
+daymet_data <- download_daymet_batch(file_location = 'my_sites.csv',
+                      start = 1980,
+                      end = 2010,
+                      internal = TRUE) %>%
+  mutate(tmean = ...) %>%
+  group_by(site, year) %>%
+  summarize(summerTemp = mean(tmean[yday %in% 153:213], na.rm = TRUE),
+            summerPrecip = sum(prcp.mm.day.[yday %in% 153:213], na.rm = TRUE))
+
+write.csv(daymet_data)
+
+#
+historical_climate <- daymet_data %>% 
+  group_by(site) %>%
+  summarize(meanTemp,
+            meanPrecip)
+
+
+# two joins:
+# 1) join by site so that every nest record has cols for historical temp and precip
+# 2) join by site, year so that every nest record has cols for climate in that year
+
+
+
+
+
+
 
 # Combine all data into a single data frame
 climate_data <- bind_rows(data_list) %>%
