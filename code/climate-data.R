@@ -36,22 +36,44 @@ library(tidyr)
 nest_summaries <- read.csv("data/filtered_summaries.csv") %>%
   filter(startsWith(Subnational.Code, "US-")) %>%
   drop_na(Young.Total) %>%
-  select(Location.ID,Latitude,Longitude)
+  select(Location.ID, Latitude, Longitude) %>%
+  mutate(coordinate_pairs = paste(Latitude, Longitude, sep = ",")) %>%
+  distinct(coordinate_pairs, .keep_all = TRUE) %>%
+  select(-coordinate_pairs)
 
-write.csv(nest_summaries,"data/nestcoordinates.csv",row.names = FALSE)
 
 
-# Get raw daymet
-daymet_data <- download_daymet_batch(file_location = "data/nestcoordinates.csv",
-                      start = 1980,
-                      end = 2010,
-                      internal = TRUE) %>%
-  mutate(tmean = ((tmin..deg.c. + tmax..deg.c.) / 2)) %>%
-  group_by(site, year) %>%
-  summarize(summerTemp = mean(tmean[yday %in% 153:213], na.rm = TRUE),
-            summerPrecip = sum(prcp.mm.day.[yday %in% 153:213], na.rm = TRUE)) 
 
-write.csv(daymet_data)
+data_list <- list()
+
+# Loop through each point and download data
+for (i in 1:nrow(nest_summaries)) {
+  daymet_data <- download_daymet(
+    site = as.character(nest_summaries$Location.ID[i]),  # Ensure it's a string
+    lat = as.numeric(nest_summaries$Latitude[i]),       # Ensure it's numeric
+    lon = as.numeric(nest_summaries$Longitude[i]),      # Ensure it's numeric
+    start = 1980,
+    end = 2024,
+    internal = TRUE
+  )
+  
+  # Convert to data frame and store in list
+  #may 1st = 121
+  #july 31st = 212
+  df <- as.data.frame(daymet_data$data) %>%
+    filter(yday >= 121 & yday <= 212) %>% #filter to relevant julian days 
+    group_by(year) %>%
+    summarize(mean_temp = mean(tmin..deg.c. + tmax..deg.c./2),mean_precip = mean(prcp..mm.day.)
+              )
+  df$site <- nest_summaries$Location.ID[i]  # Add site ID column for reference
+  data_list[[i]] <- df
+}
+
+# Combine all downloaded data into a single data frame
+daymet_df <- bind_rows(data_list)
+
+write.csv(daymet_data, "data/daymet_data.csv",row.names=FALSE)
+
  
 #
 historical_climate <- daymet_data %>% 
