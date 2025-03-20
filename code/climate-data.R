@@ -67,12 +67,13 @@ for (i in 1:nrow(nest_summaries)) {
               )
   df$site <- nest_summaries$Location.ID[i]  # Add site ID column for reference
   data_list[[i]] <- df
+  
 }
 
 # Combine all downloaded data into a single data frame
 daymet_df <- bind_rows(data_list)
 
-write.csv(daymet_data, "data/daymet_data.csv",row.names=FALSE)
+write.csv(daymet_df, "data/daymet_data.csv",row.names=FALSE)
 
  
 #
