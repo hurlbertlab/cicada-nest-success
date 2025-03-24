@@ -195,4 +195,11 @@ long_term_avg_by_county <- monthly_data_by_county %>%
   )
 #================================================================#
 #================================================================#
+# Get raw daymet
+daymet_data <-download_daymet_batch(file_location = "data/nestcoordinates.csv",
+                                    start = 1980,
+                                    end = 2024,
+                                    internal = FALSE,
+                                    path = "data/")
 
+wardaymet_df <- daymet_data$data
