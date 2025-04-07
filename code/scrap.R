@@ -195,4 +195,53 @@ long_term_avg_by_county <- monthly_data_by_county %>%
   )
 #================================================================#
 #================================================================#
+# Get raw daymet
+daymet_data <-download_daymet_batch(file_location = "data/nestcoordinates.csv",
+                                    start = 1980,
+                                    end = 2024,
+                                    internal = FALSE,
+                                    path = "data/")
 
+wardaymet_df <- daymet_data$data
+<<<<<<< HEAD
+
+#================================================================#
+#================================================================#
+climate_data <- bind_rows(data_list) %>%
+  mutate(date = as.Date(paste(year, yday, sep = "-"), format = "%Y-%j"),
+         month = as.numeric(format(date, "%m"))) %>%
+  mutate(tmean = (tmin..deg.c. + tmax..deg.c.) / 2) %>%
+  filter(month %in% c(5, 6, 7))
+
+# Calculate monthly 
+monthly_data <- climate_data %>%
+  group_by(year, month) %>%
+  summarise(
+    min_temp = min(tmin..deg.c.),
+    mean_temp = mean(tmean),
+    max_temp = max(tmax..deg.c.),
+    total_precip = sum(prcp..mm.day.)
+  ) %>%
+  ungroup()
+
+# Calculate long-term averages (2007-2024)
+long_term_avg <- monthly_data %>%
+  filter(year < 2024) %>%
+  group_by(month) %>%
+  summarise(
+    long_term_min_temp = mean(min_temp),
+    long_term_mean_temp = mean(mean_temp),
+    long_term_max_temp = mean(max_temp),
+    long_term_total_precip = mean(total_precip)
+  )
+
+
+#
+historical_climate <- daymet_data %>% 
+  group_by(site) %>%
+  summarize(meanTemp,
+            meanPrecip)
+
+
+=======
+>>>>>>> 994044e83b95c2afb0f780442e8bace2c57d5181
