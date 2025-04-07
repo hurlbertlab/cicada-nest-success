@@ -204,6 +204,7 @@ daymet_data <-download_daymet_batch(file_location = "data/nestcoordinates.csv",
 
 wardaymet_df <- daymet_data$data
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #================================================================#
 #================================================================#
@@ -243,5 +244,7 @@ historical_climate <- daymet_data %>%
             meanPrecip)
 
 
+=======
+>>>>>>> 994044e83b95c2afb0f780442e8bace2c57d5181
 =======
 >>>>>>> 994044e83b95c2afb0f780442e8bace2c57d5181

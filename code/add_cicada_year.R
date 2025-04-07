@@ -6,7 +6,9 @@ library(assertthat)
 
 
 # Dataframe with nest success info and cicada emergence info for nestboxes that are in counties with cicadas
+
 climate_data<- read.csv("data/climate_data.csv")
+
 
 nestboxes_county_cicada <- read.csv("data/nestboxes_county_cicada.csv",
                                     sep = ",",
@@ -43,6 +45,7 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_county_cicada.csv",
   #add in the climate data
   left_join(climate_data, by = c("Location.ID","Year")) %>%
   filter(!is.na(y_temp))
+
 
 
 
@@ -177,11 +180,6 @@ eablfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_
 eablfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_anomaly_precip, 
                          data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Black-capped Chickadee", ], 
                          family = binomial(link = "logit"))
-
-
-
-
-
 
  
  

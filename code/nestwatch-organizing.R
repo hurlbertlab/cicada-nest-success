@@ -10,7 +10,13 @@ library(ggplot2)
 nestwatch <- read.csv("data/attempts_locs_20240125.csv/nestwatch-summaries-2023.csv")
 
 ## create new file with relevant data 
-##filter_nest_sum <- filter(nestwatch, Longitude > -100, Latitude < 47, Year > 2006, Latitude > 25, Longitude < -60, Species.Name %in% c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow"))
+##filter_nest_sum <- filter(nestwatch, 
+#Longitude > -100,
+#Latitude < 47, 
+#Year > 2006,
+#Latitude > 25, 
+#Longitude < -60,
+#Species.Name %in% c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow"))
 
 # write.csv(filter_nest_sum, "data/filtered_summaries.csv", row.names = FALSE)
 
