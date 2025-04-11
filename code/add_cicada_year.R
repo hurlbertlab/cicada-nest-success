@@ -174,12 +174,21 @@ trswfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_
 howrfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_anomaly_precip, 
                          data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "House Wren", ], 
                          family = binomial(link = "logit"))
-eablfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_anomaly_precip, 
+cachfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_anomaly_precip, 
                          data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Carolina Chickadee", ], 
                          family = binomial(link = "logit"))
-eablfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_anomaly_precip, 
+bcchfledge.climate = glm(formula = successfulnest ~ cicada + y_anomaly_temp + y_anomaly_precip, 
                          data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Black-capped Chickadee", ], 
                          family = binomial(link = "logit"))
 
  
- 
+# Getting predicted values from your models and then reverse logit transforming
+
+# E.g.
+eabl.climate.pred = predict(eablfledge.climate, nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Eastern Bluebird", c('cicada', 'y_anomaly_temp', 'y_anomaly_precip')])
+
+# Reverse logit transform to get predicted values of success in terms of a probability
+prob.predictions <- 1 / (1 + exp(-eabl.climate.pred))
+
+# Visualing those in a histogram
+hist(prob.predictions)
