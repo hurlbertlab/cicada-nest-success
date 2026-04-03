@@ -49,5 +49,5 @@ po/*~
 rsconnect/
 
 data/climate_data.csv
-data/nestwatchV3_20250131/attempts_loc_20250131.csv
+data/nestwatchV3_20250131/attempts_locs_20250131.csv
 data/nestwatchV3_20250131/checks_20250131.csv
