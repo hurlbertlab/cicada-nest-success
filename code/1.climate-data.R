@@ -154,13 +154,13 @@ write.csv(badlocs_df2,"more_daymetErrors", row.names = FALSE)
 
 ######################################################################################
 
-chunk_1 <- read.csv("daymet_chunk_1.csv")
-chunk_2 <- read.csv("daymet_chunk_2.csv")
-chunk_3 <- read.csv("daymet_chunk_3.csv")
-chunk_4 <- read.csv("daymet_chunk_4.csv")
-chunk_5 <- read.csv("daymet_chunk_5.csv")
-error_locs <- read.csv("badlocs_fixed_through2053.csv")
-more_error_locs <- read.csv("badlocs1-417.csv")
+chunk_1 <- read.csv("data/dayment/daymet_chunk_1.csv")
+chunk_2 <- read.csv("data/dayment/daymet_chunk_2.csv")
+chunk_3 <- read.csv("data/dayment/daymet_chunk_3.csv")
+chunk_4 <- read.csv("data/dayment/daymet_chunk_4.csv")
+chunk_5 <- read.csv("data/dayment/daymet_chunk_5.csv")
+error_locs <- read.csv("data/badlocs_fixed_through2053.csv")
+more_error_locs <- read.csv("data/badlocs1-417.csv")
 
 climate_data <- bind_rows(chunk_1, chunk_2, chunk_3, chunk_4, chunk_5,error_locs,more_error_locs)%>%
   rename(Location.ID = site) %>%
