@@ -1,0 +1,15 @@
+Citation: Liebhold, A. M., Bohne, M. J., and R. L. Lilja. 2013. Active Periodical Cicada Broods of the United States. USDA Forest Service Northern Research Station, Northeastern Area State and Private Forestry. Koenig, W. D., L. Ries, V. B. K. Olsen, and A. M. Liebhold, 2011. Avian predators are less abundant during periodical cicada emergences, but why? (http://dx.doi.org/10.1890/10-1583.1)
+
+Webpage link: https://data.fs.usda.gov/geodata/edw/datasets.php?xmlKeyword=cicada
+
+Originator: US Forest Service
+Publication Date: 20170407
+Title: S_USA.Periodical_Cicada_Brood
+Geospatial Data Presentation Form: tabular digital data
+Other Citation Details: Liebhold, A. M., Bohne, M. J., and R. L. Lilja. 2013. Active Periodical Cicada Broods of the United States. USDA Forest Service Northern Research Station, Northeastern Area State and Private Forestry. Koenig, W. D., L. Ries, V. B. K. Olsen, and A. M. Liebhold, 2011. Avian predators are less abundant during periodical cicada emergences, but why? (http://dx.doi.org/10.1890/10-1583.1)
+Online Linkage: http://data.fs.usda.gov/geodata/edw/datasets.php
+
+Description:
+
+Abstract: Active Periodical Cicada Broods of the United States. The periodical cicada emerges in massive groups once every 13 or 17 years and is completely unique to North America. There are 15 of these mass groups, called broods, of periodical cicadas in the United States. This county-based data, complied by USFS Northern Research Station entomologist Andrew Liebhold, depict where and when the different broods of periodical cicadas are likely to emerge in the US through 2030. The data was compiled for the publication by Koenig, et. al. (2011) using data from the following historic periodical cicada publications: Marlatt, C. L. 1907. The periodical cicada. Bulletin of the USDA Bureau of Entomology 71:1-181. Simon, C. 1988. Evolution of 13- and 17-year periodical cicadas (Homoptera: Cicadidae). Bulletin of the Entomological Society of America 34:163-176.
+Purpose: Mapping the geographic extent of a periodic cicada brood is useful to help the public understand the cyclic nature of the emergence and the relationships with other broods. This data can be "mashed up" or combined with other data for research purposes or to create public awareness. The Brood tabular information was designed to be joined to County boundaries and to create map services for the public.
