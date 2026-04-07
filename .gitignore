@@ -48,6 +48,6 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-data/climate_data.csv
+*climate_data.csv
 data/nestwatchV3/attempts_locs_20250131.csv
 data/nestwatchV3/checks_20250131.csv
