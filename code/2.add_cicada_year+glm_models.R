@@ -1,23 +1,28 @@
-# Create CicadaYear Column 
+###########################
+#
+# Create a column of the nest was laid during a cicada year
+# and run the glm models
+#
+#
+##########################
 
 library(dplyr)
 library(tidyverse)
 library(assertthat)
+library(statuser)
+library(stringr)
 
+# Read in location.ID climate data
+climate_data<- read.csv("data/filtered_climate_data.csv")
 
 # Dataframe with nest success info and cicada emergence info for nestboxes that are in counties with cicadas
-
-climate_data<- read.csv("data/climate_data.csv")
-
-
-nestboxes_county_cicada <- read.csv("data/nestboxes_county_cicada.csv",
+nestboxes_county_cicada <- read.csv("data/nestboxes_w_county+cicada.csv",
                                     sep = ",",
                                     header = TRUE, 
                                     stringsAsFactors = FALSE,
                                     row.names = NULL) %>%
   mutate(em1_cicada_year = NA) %>%
   mutate(em2_cicada_year = NA) %>% #add new columns that we will fill in
-  dplyr::select (-emergence_two) %>% # get rid of emergence Years that we dont have nest data for 
   dplyr::relocate(Year, .before = emergence_three) %>%
   mutate(
     em1_cicada_year = case_when(
@@ -32,6 +37,7 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_county_cicada.csv",
   mutate(em1_cicada_year = ifelse(is.na(em1_cicada_year), Year - emergence_three, em1_cicada_year),
          em2_cicada_year = ifelse(is.na(em2_cicada_year), Year - emergence_four, em2_cicada_year)) %>%
   rowwise() %>%
+  # Create CicadaYear Column 
   mutate(cicada_year = ifelse(
     abs(em1_cicada_year) <= abs(em2_cicada_year),  # Condition: Compare absolute values
     em1_cicada_year,                               # If TRUE, use em1_cicada_year
@@ -41,13 +47,48 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_county_cicada.csv",
   dplyr::relocate(pct_fledged, .after = Outcome)%>%
   ungroup() %>%
   #let's filter out nests that didn't have anything happen 
-  filter(!Outcome %in% c("u1", "u2", "u3", "i", "n")) %>%
+  filter(!Outcome %in% c("u1", #unknown outcome
+                         "u2", #nest monitoring stopped prior to expected fledge date while nest was still active
+                         "u3", #no breeding behavior observed
+                         "i", #inactive
+                         "n" #not monitored
+                         )) %>%
   #add in the climate data
   left_join(climate_data, by = c("Location.ID","Year")) %>%
-  filter(!is.na(y_temp))
+  #filter out data if it's one of the few cases we failed to collect climate data
+  #before = 317004 rows
+  filter(!is.na(y_anomaly_temp)) |>
+  #after = 273770 rows
+  #able to get climate data for 86.36% of nests. Pretty great recovery amount. Discussed this in previous years working on this project, not too worried about recovering the other 14% of data. Have every reason to assume this error is randomly distributed.
+  #and I should also filter out those nestbox entries that occurred in non-cicada counties. 
+  #If it's a nest that never would have experienced a cicada emergence
+  #then the survival of those birds are not relevant to this experiment
+  filter(!is.na(cicada_year)) |>
+  #after = 181,785 nests.
+  #As well, previous analyses looked multiple years in the past + future of a cicada emergence. But, there are a lot of things that could vary between years. I want to try and control for the effect of ccada emergence as much as possible. Therefore, just going to look at the year before, year of, and year after a cicada emergence
+  filter(cicada_year %in% c(-1, 0, 1))
+  #after = 36,585 observations.
 
+  statuser::table2(nestboxes_county_cicada$cicada_year,
+                   nestboxes_county_cicada$Species.Name)
+  #yup, here's where some of the filtering of species that we didn't do before becomes relevant.
+  #Several of these species just don't have enough nests to be confident in our ..conclusions...
+  #well. Hm. American Kestrel is dicey at under a 100 nests, I'm testing the effect of multiple variables
+  #but Purple Martin? Might actually be O.K. at about 170 nests.
+  
+analysis_df <- nestboxes_county_cicada %>%
+  #remove Kestrel
+  filter(!Species.Name %in% c("American Kestrel")) |>
+  mutate(Species.Name = case_when(
+    str_detect(Species.Name, "Chickadee") ~ "Black-capped and Carolina Chickadee",
+    TRUE ~ Species.Name
+  ))
 
-
+statuser::table2(analysis_df$cicada_year,
+                 analysis_df$Species.Name)
+#okay yes, the same widespread, ubiquitous, insectivores we filtered to the first time (Chickadees, Eastern Blueblue, House Wren, House Sparrow, and Tree Swallow) are the best represented now as well.
+#Chickadees are lowest at ~400 obs per cicada_year (-1, 0, 1)
+#Purple Martin, Carolina Wren, and American Robin which we did not keep before all are only about 200 nests in each cicada_year. So we would be much less confident in the effects on those birds. But, an experimental n of 200 isn't nothing! Discuss with Allen.
 
 
 # Ok so, I want to create some sort of line graph where line for each species of interest and x axis is cicada year and y axis is survial rate (% of young fledged) 
