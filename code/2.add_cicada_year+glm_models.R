@@ -82,7 +82,14 @@ analysis_df <- nestboxes_county_cicada %>%
   mutate(Species.Name = case_when(
     str_detect(Species.Name, "Chickadee") ~ "Black-capped and Carolina Chickadee",
     TRUE ~ Species.Name
-  ))
+  )) |>
+  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:pct_fledged, BROOD_NAME, MULT_BROOD, cycle, Year, emergence_three, emergence_four, cicada_year:y_anomaly_precip)
+
+table(analysis_df$MULT_BROOD)
+  #hey, am going to need to check for duplications because of multiple brood years.
+  #just remove 3 and 4
+  #and with 2brood counties remove any counties where the emergence years are not the same for the two broods.
+  #something different is going on in those locations.
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
