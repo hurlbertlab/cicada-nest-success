@@ -59,8 +59,18 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_w_county+cicada.csv",
   filter(!is.na(cicada_year)) |>
   #after = 181,785 nests.
   #As well, previous analyses looked multiple years in the past + future of a cicada emergence. But, there are a lot of things that could vary between years. I want to try and control for the effect of ccada emergence as much as possible. Therefore, just going to look at the year before, year of, and year after a cicada emergence
-  filter(cicada_year %in% c(-1, 0, 1))
+  filter(cicada_year %in% c(-1, 0, 1)) |>
   #after = 36,585 observations.
+  mutate(pre_emergence = case_when(
+    cicada_year == -1 ~ 1,
+    cicada_year == 0 ~ 0, #when cicadas have emerged
+    cicada_year == 1 ~ NA
+  ),
+  post_emergence = case_when(
+    cicada_year == -1 ~ NA,
+    cicada_year == 0 ~ 0, #when cicadas have emerged
+    cicada_year == 1 ~ 1
+  ))
 
   statuser::table2(nestboxes_county_cicada$cicada_year,
                    nestboxes_county_cicada$Species.Name)
