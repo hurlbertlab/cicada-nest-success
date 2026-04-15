@@ -46,13 +46,6 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_w_county+cicada.csv",
   mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total)) %>%
   dplyr::relocate(pct_fledged, .after = Outcome)%>%
   ungroup() %>%
-  #let's filter out nests that didn't have anything happen 
-  filter(!Outcome %in% c("u1", #unknown outcome
-                         "u2", #nest monitoring stopped prior to expected fledge date while nest was still active
-                         "u3", #no breeding behavior observed
-                         "i", #inactive
-                         "n" #not monitored
-                         )) %>%
   #add in the climate data
   left_join(climate_data, by = c("Location.ID","Year")) %>%
   #filter out data if it's one of the few cases we failed to collect climate data

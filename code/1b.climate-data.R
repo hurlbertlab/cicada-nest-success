@@ -1,7 +1,8 @@
 ##################
 #
 # Getting climate data for the nestbox locations in the eastern united states
-# from 2007-2024
+# from 2007-2025
+# !!!!!!!!!!!!!!2025 daymet data is not yet available for download. So we can only use the subset of nests through 2024 for now.
 # writes filtered_climate_data.csv as the ultimate output (available in the git repository)
 #
 # For those interested in recreating the full all_climate_data.csv, see the last section separated by
@@ -17,8 +18,7 @@ library(tidyr)
 library(beepr)
 
 # Create CSV in The format of: site name, latitude, longitude, where each site is a nestbox
-nest_summaries <- read.csv("data/filtered_nestbox_summaries.csv") %>%
-  filter(startsWith(Subnational.Code, "US-")) %>%
+nest_summaries <- read.csv("data/filtered_nestbox_summaries.csv") |>
   select(Location.ID, Latitude, Longitude) %>%
   mutate(coordinate_pairs = paste(Latitude, Longitude, sep = ",")) %>%
   distinct(coordinate_pairs, .keep_all = TRUE) %>%
@@ -26,12 +26,15 @@ nest_summaries <- read.csv("data/filtered_nestbox_summaries.csv") %>%
 
 # However, we've already run this code before. We only need to get the climate data now for the locations we don't yet have data on
 # May need to run script at bottom of code if you don't have the climate data csv (which is too large to be stored on github), that takes all the daymet chunks and puts them together.
-already_have_climate <- read.csv("data/prev_bella_work/climate_data.csv") |>
+#We have more already_have_climate rows than we do nest_summaries because of an added filter on nest timing, so for nests where we had NO timing information (hatch, lay, or fledging date) we filtered those out.
+already_have_climate <- read.csv("data/NWV3_all_climate_data.csv") |> #before was: read.csv("data/prev_bella_work/climate_data.csv")
   distinct(Location.ID) |>
   mutate(check = "okay")
   
-  #for getting only 2024 data
-  get_missing_2024_climate <- nest_summaries |>
+  #for getting only 2025 data
+  #take latest nest_summaries, and filter to the location.IDs 
+  #that already have climate data.
+  get_missing_2025_climate <- nest_summaries |>
     filter(Location.ID %in% already_have_climate$Location.ID)
 
 nest_summaries <- nest_summaries |>
@@ -48,13 +51,13 @@ nest_summaries <- nest_summaries |>
 data_list <- list()
 error_list <- list()
 chunk_size <- 8000  # Number of locations per chunk
-num_chunks <- 5 # number of chunks
+num_chunks <- 6 # number of chunks
 
 startYear <- 1980
-#startYear <- 2024 #when getting 2024 climate data only
-endYear <- 2024 # 2023 was the most recent data available when this was last run
+#startYear <- 2025 #when getting 2025 climate data only
+endYear <- 2025 # 2024 was the most recent data available when this was last run
 
-#nest_summaries <- get_missing_2024_climate #when getting 2024 climate data only for sites we already have from previous work.
+#nest_summaries <- get_missing_2025_climate #when getting 2025 climate data only for sites we already have from previous work.
 
 for (chunk in 1:num_chunks) {
   start_idx <- (chunk - 1) * chunk_size + 1
@@ -106,13 +109,16 @@ for (chunk in 1:num_chunks) {
   # took about 2.5 days / one day second time through in 2026
   # Combine all downloaded data into a single data frame
   chunk_df <- bind_rows(data_list)
-  write.csv(chunk_df, paste0("daymet_chunk_", (chunk), ".csv"), row.names = FALSE)
+  write.csv(chunk_df, paste0("daymet_chunk_", (chunk)+10, ".csv"), row.names = FALSE)
   
   # Clear memory for the next chunk
   data_list <- list()
 }
 
 save_errors <- bind_rows(error_list)
+#read error list and add the new ones.
+prev_errors <- read.csv("data/dayment_unfixed_error_list.csv", row.names = FALSE)
+save_errors <- bind_rows(prev_errors, save_errors)
 write.csv(save_errors, "data/daymet_unfixed_error_list.csv", row.names = FALSE)
 
 

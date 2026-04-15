@@ -5,7 +5,7 @@
 #
 ##########################
 
-inuse_nestwatch <- "data/nestwatchV3/"
+inuse_nestwatch <- "data/nestwatchV6/"
 unzip <- list.files(path = inuse_nestwatch, pattern = ".zip$", full.names = TRUE)
 
 unzip(zipfile = unzip, 

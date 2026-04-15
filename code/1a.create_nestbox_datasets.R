@@ -9,46 +9,70 @@
 library(dplyr)
 library(tidyverse)
 library(sf)
+library(stringr)
 library(ggplot2)
 
 ## Load in nestwatch data 
-nestwatch <- read.csv("data/nestwatchV3/attempts_locs_20250131.csv")
+nestwatch <- read.csv("data/nestwatchV6/attempts_locs_20260120.csv")
 
 # create new file with relevant data
 filter_nest_sum <- nestwatch |>
-  dplyr::filter(Longitude > -100,
-                Latitude < 47,
-                Year > 2006,
-                Latitude > 25,
-                Longitude < -60,
-                #there's a couple 2025 datapoints but this nestwatch data is from Jan. 2025 so filter those out
-                Year <= 2024,
-                #Lat/Lon should catch this filter but just in case, only want the US observations b/c that's where these periodical cicada broods of interest are
-                startsWith(Subnational.Code, "US-") 
-                )|>
+  #let's filter out nests that didn't have anything happen 
+  filter(!Outcome %in% c("u1", #unknown outcome
+                         "u2", #nest monitoring stopped prior to expected fledge date while nest was still active
+                         "u3", #no breeding behavior observed
+                         "i", #inactive
+                         "n" #not monitored
+  )) |>
+  #and I only want nests during a cicada-relevant time period, not e.g. second broods or anything. Not all nests have all information but I need at least SOME of the information
+  mutate(Hatch.Month = str_extract(Hatch.Date, "-[0-9][0-9]-"),
+         Lay.Month = str_extract(First.Lay.Date, "-[0-9][0-9]-"),
+         Fledge.Month = str_extract(Fledge.Date, "-[0-9][0-9]-")
+         ) |> 
+  #convert to number
+  mutate(Hatch.Month = as.numeric(str_extract(Hatch.Month, "[0-9][0-9]")),
+         Lay.Month = as.numeric(str_extract(Lay.Month, "[0-9][0-9]")),
+         Fledge.Month = as.numeric(str_extract(Fledge.Month, "[0-9][0-9]"))
+         ) |>
+  #filter to nesting between April (month 4) and June (month 6). Periodicial cicadas as a group are done by July, see the time graph on inaturalist: https://www.inaturalist.org/taxa/83854-Magicicada 17k observations in June to 600 observations in July
+  filter(Hatch.Month > 3 & Hatch.Month < 8 |
+         Lay.Month > 3 & Lay.Month < 8 |
+         Fledge.Month > 3 & Fledge.Month < 8) |>
+  #select for broad location area-of-interest overlap with cicada ranges. We'll narrow this to only counties that have cicadas in a bit.
+  filter(Longitude > -100,
+         Latitude < 47,
+         Year > 2006, #adoption of nestwatch before then too small to be relevant to our study.
+         Latitude > 25,
+         Longitude < -60,
+         #we want 2025 data even b/c there's no cicada emergence for important one-year-after data for the 2024 emergence.
+         Year <= 2025,
+         #Lat/Lon should catch this filter but just in case, only want the US observations b/c that's where these periodical cicada broods of interest are
+         startsWith(Subnational.Code, "US-")
+         ) |>
   #fix northern house wren naming
   mutate(Species.Name = case_when(
     Species.Name == "Northern House Wren (Northern)" ~ "Northern House Wren",
     TRUE ~ Species.Name
   )) 
   #previously we also filtered the Species.Name for %in% c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow")
-  #for now, going to make this file with all species with more than 5k observations. Later, if we want to exclude species b/c of lacking enough data with overlap with cicadas, we definitely can.
-  #Well, we chose the prev. species for widespread distribution, high representation in nestwatch data, and insectivorous diets. Combining the chickadees (10k + 5k) that sets the minimum bound of observations at 15k for inclusion. 
+  #for now, going to make this file with all species with more than 2k observations. Later, if we want to exclude species b/c of lacking enough data with overlap with cicadas, we definitely can.
+  #Well, we chose the prev. species for widespread distribution, high representation in nestwatch data, and insectivorous diets. Combining the chickadees (7k + 3k) that sets the minimum bound of observations at 15k for inclusion. 
   #okay okay, again, for now let's keep the filter broad.
 
 ## total count for each species 
 species.totals <- filter_nest_sum %>% 
-  count(Species.Name)
+  count(Species.Name) |>
+  arrange(desc(n))
 
 #top 20 species with highest count
 most_obs <- species.totals %>%
   arrange(desc(n)) %>% 
   slice_head(n = 20)
 
-#filter to species with at least 5,000 observations in the dataset
+#filter to species with at least 2,000 observations in the dataset
 nest_summaries <- filter_nest_sum |>
   left_join(species.totals, by = "Species.Name") |>
-  filter(n > 5000) |>
+  filter(n > 2000) |>
   #and now drop n because we don't need it
   dplyr::select(-n)
 
@@ -88,6 +112,7 @@ plot_year_nestbox_map <- function(year = 2023) {
 plot_year_nestbox_map() #default year is 2023
 plot_year_nestbox_map(year = 2007)
 plot_year_nestbox_map(year = 2024)
+plot_year_nestbox_map(year = 2025)
 
 ################
 # Okay, now add the cicada data
@@ -121,6 +146,7 @@ nests_county_cicada <- nest_summaries |>
     st_drop_geometry() |>
   #aaand just in case
   ungroup() 
+  #the dataset DOES grow because of overlap with multiple broods. We will cut these later so we've only got the relevant points in the actual cicada emergence years.
 
 #write.csv
 write.csv(nests_county_cicada, 
