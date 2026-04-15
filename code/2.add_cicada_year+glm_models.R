@@ -70,13 +70,48 @@ nestboxes_county_cicada <- read.csv("data/nestboxes_w_county+cicada.csv",
   #but Purple Martin? Might actually be O.K. at about 170 nests.
   
 analysis_df <- nestboxes_county_cicada %>%
-  #remove Kestrel
+  # remove Kestrel
   filter(!Species.Name %in% c("American Kestrel")) |>
+  # make chickadees the same species.name
   mutate(Species.Name = case_when(
     str_detect(Species.Name, "Chickadee") ~ "Black-capped and Carolina Chickadee",
     TRUE ~ Species.Name
   )) |>
-  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:pct_fledged, BROOD_NAME, MULT_BROOD, cycle, Year, emergence_three, emergence_four, cicada_year:y_anomaly_precip)
+  # select just the info we need, don't need all 46 variables.
+  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:pct_fledged, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:y_anomaly_precip) |>
+  #filter out multiple broods
+  dplyr::filter(MULT_BROOD <= 2) |>
+  #HM. And actually for the two-brood records we don't want to remove these completely, it's just that we want to keep only one record.
+  group_by(Attempt.ID, Location.ID, Year, Hatch.Date) |>
+  distinct(Attempt.ID, Location.ID, Year, Hatch.Date, .keep_all = TRUE) |>
+  ungroup()
+#and otherwise, we'd filter out the counties for which there are overlapping broods with like. ST_CNTY_CODE == x & ST_CNTY_CODE == y somehow with a summarize function. But the multiple broods in the same year is now fixed.
+#and have to do it fancy BECAUSE I want to keep when two broods emerge in the same year. Those are fine. 
+#Brood XXI and Brood III are duplicates, 2014
+#Brood XXIII and Brood IV are duplicates, 2015
+#Brood XIII and Brood XIX are duplicates, 2024
+
+  #aaaand for the multiple broods....remove and counties where the emergence years are not the same for the two broods. Something different could be going on in those locations.
+  #hm. OR. I've already handled it. Either it was a year of a cicada emergence, a year earlier, or a year after. Most multiple broods are not overlapping in years as well. 
+
+mult_brood <- analysis_df |>
+  filter(MULT_BROOD == 2) |>
+  distinct(ST_CNTY_CODE, BROOD_NAME) |>
+  group_by(ST_CNTY_CODE) |>
+  filter((any(BROOD_NAME == "Brood XIII") & any(BROOD_NAME == "Brood XIX")) |
+           (any(BROOD_NAME == "Brood XXI") & any(BROOD_NAME == "Brood III")) |
+           (any(BROOD_NAME == "Brood XXIII") & any(BROOD_NAME == "Brood IV")))
+#ho-okay, only ST_CNTY_CODE 17039 should be kept of the multi-year broods. hm.
+#really??? NO nestbox data was collected anywhere else (e.g. in NC) from multi-year broods?
+#to get that result remove the distinct filter above.
+#okay I'm not convinced I can actually handle this data. Let's just leave multi-year broods as they are okay. We've filtered out duplicates. 
+
+  filter(!(any(BROOD_NAME == "Brood X") & any(BROOD_NAME == "Brood XIX"))) %>%
+#sooo hmmm I just want to make sure. Those nest attempts aren't counted twice?
+
+
+#table2(mult_brood$BROOD_NAME)
+
 
 table(analysis_df$MULT_BROOD)
   #hey, am going to need to check for duplications because of multiple brood years.
@@ -99,7 +134,7 @@ statuser::table2(analysis_df$cicada_year,
 library(ggplot2)
 
 ## group, calc mean & stdev
-summary_data <- nestboxes_county_cicada %>%
+summary_data <- analysis_df %>%
   group_by(Species.Name, cicada_year) %>%
   summarise(
     mean_pct_survival = mean(pct_fledged, na.rm = TRUE),
@@ -132,7 +167,7 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species
 
 # Ok now I want to do the same thing but with mean probability of nest failure instead of pct survival rate
 # so it will be something like # of nests with 0% survival/total nest obs
-summary_data2 <- nestboxes_county_cicada %>%
+summary_data2 <- analysis_df %>%
   group_by(Species.Name, cicada_year) %>%
   summarise(
     total_nests = n(),
@@ -165,6 +200,7 @@ ggplot(summary_data2, aes(x = cicada_year, y = p_nest_failure, color = Species.N
 
 
 # Intitial stat Models
+nestboxes_county_cicada <- analysis_df #for now, let's just recode. Can change when I rewrite stull later.
 
 # ifelse(cicada_year == 0,1,0) # either is cicada year or not 
 # foo$successfulnest = ifelse(foopct_fledged> 0,1,0)
@@ -177,28 +213,36 @@ nestboxes_county_cicada$cicada = ifelse(nestboxes_county_cicada$cicada_year!=0,1
 
 # general
 fledge = glm(formula = successfulnest ~ cicada + Species.Name +cicada*Species.Name, data = nestboxes_county_cicada, family = binomial(link = "logit"))
+summary(fledge)
 
 # eastern bluebird
 eablfledge = glm(formula = successfulnest ~ cicada, 
                   data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Eastern Bluebird", ], 
                   family = binomial(link = "logit"))
+summary(eablfledge) # no effect
 # Tree Swallow
 trswfledge = glm(formula = successfulnest ~ cicada, 
                   data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Tree Swallow", ], 
                   family = binomial(link = "logit"))
+summary(trswfledge) #positive effect
 
 # House Wren
 howrfledge = glm(formula = successfulnest ~ cicada, 
-                 data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "House Wren", ], 
+                 data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Northern House Wren", ], 
                  family = binomial(link = "logit"))
-# Carolina Chickadee
+summary(howrfledge) #no effect
+#Chickadees
 cachfledge = glm(formula = successfulnest ~ cicada, 
-                 data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Carolina Chickadee", ], 
+                 data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Black-capped and Carolina Chickadee", ], 
                  family = binomial(link = "logit"))
-# Black Capped Chickadee
-bcchfledge = glm(formula = successfulnest ~ cicada, 
-                 data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Black-capped Chickadee", ], 
+summary(cachfledge) #positive effect
+
+#AMRO
+robinfledge = glm(formula = successfulnest ~ cicada, 
+                 data = nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "American Robin", ], 
                  family = binomial(link = "logit"))
+summary(robinfledge) #no effect
+#eh, okay I'm gonna stop there. This will need reworking anyways. really like. what is up with there being no double brood data in NC....
 
 ###########################
 #Models with Climate
