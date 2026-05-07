@@ -27,7 +27,8 @@ nest_summaries <- read.csv("data/filtered_nestbox_summaries.csv") |>
 # However, we've already run this code before. We only need to get the climate data now for the locations we don't yet have data on
 # May need to run script at bottom of code if you don't have the climate data csv (which is too large to be stored on github), that takes all the daymet chunks and puts them together.
 #We have more already_have_climate rows than we do nest_summaries because of an added filter on nest timing, so for nests where we had NO timing information (hatch, lay, or fledging date) we filtered those out.
-already_have_climate <- read.csv("data/NWV3_all_climate_data.csv") |> #before was: read.csv("data/prev_bella_work/climate_data.csv")
+already_have_climate <- read.csv("data/all_climate_data.csv") |> #before was: read.csv("data/prev_bella_work/climate_data.csv")
+  #before was: read.csv("data/NWV3_all_climate_data.csv")
   distinct(Location.ID) |>
   mutate(check = "okay")
   
@@ -46,12 +47,21 @@ nest_summaries <- nest_summaries |>
   already_have_climate <- already_have_climate |> dplyr::select(-check)
   rm(a)
 
+  #set to TRUE because we're dealing with just the missing nest summaries in a run of getting the climate data. 
+  just_errors <- FALSE
+  if(just_errors == TRUE) {
+    #we're dealing with errors which are probably just placed e.g. over water or somewhere not covered by daymet. Let's round them.
+    #yeah I plotted the 1000s I'm dealing with for the 2025 data and they're all like. In places that daymet really should get no problem. Only a handful in locations over water.
+    nest_summaries$Latitude <- round(nest_summaries$Latitude, digits = 3)
+    nest_summaries$Longitude <- round(nest_summaries$Longitude, digits = 3)
+  }
+  
 #finding location.IDs with missing coordinates
 
 data_list <- list()
 error_list <- list()
 chunk_size <- 8000  # Number of locations per chunk
-#chunk_size <- 5000
+#chunk_size <- nrow(nest_summaries)
 num_chunks <- 6 # number of chunks
 #num_chunks <- 1
 
@@ -244,19 +254,19 @@ climate_data <- bind_rows(climatedata_list) |>
 
 statuser::table2(climate_data$year)
 # 2024 is missing data for 1,110 observations.
-# and 2025 is missing data for even more but um. hm. Like I'm pretty sure that's because our filters used to be broader and now there's a wide array of sites that no longer meet our filtering criteria that we still have climate data for. Which means.. maybe... running all the daymet like it's the first... time.. through.... like myeah that's going to take a while. But then I *KNOW* I have the data I need and not what I don't? Of my filtered nest summaries (50,783) I have climate data for 97.8% of them (49,675 records for 2025.) Okay yeah. All I need to do is filter to the sites that have 2025 data and save just those.
+# and 2025 is missing data for even more but um. hm. Like I'm pretty sure that's because our filters used to be broader and now there's a wide array of sites that no longer meet our filtering criteria that we still have climate data for. Which means.. maybe... running all the daymet like it's the first... time.. through.... like myeah that's going to take a while. But then I *KNOW* I have the data I need and not what I don't? Of my filtered nest summaries (50,783) I have climate data for 97.8% of them (49,675 records for 2025.) Okay yeah. All I need to do is filter to the sites that have 2025 data and save just those. -> EDIT: No. I want to make different rules if no 2025 data is available.
 
 climate_data <- climate_data |>
   #filter to just the sites within our current filtered nest_summaries
   filter(site %in% nest_summaries$Location.ID)
 statuser::table2(climate_data$year)
-#hm. okay but all those sites have climate data for everything but 2025. I want those 2025 nest sites from the errors. EDIT: I ran the 500ish missing records and yep, they all errored again. 97.8% is really good data recovery, so will we filter to just the records that have data through 2025. Better to be consistent than have different rules for sites without 2025 daymet data.
+#hm. okay but all those sites have climate data for everything but 2025. I want those 2025 nest sites from the errors. EDIT: I ran the 500ish missing records and yep, they all errored again. 97.8% is really good data recovery, so will we filter to just the records that have data through 2025. Better to be consistent than have different rules for sites without 2025 daymet data. -> EDIT: No. I want to make different rules if no 2025 data is available.
 
-climate_data <- climate_data |>
-  group_by(site) |>
-  filter(any(year == 2025)) |>
-  ungroup()
-statuser::table2(climate_data$year) #perf, 49675 for everything.
+#climate_data <- climate_data |>
+#  group_by(site) |>
+#  filter(any(year == 2025)) |>
+#  ungroup()
+#statuser::table2(climate_data$year) #perf, 49675 for everything.
   
 
 climate_data <- climate_data |>
@@ -271,6 +281,7 @@ climate_data <- climate_data |>
   mutate(mean_precip = mean(y_precip, na.rm = TRUE)) %>%
   mutate(y_anomaly_temp = y_temp-mean_temp) %>%
   mutate(y_anomaly_precip = y_precip-mean_precip) %>%
+  mutate(n_years = n()) %>%
   ungroup() %>%
   group_by(Location.ID, Year) %>%
   distinct(.keep_all = TRUE) %>%
@@ -282,7 +293,7 @@ climate_data <- climate_data |>
 write.csv(climate_data,"data/all_climate_data.csv", row.names = FALSE)
 
 #since we've done all the calculations, we can also now filter our climate data to just the years and variables of interest.
-climate_07_thru_24 <- climate_data |>
+climate_07_thru_25 <- climate_data |>
   filter(Year >= 2007) |>
-  dplyr::select(Location.ID, Year, y_anomaly_temp, y_anomaly_precip)
-write.csv(climate_07_thru_24, "data/filtered_climate_data.csv", row.names = FALSE)
+  dplyr::select(Location.ID, Year, y_anomaly_temp, y_anomaly_precip, n_years)
+write.csv(climate_07_thru_25, "data/filtered_climate_data.csv", row.names = FALSE)
