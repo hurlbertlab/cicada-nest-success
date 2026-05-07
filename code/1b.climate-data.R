@@ -51,13 +51,16 @@ nest_summaries <- nest_summaries |>
 data_list <- list()
 error_list <- list()
 chunk_size <- 8000  # Number of locations per chunk
+#chunk_size <- 5000
 num_chunks <- 6 # number of chunks
+#num_chunks <- 1
 
 startYear <- 1980
 #startYear <- 2025 #when getting 2025 climate data only
 endYear <- 2025 # 2024 was the most recent data available when this was last run
 
 #nest_summaries <- get_missing_2025_climate #when getting 2025 climate data only for sites we already have from previous work.
+#nest_summaries <- bad_locations_2025
 
 for (chunk in 1:num_chunks) {
   start_idx <- (chunk - 1) * chunk_size + 1
@@ -109,7 +112,7 @@ for (chunk in 1:num_chunks) {
   # took about 2.5 days / one day second time through in 2026
   # Combine all downloaded data into a single data frame
   chunk_df <- bind_rows(data_list)
-  write.csv(chunk_df, paste0("daymet_chunk_", (chunk)+10, ".csv"), row.names = FALSE)
+  write.csv(chunk_df, paste0("daymet_chunk_", (chunk), ".csv"), row.names = FALSE)
   
   # Clear memory for the next chunk
   data_list <- list()
@@ -117,7 +120,7 @@ for (chunk in 1:num_chunks) {
 
 save_errors <- bind_rows(error_list)
 #read error list and add the new ones.
-prev_errors <- read.csv("data/dayment_unfixed_error_list.csv", row.names = FALSE)
+prev_errors <- read.csv("data/daymet_unfixed_error_list.csv")
 save_errors <- bind_rows(prev_errors, save_errors)
 write.csv(save_errors, "data/daymet_unfixed_error_list.csv", row.names = FALSE)
 
@@ -135,6 +138,7 @@ write.csv(save_errors, "data/daymet_unfixed_error_list.csv", row.names = FALSE)
 #   left_join(nest_summaries) %>%
 #   drop_na(Latitude) %>%
 #   select(Location.ID, Latitude, Longitude)
+#bad_locations_2025 <- bind_rows(error_list)
 # 
 # #error at L571386, row 418 of bad locations, same at 429 L571385, 446 L571392, 2037  L571396, 2053  L571383, L571387, L571391, L571393
 # #"Error in `filter()`:
@@ -143,53 +147,55 @@ write.csv(save_errors, "data/daymet_unfixed_error_list.csv", row.names = FALSE)
 # #! object 'yday' not found
 # #Run `rlang::last_trace()` to see where the error occurred."
 # 
-# data_list <- list()
-# error_list <- list()
-# 
-# for (i in 4000:nrow(badlocations2)) {
+#  data_list <- list()
+#  error_list <- list()
+#  startYear = 2024
+#  endYear = 2025
+# # 
+#  for (i in 1:nrow(bad_locations_2025)) {
 #   daymet_data <- tryCatch({
 #     download_daymet(
-#       site = as.character(badlocations2$Location.ID[i]),  # Ensure it's a string
-#       lat = as.numeric(badlocation2$Latitude[i]),       # Ensure it's numeric
-#       lon = as.numeric(badlocations2$Longitude[i]),      # Ensure it's numeric
+#       site = as.character(bad_locations_2025$Location.ID[i]),  # Ensure it's a string
+#       lat = as.numeric(bad_locations_2025$Latitude[i]),       # Ensure it's numeric
+#       lon = as.numeric(bad_locations_2025$Longitude[i]),      # Ensure it's numeric
 #       start = startYear,
-#       end = endYear, 
+#       end = endYear,
 #       internal = TRUE
 #     )
 #   }, error = function(e) {
-#     df <- data.frame(site = rep(badlocations2$Location.ID[i], endYear - startYear + 1),
+#     df <- data.frame(site = rep(bad_locations_2025$Location.ID[i], endYear - startYear + 1),
 #                      year = 1980:2023,
 #                      mean_temp = rep(NA, endYear - startYear + 1),
 #                      mean_precip = rep(NA, endYear - startYear + 1)
 #     )
-#     
-#     error_list[[length(error_list) + 1]] <<- badlocations2[i, ]  
+# 
+#     error_list[[length(error_list) + 1]] <<- bad_locations_2025[i, ]
 #     #return(NULL)  # Return NULL to show failure
 #   })
-#   
+# 
 #   # Skip if data retrieval failed
 #   if (is.null(daymet_data)) next
-#   
+# 
 #   # Convert to data frame and store in list
 #   df <- as.data.frame(daymet_data$data) %>%
 #     filter(yday >= 121 & yday <= 212) %>%  # Filter to relevant Julian days
 #     group_by(year) %>%
 #     summarize(
-#       mean_temp = mean((tmin..deg.c. + tmax..deg.c.) / 2, na.rm = TRUE),  
+#       mean_temp = mean((tmin..deg.c. + tmax..deg.c.) / 2, na.rm = TRUE),
 #       mean_precip = mean(prcp..mm.day., na.rm = TRUE)
 #     )
-#   
-#   df$site <- badlocations2$Location.ID[i]  # Add site ID column for reference
+# 
+#   df$site <- bad_locations_2025$Location.ID[i]  # Add site ID column for reference
 #   data_list[[data_index]] <- df  # Store sequentially
 #   data_index <- data_index + 1  # Increment index
-#   
-#   
+# 
+# 
 #   timestamp()
 #   print(i)
 # }
 # # Combine all downloaded data into a single data frame
-# badlocs_df2 <- bind_rows(data_list)
-# write.csv(badlocs_df2,"more_daymetErrors", row.names = FALSE)
+#  bad_locations_2025_df <- bind_rows(data_list)
+# write.csv(bad_locations_2025,"2025_daymetErrors", row.names = FALSE)
 
 
 ######################################################################################
@@ -230,23 +236,35 @@ for(i in 1:length(daymet_data_files)) {
 #          chunk_10,
 #          chunk_1_5_2024)
 
-climate_data <- bind_rows(climatedata_list) 
+climate_data <- bind_rows(climatedata_list) |>
+  #and we just want to make sure there aren't any duplicates, which there could be 'cause we've run this a few times by now. 
+  group_by(year, site) |>
+  distinct(.keep_all = TRUE) |>
+  ungroup()
 
 statuser::table2(climate_data$year)
 # 2024 is missing data for 1,110 observations.
-#nooo worries let's try to get those...
-check <- climate_data %>% group_by(site) %>% summarize(n = n_distinct(year)) %>% filter(n < 45)
-nrow(check)
-#ah! these are the same 692 observations that were missing above (which I investigated and removed the code for checking). Basically, I think this is a mismatch between the version of nestwatch that had been downloaded previously (and which we therefore already got the daymet data for) and that I downloaded, and slight differences in filtering criteria. As far as version 3 of Nestwatch goes, I have all the data that meets my filtering criteria. 
+# and 2025 is missing data for even more but um. hm. Like I'm pretty sure that's because our filters used to be broader and now there's a wide array of sites that no longer meet our filtering criteria that we still have climate data for. Which means.. maybe... running all the daymet like it's the first... time.. through.... like myeah that's going to take a while. But then I *KNOW* I have the data I need and not what I don't? Of my filtered nest summaries (50,783) I have climate data for 97.8% of them (49,675 records for 2025.) Okay yeah. All I need to do is filter to the sites that have 2025 data and save just those.
 
-climate_data <- bind_rows(climatedata_list) %>%
+climate_data <- climate_data |>
+  #filter to just the sites within our current filtered nest_summaries
+  filter(site %in% nest_summaries$Location.ID)
+statuser::table2(climate_data$year)
+#hm. okay but all those sites have climate data for everything but 2025. I want those 2025 nest sites from the errors. EDIT: I ran the 500ish missing records and yep, they all errored again. 97.8% is really good data recovery, so will we filter to just the records that have data through 2025. Better to be consistent than have different rules for sites without 2025 daymet data.
+
+climate_data <- climate_data |>
+  group_by(site) |>
+  filter(any(year == 2025)) |>
+  ungroup()
+statuser::table2(climate_data$year) #perf, 49675 for everything.
+  
+
+climate_data <- climate_data |>
   #rename variables to be more informative
   rename(Location.ID = site) %>%
   rename(Year = year) %>%
   rename(y_temp = mean_temp) %>%
   rename(y_precip = mean_precip) %>%
-  #remove the 692 observations that aren't included in V3 of nestwatch we're working with
-  filter(!Location.ID %in% check$site) %>%
   #for each location calculate long term temperature means and year anomalies from those means
   group_by(Location.ID) %>%
   mutate(mean_temp = mean(y_temp, na.rm = TRUE))%>%
