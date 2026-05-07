@@ -9,7 +9,7 @@ library(viridis)
 # --- 1. Read and prepare data ---
 
 # Read cicada data from geodatabase
-cicada <- st_read(dsn = "copperheads/data/cicada/periodical_cicada_with_county.gdb") %>%
+cicada <- st_read(dsn = "data/cicada/periodical_cicada_with_county.gdb") %>%
   st_transform(cicada, crs = 4326)
 
 # Get state boundaries for context
