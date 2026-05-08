@@ -16,9 +16,11 @@
 library(dplyr)
 library(tidyverse)
 library(assertthat)
-library(statuser)
-library(stringr)
-library(lubridate)
+library(statuser) # table2
+library(stringr) # text selection
+library(lubridate) # handling dates
+library(ggplot2) # plotting
+library(png) #for the cicada image
 
 # Read in location.ID climate data
 climate_data<- read.csv("data/filtered_climate_data.csv")
@@ -102,7 +104,7 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
   #after = 25,346 records
   #make chickadees the same species.name, ~80 Black-capped observations per cicada_year.
   mutate(Species.Name = case_when(
-    str_detect(Species.Name, "Chickadee") ~ "Black-capped and Carolina Chickadee",
+    str_detect(Species.Name, "Chickadee") ~ "Black-capped and\n Carolina Chickadee",
     TRUE ~ Species.Name
   ))  |>
   # select just the info we need, don't need all 46 variables.
@@ -110,18 +112,13 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
-#well, we probably won't be very confident with prothonotary warbler conclusions but we can include it I think.
+#well, we probably won't be very confident with prothonotary warbler conclusions but we can include, we've still got 30ish data points a category.
 #The same widespread, ubiquitous, insectivores we filtered to the first time (Chickadees, Eastern Blueblue, House Wren, House Sparrow, and Tree Swallow) are the best represented now as well.
 #Chickadees are lowest at ~350 obs per cicada_year (-1, 0, 1)
-#Purple Martin, Carolina Wren, and American Robin which we did not keep before all are only about 100 nests in each cicada_year. So we would be much less confident in the effects on those birds. But, an experimental n of 100 isn't nothing! And in respects to the old adage of "at least 30 obs per experimental group to make conclusions" prothonotary warbler meets that criteria there.
-#but also, lmao Ivara, setting yourself up for failure here. These are not species we have data on basically anything about. "30 is a boundary" 30 is also so hilariously low for an analysis of this scale.
+#Purple Martin, Carolina Wren, and American Robin which we did not keep before all are only about 100 nests in each cicada_year. So we would be much less confident in the effects on those birds. But, an experimental n of 100 isn't nothing! Better to include.
 
-
-#create % young fledged variable
 
 # graph mean and standard deviation of pct fledged for each species over cicada year 
-library(ggplot2)
-
 ## group, calc mean & stdev
 summary_data <- analysis_df %>%
   group_by(Species.Name, cicada_year) %>%
@@ -130,16 +127,33 @@ summary_data <- analysis_df %>%
     se_pct_survival = sd(pct_fledged, na.rm = TRUE) / sqrt(n()),
     n = n()
   ) |>
-  ungroup() 
+  ungroup() |>
+  arrange(desc((n)))
+# Get the original order of species
+original_order <- unique(summary_data$Species.Name)
+
+cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
 ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species.Name)) +
   geom_line() +
   geom_errorbar(aes(ymin = mean_pct_survival - se_pct_survival, ymax = mean_pct_survival + se_pct_survival), width = 0.2) +
-  facet_wrap(~ Species.Name, ncol = 2) +  # Create separate plots for each species
+  facet_wrap(~ reorder(Species.Name, n, decreasing = TRUE), ncol = 3) +  # Create separate plots for each species, 3 columns. Now, would like the colors to still go in typical ggplot order, but that's okay. Probably I will need to re-do this by hand to make that happen.
   labs(
     x = "Cicada Year",
-    y = "Mean Percent Survival",
-    color = "Species"
+    y = "Mean Percent Survival"
   ) +
-  theme_minimal()
+  scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
+                    labels = c("-1", "X", "1")) +  # Custom text labels) 
+  scale_color_discrete(limits = original_order) +  # Fix color order to original
+  theme_minimal() +
+  theme(
+    legend.position = "none", # remove legend
+    #panel.grid.major = element_blank(), # Remove major gridlines
+    panel.grid.minor = element_blank()  # Remove minor gridlines
+    ) #+
+  #annotation_raster(cicada_image, xmin = -0.2, xmax = 0.2, ymin = 0, ymax = 0.2) #hm, guess that didn't work. Will need to test.
+  #make all text bolder etc.
+
+
+#okay in the test for the effects, make a loop that goes through species names or smthing. Would love to do it in dplyr :D. But anyway! Run two models. Filter for postcicada=0 to run the %survival ~ pre-cicada + temp + etc. and filter for precicada=0 to run the %survival ~ post-cicada + temp + etc.
