@@ -67,7 +67,7 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
          MULT_BROOD <= 2 #filter out multiple broods over 2
          ) |>
   #after = 150,765 nests.
-  #As well, previous analyses looked multiple years in the past + future of a cicada emergence. But, there are a lot of things that could vary between years. I want to try and control for the effect of cicada emergence as much as possible. Therefore, just going to look at the year before, year of, and year after a cicada emergence
+  #As well, previous analyses (Bella's work on this project) looked multiple years in the past + future of a cicada emergence. But, there are a lot of things that could vary between years. I want to try and control for the effect of cicada emergence as much as possible. Therefore, just going to look at the year before, year of, and year after a cicada emergence
   filter(cicada_year %in% c(-1, 0, 1)) |>
   #after = 30,805 observations 
   #HM. And actually for the two-brood records we don't want to remove these completely, it's just that we want to keep only one record. Let's use distinct() but for the most part I've already handled it. Either it was a year of a cicada emergence, a year earlier, or a year after. Most multiple broods are not overlapping in years as well. And for those multiple broods that do overlap in years in some counties, we're solid b/c they're just duplicates of each other anyway.
@@ -106,7 +106,9 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
     TRUE ~ Species.Name
   ))  |>
   # select just the info we need, don't need all 46 variables.
-  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:time_to_fledge, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) 
+  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:time_to_fledge, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) |>
+  # make a true/false nest success based on pct_fledged
+  mutate(nest_success_tf = ifelse(pct_fledged > 0, 1, 0)) #if any young fledged = 1
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
@@ -115,6 +117,22 @@ statuser::table2(analysis_df$cicada_year,
 #Chickadees are lowest at ~350 obs per cicada_year (-1, 0, 1)
 #Purple Martin, Carolina Wren, and American Robin which we did not keep before all are only about 100 nests in each cicada_year. So we would be much less confident in the effects on those birds. But, an experimental n of 100 isn't nothing! Better to include.
 
+
+#function to make the n = labels for the figures
+make_n_labels = function(df = summary_data, 
+                         filter_species = "Eastern Bluebird") {
+  
+  df <- df |>
+    filter(Species.Name == filter_species)
+  
+  lab = paste0("n = ",
+               df$n[df$cicada_year == -1], 
+               ", ",
+               df$n[df$cicada_year == -0], 
+               ", ",
+               df$n[df$cicada_year == 1]
+  )
+}
 
 # graph mean and standard deviation of pct fledged for each species over cicada year 
 ## group, calc mean & stdev
@@ -126,16 +144,27 @@ summary_data <- analysis_df %>%
     n = n()
   ) |>
   ungroup() |>
-  arrange(desc((n)))
+  arrange(desc((n))) |>
+  group_by(Species.Name) |>
+  mutate(lab = make_n_labels(filter_species = Species.Name)) |>
+  ungroup()
+
 # Get the original order of species
 original_order <- unique(summary_data$Species.Name)
+
 
 cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
+png(filename = "figures/2026.06.09_pct_survival.png", 
+    width = 530,
+    height = 530,
+    units = "px", 
+    type = "windows")
+{
 ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species.Name)) +
-  geom_line() +
-  geom_errorbar(aes(ymin = mean_pct_survival - se_pct_survival, ymax = mean_pct_survival + se_pct_survival), width = 0.2) +
+  geom_line(linewidth = 1.5) +
+  geom_errorbar(aes(ymin = mean_pct_survival - se_pct_survival, ymax = mean_pct_survival + se_pct_survival), width = 0.2, linewidth = 1.5) +
   facet_wrap(~ reorder(Species.Name, n, decreasing = TRUE), ncol = 3) +  # Create separate plots for each species, 3 columns. Now, would like the colors to still go in typical ggplot order, but that's okay. Probably I will need to re-do this by hand to make that happen.
   labs(
     x = "Cicada Year",
@@ -144,14 +173,70 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species
   scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
                     labels = c("-1", "X", "1")) +  # Custom text labels) 
   scale_color_discrete(limits = original_order) +  # Fix color order to original
-  theme_minimal() +
+  theme_minimal(base_size = 15) + # increase text size) +
   theme(
     legend.position = "none", # remove legend
     #panel.grid.major = element_blank(), # Remove major gridlines
     panel.grid.minor = element_blank()  # Remove minor gridlines
-    ) #+
-  #annotation_raster(cicada_image, xmin = -0.2, xmax = 0.2, ymin = 0, ymax = 0.2) #hm, guess that didn't work. Will need to test.
-  #make all text bolder etc.
+    ) + 
+  geom_text(data = (summary_data |>
+                      group_by(Species.Name) |>
+                      slice(1) |>
+                      arrange(desc(n)) |>
+                      ungroup() |>
+                      mutate(
+                        x = c(-.4, -.41, -.52, -.52, -.52, -.6, -.65, -.65, -.65),
+                        y = 0.6
+                      )),
+            aes(x = x, y = y, label = lab),
+            size = 3, 
+            vjust = 1,
+            inherit.aes = FALSE) 
 
+  #annotation_raster(cicada_image, xmin = 0.2, xmax = 0.4, ymin = 0, ymax = 0.2) #hm, guess that didn't work. Will need to test or add it in post.
+  #make all text bolder etc.
+} 
+dev.off()
 
 #okay in the test for the effects, make a loop that goes through species names or smthing. Would love to do it in dplyr :D. But anyway! Run two models. Filter for postcicada=0 to run the %survival ~ pre-cicada + temp + etc. and filter for precicada=0 to run the %survival ~ post-cicada + temp + etc.
+
+# Function to create and initialize a trend table, based off a list of the names of columns
+make_trend_table <- function(cols_list, rows_list = c("NA")) {
+  #make trend table
+  trend_table <- as.data.frame(matrix(ncol = length(cols_list), nrow = 0))
+  #name the columns
+  colnames(trend_table) <- cols_list
+  #initiate trend table with first row, fill with NAs
+  trend_table[1,] <- NA
+  
+  #if first column (rows_list) is not NA, fill it in
+  if(rows_list[1] == "NA") {
+    #do nothing
+  } else {
+    #add in the list that makes up the data in the first column
+    for(s in 1:length(rows_list)) {
+      
+      trend_table[s,1] <- rows_list[s]
+      
+    }
+  }
+  
+  return(trend_table)
+}
+
+postcicada_df <- analysis_df |>
+  filter(!is.na(post_emergence))
+
+test <- postcicada_df |>
+  filter(Species.Name == "Eastern Bluebird")
+test_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
+                data = test, 
+                family = binomial(link = "logit"))
+summary(test_glm)
+test_glm$formula
+
+postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p"),
+                                      rows_list = original_order)
+                                      
+#make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
+#save in data/model_output
