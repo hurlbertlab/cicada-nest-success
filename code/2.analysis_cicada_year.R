@@ -3,10 +3,8 @@
 #
 # Cicadas may affect nesting birds in three ways: 
 # (i) percent of nests that succeed or fail, 
-# (ii) getting a little more specific to success or failure, could either limit to 
-#     a) just nests that succeed and ask about the % of young that fledge and if that changes between years or 
-#     b) keep all observations and code full failure as 0% fledge and then calculate % fledge for everything else. Always based on the number HATCHED not the number of eggs laid. 
-# (iii) if time to fledge in terms of dates from hatching -> fledging shifts with periodical cicada emergence. Chicks should fledge earlier when there’s a ton of food available. This one might need a control for latitude b/c higher latitudes = more daylight = more foraging time for parents.
+# (ii) getting a little more specific to success or failure
+#     a) keep all observations and code full failure as 0% fledge and then calculate % fledge for everything else. Always based on the number HATCHED not the number of eggs laid. 
 #
 # This script creates datasets and runs these models.
 #
