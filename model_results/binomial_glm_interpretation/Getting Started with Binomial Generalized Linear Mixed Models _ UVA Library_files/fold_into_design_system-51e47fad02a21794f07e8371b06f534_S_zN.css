@@ -1,0 +1,26 @@
+.callout-border--left {
+	border-left: 2px solid #E57200;
+	padding-left: .5rem;
+}
+
+/*Two-col configuration*/
+.two-col.thumbnail-on-left {
+    grid-template-columns: 1fr 3fr !important;
+}
+
+/*News Thumbnail Container*/
+.news-page .news-thumbnail-container img {
+	padding: 0;
+}
+.news-thumbnail-container {
+	object-fit: inherit;
+
+}
+
+
+
+@media (max-width: 970px) {
+    .two-col.thumbnail-on-left {
+        grid-template-columns: 1fr !important;
+    }
+}

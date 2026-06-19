@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# " style="" class=" inputtypes-search inputtypes-tel inputtypes-url inputtypes-email no-inputtypes-datetime inputtypes-date no-inputtypes-month no-inputtypes-week inputtypes-time inputtypes-datetime-local inputtypes-number inputtypes-range inputtypes-color details js"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+<meta name="Generator" content="Drupal 10 (https://www.drupal.org)">
+<meta name="MobileOptimized" content="width">
+<meta name="HandheldFriendly" content="true">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://library.virginia.edu/sites/default/files/favicon_0.ico" type="image/vnd.microsoft.icon">
+<link rel="canonical" href="http://library.virginia.edu/data/articles/getting-started-with-binomial-generalized-linear-mixed-models">
+<link rel="shortlink" href="http://library.virginia.edu/node/2280">
+
+			<title>Getting Started with Binomial Generalized Linear Mixed Models | UVA Library</title>
+			<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/progress.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/ajax-progress.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/align.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/fieldgroup.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/container-inline.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/clearfix.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/details.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/hidden.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/item-list.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/js.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/nowrap.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/position-container.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/reset-appearance.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/resize.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/system-status-counter_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/system-status-report-counters_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/system-status-report-general-info_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/tablesort.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/views.module_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/accordion.frontend_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/twocol_section_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/onecol_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-extended-classes_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-camouflage_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-european-signal_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-fashion_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-flat-ui_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-food_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-ios_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-metro-ui_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-us-highway_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-us-safety_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-vivid_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-color-libraries-win8_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/layout-regions_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/layout-width_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/system-messages_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/forms_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/embedded-media_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/breadcrumb_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/system-tabs_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/maintenance-page_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/system-admin_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/w3css-tables_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/global-menu_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/v-menu_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/site-branding_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/user-menu_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/user-login_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/footer-menu_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/search-page_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/search-block_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/pager_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/comments_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/default-views_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/webform_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/node-form_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/teaser-mode_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/sitemap_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/contact-form_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/ckeditor_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/oym8nvz_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/main_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/min-width-993_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/max-width-992_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/max-min-width-992-601_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/max-width-767_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/max-width-600_S_zN.css">
+<link rel="stylesheet" media="all" href="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/fold_into_design_system-51e47fad02a21794f07e8371b06f534_S_zN.css">
+
+				<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/modernizr.min_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/matomo_S_zN.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax.MathJax_FullWidth {text-align: center; display: table-cell!important; width: 10000em!important}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax_LineBox {display: table!important}
+.MathJax_LineBox span {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Main; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf?V=2.7.0') format('opentype')}
+@font-face {font-family: MathJax_Main; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf?V=2.7.0') format('opentype'); font-weight: bold}
+@font-face {font-family: MathJax_Main; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf?V=2.7.0') format('opentype'); font-style: italic}
+@font-face {font-family: MathJax_Math; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf?V=2.7.0') format('opentype'); font-style: italic}
+@font-face {font-family: MathJax_Caligraphic; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf?V=2.7.0') format('opentype')}
+@font-face {font-family: MathJax_Size1; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf?V=2.7.0') format('opentype')}
+@font-face {font-family: MathJax_Size2; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf?V=2.7.0') format('opentype')}
+@font-face {font-family: MathJax_Size3; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf?V=2.7.0') format('opentype')}
+@font-face {font-family: MathJax_Size4; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff?V=2.7.0') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf?V=2.7.0') format('opentype')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+				<body class="rds-section rds-articles path-node-2280 path-node page-node-type-rds-article-news large-screen tex2jax_ignore"><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+										<a href="#main-content" class="visually-hidden focusable skip-link">
+						Skip to main content
+					</a>
+					
+					  <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+    
+	<div id="drupal_custom_header" class="w3-col w3-clear w3-theme-l5 ">
+		<div id="drupal_custom_header-inner" class="w3-row drupal_custom_header-inner none">
+			
+    <div data-drupal-messages-fallback="" class="hidden"></div>
+
+
+		</div>
+	</div>
+
+	<div id="main-navigation-vTEST" class="main-navigation-vTEST-class hidden main-navigation-wrapper w3-sidebar w3-bar-block w3-animate-left w3-theme " role="dialog" aria-label="Navigation (vertical)">
+		<div id="main-navigation-inner-v" class="mobile-nav-menu-2 main-navigation-inner-v">
+			<div id="close-nav" role="button" tabindex="0" class="close-nav w3-button w3-bar-block w3-large w3-theme " data-once="#main-navigation-v">
+				<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel">
+					<line x1="18" y1="6" x2="6" y2="18"></line>
+					<line x1="6" y1="6" x2="18" y2="18"></line>
+				</svg>
+			</div>
+			
+<nav role="navigation" aria-labelledby="block-mobilemainnav-menu" id="block-mobilemainnav" class="mobile-nav" data-once="#main-navigation-h">
+            
+  <h2 class="visually-hidden" id="block-mobilemainnav-menu">Mobile Main Nav</h2>
+  
+
+        <section id="mobilemenumodal" class="mobile-menu-modal ul-responsive-v-TEST" role="navigation">
+																		<ul class="ul-parent ul-parent-mobile-main-nav ul-0" data-once="body">
+																																									<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/" title="Home" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="&lt;front&gt;">Home</a>
+																													</li>
+																											<li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+
+																	</li><li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+										<a href="#" class="w3-button link-disabled tMenu-v toggle-parent" aria-haspopup="true" data-once="body">About
+											<span class="dropdown-arrow w3-hover-over">
+																								<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel"><path d="M6 9l6 6 6-6"></path></svg>
+											</span>
+										</a>
+									
+																																													<ul class="ul-child ul-child-mobile-main-nav ul-1" data-once="body">
+																																										<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/about-uva-library" title="About UVA Library" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/803">About UVA Library</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/about-uva-library#visit" title="Plan a visit" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/803">Plan a visit</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/about-uva-library/assessment" title="Assessment" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/1411">Assessment</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/collections" title="About the collections" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/729">About the collections</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/staff" title="Staff directory" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/1137">Staff directory</a>
+																													</li>
+															</ul>
+											
+																			</li>
+																											<li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+
+																	</li><li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+										<a href="#" class="w3-button link-disabled tMenu-v toggle-parent" aria-haspopup="true" data-once="body">Using the Library
+											<span class="dropdown-arrow w3-hover-over">
+																								<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel"><path d="M6 9l6 6 6-6"></path></svg>
+											</span>
+										</a>
+									
+																																													<ul class="ul-child ul-child-mobile-main-nav ul-1" data-once="body">
+																																										<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/services" title="Research: Search, borrow, request" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/1107">Research: Search, borrow, request</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/research-and-teaching" title="Teaching &amp; publication" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/2013">Teaching &amp; publication</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/spaces" title="Library spaces" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/787">Library spaces</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/equipment-and-tech" title="Equipment &amp; technology" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/786">Equipment &amp; technology</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/help" title="Get help" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/2014">Get help</a>
+																													</li>
+															</ul>
+											
+																			</li>
+																											<li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+
+																	</li><li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+										<a href="#" class="w3-button link-disabled tMenu-v toggle-parent" aria-haspopup="true" data-once="body">Teaching &amp; publication support
+											<span class="dropdown-arrow w3-hover-over">
+																								<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel"><path d="M6 9l6 6 6-6"></path></svg>
+											</span>
+										</a>
+									
+																																													<ul class="ul-child ul-child-mobile-main-nav ul-1" data-once="body">
+																																										<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/research-and-teaching" title="Teaching &amp; publication support" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/2013">Teaching &amp; publication support</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/research-and-teaching/teach" title="Instruction support" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/2015">Instruction support</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/research-and-teaching/write" title="Writing resources" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/2016">Writing resources</a>
+																													</li>
+															</ul>
+											
+																			</li>
+																											<li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+
+																	</li><li class="li-item li-item-mobile-main-nav li-expanded li-parent li-0" role="none" data-once="ul">
+										<a href="#" class="w3-button link-disabled tMenu-v toggle-parent" aria-haspopup="true" data-once="body">Get help
+											<span class="dropdown-arrow w3-hover-over">
+																								<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel"><path d="M6 9l6 6 6-6"></path></svg>
+											</span>
+										</a>
+									
+																																													<ul class="ul-child ul-child-mobile-main-nav ul-1" data-once="body">
+																																										<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/help" title="Get help" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/2014">Get help</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/askalibrarian" title="Ask a Librarian" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/807">Ask a Librarian</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/accessibility" title="Accessibility services" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/774">Accessibility services</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-1" role="none" data-once="ul">
+											<a href="https://guides.lib.virginia.edu/subjectlibrarians" title="Subject specialists" class="w3-button li-link li-link-mobile-main-nav">Subject specialists</a>
+																													</li>
+															</ul>
+											
+																			</li>
+																																								<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://search.lib.virginia.edu/account" title="My account" class="w3-button li-link li-link-mobile-main-nav">My account</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/askalibrarian" title="Ask a Librarian" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/807">Ask a Librarian</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/hours" title="Hours" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/1118">Hours</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/support-library" title="Give" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/1676">Give</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/status#alerts" title="Alerts" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/1641">Alerts</a>
+																													</li>
+																																								<li class="li-item li-item-mobile-main-nav li-0" role="none" data-once="ul">
+											<a href="https://library.virginia.edu/search" title="Search" class="w3-button li-link li-link-mobile-main-nav" data-drupal-link-system-path="node/837">Search</a>
+																													</li>
+															</ul>
+											
+					</section>
+
+  </nav>
+
+
+		</div>
+	</div>
+
+<div class="page-wrapper w3-col w3-clear w3-animate-opacity w3-text-theme ">
+			<div id="pre_header" class="w3-col w3-clear w3-theme-l5 ">
+			<div id="pre_header-inner" class="w3-row pre_header-inner none">
+				
+<div class="views-element-container alert-sitewide-lvl4 block block-views block-views-blockalert4-published-sitewide-block-1" id="block-uvalibrary-v2a-views-block-alert4-published-sitewide-block-1">
+	
+		
+			<div><div class="uva-alert--sitewide view view-alert4-published-sitewide view-id-alert4_published_sitewide view-display-id-block_1 js-view-dom-id-aff25558c72bd9ef9ceb1f71a4ad0f080c53ac5051ce6a566feb4d057ab75875">
+  
+    
+      
+  
+          </div>
+</div>
+
+	</div>
+
+
+			</div>
+		</div>
+	
+	<header id="header" class="w3-col w3-clear w3-theme-l4 none " role="banner" aria-label="Site header">
+		<div id="header-inner" class="w3-container header-inner none">
+							<button id="openmobilemenu" tabindex="0" class="open-mobile-menu" aria-label="open menu">
+					<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel">
+						<line x1="3" y1="12" x2="21" y2="12"></line>
+						<line x1="3" y1="6" x2="21" y2="6"></line>
+						<line x1="3" y1="18" x2="21" y2="18"></line>
+					</svg>
+				</button>
+										
+<nav role="navigation" aria-labelledby="block-uvalibrary-v2a-utilitynavmain-menu" id="block-uvalibrary-v2a-utilitynavmain" class="utility-nav">
+            
+  <h2 class="visually-hidden" id="block-uvalibrary-v2a-utilitynavmain-menu">Utility Nav-main</h2>
+  
+
+        <div id="utility-nav">
+									<ul role="menu" data-once="body" class="ul-0">
+									<li role="menuitem" data-once="ul" class="li-0">
+						<a href="https://search.lib.virginia.edu/account" title="My account">My account</a>
+					</li>
+									<li role="menuitem" data-once="ul" class="li-0">
+						<a href="https://library.virginia.edu/askalibrarian" title="Ask a Librarian" data-drupal-link-system-path="node/807">Ask a Librarian</a>
+					</li>
+									<li role="menuitem" data-once="ul" class="li-0">
+						<a href="https://library.virginia.edu/hours" title="Hours" data-drupal-link-system-path="node/1118">Hours</a>
+					</li>
+									<li role="menuitem" data-once="ul" class="li-0">
+						<a href="https://library.virginia.edu/support-library" title="Give" data-drupal-link-system-path="node/1676">Give</a>
+					</li>
+									<li role="menuitem" data-once="ul" class="li-0">
+						<a href="https://library.virginia.edu/status#alerts" title="Alerts" data-drupal-link-system-path="node/1641">Alerts</a>
+					</li>
+									<li role="menuitem" data-once="ul" class="li-0">
+						<a href="https://library.virginia.edu/search" title="Search" data-drupal-link-system-path="node/837">Search</a>
+					</li>
+							</ul>
+			
+	</div>
+
+  </nav>
+<div id="block-uvalibrary-v2a-branding" class="block block-system block-system-branding-block">
+	
+		
+	      <a href="https://library.virginia.edu/" title="Home" rel="home" class="site-logo">
+      <img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/library_rgb_S_zN.png" alt="Home">
+    </a>
+  <div class="site-name-slogan">
+    </div>
+</div>
+<div id="block-analyticstrackingcode" class="block block-block-content block-block-contente9ac28b3-1917-44d0-9461-cb23e685c626">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><uvalib-analytics matomoid="10">
+    <noscript><p><img src="https://analytics.lib.virginia.edu/matomo.php?idsite=10&amp;rec=1" style="border:0;" alt></p></noscript>
+  </uvalib-analytics>
+  <script type="module" src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/uvalib-analytics_S_zN.js"></script></div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+
+
+					</div>
+	</header>
+
+			<div id="main-navigation-h" class="w3-col w3-clear main-navigation-wrapper w3-theme" role="navigation" aria-label="Main Navigation">
+			<div id="main-navigation-inner-h" class="w3-row main-navigation-inner-h none">
+				<div class="mobile-nav w3-hide-large w3-button w3-block w3-right-align w3-large w3-theme " data-once="#main-navigation-h">
+					<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" stroke-linejoin="bevel">
+						<line x1="3" y1="12" x2="21" y2="12"></line>
+						<line x1="3" y1="6" x2="21" y2="6"></line>
+						<line x1="3" y1="18" x2="21" y2="18"></line>
+					</svg>
+				</div>
+				
+<nav role="navigation" aria-labelledby="block-uvalibrary-v2a-main-menu-menu" id="block-uvalibrary-v2a-main-menu" class="main-nav">
+            
+  <h2 class="visually-hidden" id="block-uvalibrary-v2a-main-menu-menu">Main navigation</h2>
+  
+
+        <span id="uvalibrary-nav">
+																	<ul class="mainlibrary-nav ul-main ul-0" foo="MAIN-UL-CONTAINTER" data-once="body">
+																						<li foo="two" data-once="ul" class="li-0">
+								<button type="button" aria-expanded="false" aria-controls="id-menu">About
+								</button>
+																																																<ul class="nav__list ul-1" hidden="" foo="SUB-MENU-CONTAINER" data-once="body">
+																																					<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/about-uva-library" title="About UVA Library" class="link-main" data-drupal-link-system-path="node/803">About UVA Library</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/news/all?mtm_campaign=main-nav" class="link-main">News &amp; announcements</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/about-uva-library#visit" title="Plan a visit" class="link-main" data-drupal-link-system-path="node/803">Plan a visit</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/about-uva-library/assessment" title="Assessment" class="link-main" data-drupal-link-system-path="node/1411">Assessment</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/collections" title="About the collections" class="link-main" data-drupal-link-system-path="node/729">About the collections</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/staff" title="Staff directory" class="link-main" data-drupal-link-system-path="node/1137">Staff directory</a>
+																															</li>
+											</ul>
+							
+															</li>
+																			<li foo="two" data-once="ul" class="li-0">
+								<button type="button" aria-expanded="false" aria-controls="id-menu">Using the Library
+								</button>
+																																																<ul class="nav__list ul-1" hidden="" foo="SUB-MENU-CONTAINER" data-once="body">
+																																					<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/services" title="Research: Search, borrow, request" class="link-main" data-drupal-link-system-path="node/1107">Search, borrow, request</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/spaces" title="Library spaces" class="link-main" data-drupal-link-system-path="node/787">Library spaces</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/equipment-and-tech" title="Equipment &amp; technology" class="link-main" data-drupal-link-system-path="node/786">Equipment &amp; technology</a>
+																															</li>
+											</ul>
+							
+															</li>
+																			<li foo="two" data-once="ul" class="li-0">
+								<button type="button" aria-expanded="false" aria-controls="id-menu">Research &amp; teaching support
+								</button>
+																																																<ul class="nav__list ul-1" hidden="" foo="SUB-MENU-CONTAINER" data-once="body">
+																																					<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/research-and-teaching" title="Teaching &amp; publication support" class="link-main" data-drupal-link-system-path="node/2013">Research &amp; teaching support</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/research-and-teaching/research" class="link-main" data-drupal-link-system-path="node/3063">Research support</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/research-and-teaching/teach" title="Instruction support" class="link-main" data-drupal-link-system-path="node/2015">Instruction assistance</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/research-and-teaching/write" title="Writing resources" class="link-main" data-drupal-link-system-path="node/2016">Writing &amp; publication</a>
+																															</li>
+											</ul>
+							
+															</li>
+																			<li foo="two" data-once="ul" class="li-0">
+								<button type="button" aria-expanded="false" aria-controls="id-menu">Get help
+								</button>
+																																																<ul class="nav__list ul-1" hidden="" foo="SUB-MENU-CONTAINER" data-once="body">
+																																					<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/help" title="Get help" class="link-main" data-drupal-link-system-path="node/2014">Get help</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/askalibrarian" title="Ask a Librarian" class="link-main" data-drupal-link-system-path="node/807">Ask a Librarian</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://library.virginia.edu/accessibility" title="Accessibility services" class="link-main" data-drupal-link-system-path="node/774">Accessibility services</a>
+																															</li>
+																												<li data-once="ul" class="li-1">
+									<a href="https://guides.lib.virginia.edu/subjectlibrarians" title="Subject specialists" class="link-main">Subject specialists</a>
+																															</li>
+											</ul>
+							
+															</li>
+											</ul>
+							
+			</span>
+
+  </nav>
+
+
+			</div>
+		</div>
+	
+	
+	
+	
+	
+			
+	<div id="main-container" class="w3-col w3-clear w3-theme-l5 ">
+		<div id="main-container-inner" class="w3-row main-container-inner none">
+							<div class="w3-row w3-breadcrumb ">
+					
+<div class="views-element-container alert-sitewide block block-views block-views-blockalerts-published-sitewide-block-1" id="block-uvalibrary-v2a-views-block-alerts-published-sitewide-block-1">
+	
+		
+			<div><div class="uva-alert--sitewide view view-alerts-published-sitewide view-id-alerts_published_sitewide view-display-id-block_1 js-view-dom-id-54687129bf54258b4d037809df6e3e7a266a335779b0086b5078333ef2cc16a1">
+  
+    
+      
+  
+          </div>
+</div>
+
+	</div>
+<div id="block-uvalibrary-v2a-breadcrumbs" class="library-breadcrumbs block block-system block-system-breadcrumb-block">
+	
+		
+			  <nav class="w3-block w3-section breadcrumb" role="navigation" aria-labelledby="system-breadcrumb">
+    <h2 id="system-breadcrumb" class="visually-hidden">Breadcrumb</h2>
+    <ul class="w3-ul w3-small breadcrumb ul-0" data-once="body">
+          <li data-once="ul" class="li-0">
+                  <a href="https://library.virginia.edu/">Home</a>
+              </li>
+          <li data-once="ul" class="li-0">
+                  <a href="https://library.virginia.edu/data">Research Data Services &amp; Social, Natural, and Engineering Sciences</a>
+              </li>
+          <li data-once="ul" class="li-0">
+                  <a href="https://library.virginia.edu/data/articles">StatLab Articles</a>
+              </li>
+          <li data-once="ul" class="li-0">
+                  Getting Started with Binomial Generalized Linear Mixed Models		
+              </li>
+        </ul>
+  </nav>
+
+	</div>
+
+
+				</div>
+						<div class="w3-col w3-clear w3-row-padding">
+													<div id="main-content" class="w3-col main-box w3css-content breadcrumb-found" role="main" data-once="body">
+						<div class="d8-fade w3-mobile ">
+							
+<div id="block-uvalibrary-v2a-page-title" class="block block-core block-page-title-block">
+	
+		
+			
+  <h1 class="page-title"><span class="field field--name-title field--type-string field--label-hidden">Getting Started with Binomial Generalized Linear Mixed Models		</span>
+</h1>
+
+
+	</div>
+<div id="block-uvalibrary-v2a-content" class="block block-system block-system-main-block">
+	
+		
+			
+<article data-history-node-id="2280" about="/data/articles/getting-started-with-binomial-generalized-linear-mixed-models" class="w3-row node node--type-rds-article-news node--promoted node--view-mode-full">
+
+  
+  <div class="w3-row node__content">
+    	<div class="layout layout--twocol-section layout--twocol-section--67-33">
+
+					<div class="layout__region layout__region--first uvalib-col--first">
+				<div class="block block-layout-builder block-field-blocknoderds-article-newsbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><div class="tex2jax_process"><p>Binomial
+ generalized linear mixed models, or binomial GLMMs, are useful for 
+modeling binary outcomes for repeated or clustered measures. For 
+example, let’s say we design a study that tracks what college students 
+eat over the course of 2 weeks, and we’re interested in whether or not 
+they eat vegetables each day. For each student, we’ll have 14 binary 
+events: eat vegetables or not. Using a binomial GLMM, we could model the
+ probability of eating vegetables daily given various predictors such as
+ sex of the student, race of the student, and/or some “treatment” we 
+applied to a subset of the students, such as a nutrition class. Since 
+each student is observed over the course of multiple days, we have 
+repeated measures and thus the need for a mixed-effects model.</p><p>Before
+ we show how to implement and interpret a binomial GLMM, we’ll first 
+simulate some data that is appropriate for a binomial GLMM. If we know 
+how to simulate data for a given model, then we have a better 
+understanding of the model’s assumptions and coefficients. We’ll use R 
+to simulate the data and perform the modeling.</p><p>To begin we simulate data for four predictor variables:</p><ul data-once="body" class="ul-0"><li data-once="ul" class="li-0"><code>id</code> (identifying number of subject)</li><li data-once="ul" class="li-0"><code>day</code> (day of observation)</li><li data-once="ul" class="li-0"><code>trt</code> (treatment status: control or treat)</li><li data-once="ul" class="li-0"><code>sex</code> (male or female)</li></ul><p>We set <code>n</code> to 250 which means we’ll have 250 subjects in our data. Then we use <code>seq(n)</code> to generate a vector of integers ranging 1 to 250 and assign them to <code>id</code>. These will be our subject ids. We assign to <code>day</code> the integers 1--14 and then use <code>expand.grid()</code> to create all combinations of <code>id</code> and <code>day</code> and assign the result to <code>d</code>, which is a data frame. To simulate the <code>trt</code> and <code>sex</code> variables, we simply sample 250 times from the possible values with replacement. The <code>set.seed(1)</code>
+ function ensures we always simulate the same values, which you’ll need 
+to run if you want to replicate the results of this article. After we 
+simulate the <code>trt</code> and <code>sex</code> values, we need to 
+repeat them 14 times each for each subject id. We do that by using 
+subsetting brackets and assigning the result to the data frame <code>d</code>. Finally we sort the data by <code>id</code> and <code>day</code>, reset the row numbers, and look at the first 15 records.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+n &lt;- 250
+id &lt;- seq(n)
+day &lt;- 1:14
+d &lt;- expand.grid(id = id, day = day)
+set.seed(1)
+trt &lt;- sample(c("control", "treat"), size = n, replace = TRUE)
+sex &lt;- sample(c("female", "male"), size = n, replace = TRUE)
+d$trt &lt;- trt[d$id]
+d$sex &lt;- sex[d$id]
+d &lt;- d[order(d$id, d$day),]
+rownames(d) &lt;- NULL
+head(d, n = 15)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+     id day     trt    sex
+  1   1   1 control female
+  2   1   2 control female
+  3   1   3 control female
+  4   1   4 control female
+  5   1   5 control female
+  6   1   6 control female
+  7   1   7 control female
+  8   1   8 control female
+  9   1   9 control female
+  10  1  10 control female
+  11  1  11 control female
+  12  1  12 control female
+  13  1  13 control female
+  14  1  14 control female
+  15  2   1   treat   male
+</code></pre></div><p>We see that subject 1 is a female in the control group, with 14 observations over 14 days.</p><p>Now
+ we’re ready to use these data to simulate zeroes and ones for the event
+ of eating vegetables or not, where a 0 means “did not eat vegetables” 
+and a 1 means “ate vegetables.” We want to simulate the zeroes and ones 
+using probabilities. We’ll use the <code>rbinom()</code> function to do 
+this, which generates zeroes or ones from a binomial distribution. For 
+example, to generate 5 flips of a single coin with a probability of 
+success (say, heads) of 0.5, we can do the following:</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+rbinom(n = 5, size = 1, prob = 0.5)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 1 1 1 1 0
+</code></pre></div><p>But we don’t have a constant probability. We’ll 
+have a probability that changes based on the sex of the subject and 
+whether they were in the treatment group or not. Since we’re simulating 
+the data, we get to pick the probabilities.</p><ul data-once="body" class="ul-0"><li data-once="ul" class="li-0">female, control: p = 0.40</li><li data-once="ul" class="li-0">female, treated: p = 0.85</li><li data-once="ul" class="li-0">male, control: p = 0.30</li><li data-once="ul" class="li-0">male, treated: p = 0.50</li></ul><p>These are what we might call <em>fixed effects</em>.
+ We’re saying the effects of treatment and sex are fixed, no matter who 
+you are, where you’re from, how old you are, etc. This may not be a 
+plausible assumption in real life, but that’s what we’re assuming when 
+we simulate this particular data set. Also notice these effects <em>interact</em>.
+ The effect of treatment increases the female probability by 0.45 but 
+only increases the male probability by 0.20. The effect of treatment 
+depends on sex, which implies they interact.</p><p>But recall we’re 
+observing the same person 14 days in a row. This means we won’t have 
+independent observations. Those 14 observations on the same person may 
+be correlated in some way. The simplest way to induce this correlation 
+is to add a <em>random effect</em> for each person. For example, maybe a
+ male student grew up in a family that had a garden in the backyard and 
+was raised eating homegrown vegetables. His random effect might be an 
+additional 0.10 probability. So if he was in the control group, his 
+probability might be 0.30 (fixed) + 0.10 (random) = 0.40. So now we have
+ a <em>mix</em> of fixed effects and random effects.</p><p>Let’s add our fixed effect probabilities to the data frame. We use the <code>interaction()</code> function to create a 4-level factor called <code>trtsex</code>
+ that indicates whether a subject is male/female and treated/control. 
+Then we create a vector of probabilities and name the vector using the 
+level names of the <code>trtsex</code> variable. This becomes a lookup table which we can use with <code>trtsex</code> to quickly determine a subject’s fixed effect probability.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+d$trtsex &lt;- interaction(d$trt, d$sex)
+probs &lt;- c(0.40, 0.85, 0.30, 0.50)
+names(probs) &lt;- levels(d$trtsex)
+d$p &lt;- probs[d$trtsex]
+</code></pre></div><p>Now let’s add random effect probabilities. We’ll do this by drawing <code>n</code>
+ random samples from a normal distribution with a mean 0 and a standard 
+deviation of 0.03. This will create random amounts of probability that 
+we add or subtract from a subject’s fixed effect probability. Again we 
+use <code>r_probs</code> as a lookup table and use subsetting brackets 
+to pick the random probability according to subject id. Notice it gets 
+repeated 14 times for each subject.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+set.seed(3)
+r_probs &lt;- rnorm(n = n, mean = 0, sd = 0.03)
+d$random_p &lt;- r_probs[d$id]
+d$p &lt;- d$p + d$random_p
+</code></pre></div><p>And now we can use the probabilities to generate zeroes and ones with the <code>binom()</code> function.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+d$y &lt;- rbinom(n = nrow(d), size = 1, prob = d$p)
+</code></pre></div><p>With that our data is simulated. Let’s inspect the first few records.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+head(d[c("id", "day", "trt", "sex", "p", "y")])
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+    id day     trt    sex        p y
+  1  1   1 control female 0.371142 0
+  2  1   2 control female 0.371142 0
+  3  1   3 control female 0.371142 1
+  4  1   4 control female 0.371142 0
+  5  1   5 control female 0.371142 0
+  6  1   6 control female 0.371142 0
+</code></pre></div><p>Subject 1 (female/control) reported eating 
+vegetables 1 time in the first 6 days. And we see her probability is 
+0.37. Her random effect is about 0.37 - 0.40 = -0.03.</p><p>Let’s look at subject 5.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+head(d[d$id == 5, c("id", "day", "trt", "sex", "p", "y")])
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+     id day   trt    sex         p y
+  57  5   1 treat female 0.8558735 1
+  58  5   2 treat female 0.8558735 1
+  59  5   3 treat female 0.8558735 1
+  60  5   4 treat female 0.8558735 1
+  61  5   5 treat female 0.8558735 1
+  62  5   6 treat female 0.8558735 1
+</code></pre></div><p>Subject 5 (female/treat) reported eating 
+vegetables every day in the first 6 days. And we see her probability is 
+about 0.86. Her random effect is around 0.86 - 0.85 = 0.01.</p><hr><p><strong>Full disclosure</strong>:
+ The way we just simulated our data is not technically correct! We could
+ have easily generated a random effect that pushed a subject’s 
+probability beyond 1 or below 0! However, we thought this approach was a
+ good place to start because it allows us to think in terms of 
+probabilities. The correct way is demonstrated later in the article and,
+ as we’ll see, involves log-odds, which are less intuitive.</p><hr><p>Now let’s work backwards and pretend we don’t know the probabilities we defined above. We just have <code>id</code>, <code>day</code>, <code>trt</code>, <code>sex</code> and <code>y</code>. We want to fit a binomial GLMM model to see how <code>sex</code> and <code>trt</code>
+ affect the probability of eating vegetables. In real life, we won’t 
+know if or how they affect the probability. We may have a hunch, but all
+ we can really do is propose a model and see how well it fits the data. 
+To do this, we’ll use the <code>glmer()</code> function in the lme4 package.</p><p>Let’s make life easy for us and propose the “correct” model, which we know since we simulated the data. We model <code>y</code> as a function of <code>sex</code>, <code>trt</code>, and their interaction: <code>y ~ trt * sex</code>. We also include a random effect for each subject with <code>+ (1|id)</code>, which is also known as a <em>random intercept</em> since the model estimates a different intercept for each subject. We can read <code>1|id</code> as “the intercept is conditional on subject id.” (In R model syntax, <code>1</code> represents the intercept.) We also specify <code>family = binomial</code> to indicate we assume the response was drawn from a binomial distribution, which is correct in this case.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+library(lme4)
+m &lt;- glmer(y ~ trt * sex + (1|id), data = d, family = binomial)
+summary(m, corr = FALSE)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  Generalized linear mixed model fit by maximum likelihood (Laplace
+    Approximation) [glmerMod]
+   Family: binomial  ( logit )
+  Formula: y ~ trt * sex + (1 | id)
+     Data: d
+  
+       AIC      BIC   logLik deviance df.resid 
+    4132.4   4163.3  -2061.2   4122.4     3495 
+  
+  Scaled residuals: 
+      Min      1Q  Median      3Q     Max 
+  -2.6008 -0.8434  0.3774  0.9704  1.6878 
+  
+  Random effects:
+   Groups Name        Variance Std.Dev.
+   id     (Intercept) 0.03944  0.1986  
+  Number of obs: 3500, groups:  id, 250
+  
+  Fixed effects:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+  (Intercept)      -0.30840    0.07127  -4.327 1.51e-05 ***
+  trttreat          2.18835    0.12423  17.615  &lt; 2e-16 ***
+  sexmale          -0.63440    0.10859  -5.842 5.16e-09 ***
+  trttreat:sexmale -1.21669    0.16556  -7.349 2.00e-13 ***
+  ---
+  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</code></pre></div><p>In the summary we see random effects and fixed 
+effects. The fixed effect coefficients are not on the probability scale 
+but on the log-odds, or <em>logit</em>, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-1-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi mathvariant=&quot;normal&quot;&gt;&amp;#x221E;&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-1" style="width: 2.067em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.806em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.429em, 1001.75em, 2.404em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-2"><span class="mo" id="MathJax-Span-3"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/2212_S_zN.png" style="width: 14px; height: 1px; vertical-align: 4px; margin-right: 0.084em;"></span><span class="mi" id="MathJax-Span-4"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/221E_S_zN.png" style="width: 18px; height: 9px; vertical-align: baseline; margin-right: 0.056em;"></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.152em; border-left: 0px solid; width: 0px; height: 0.876em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>−</mo><mi mathvariant="normal">∞</mi></math></span></span><script type="math/tex" id="MathJax-Element-1">-\infty</script> to <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-2-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi mathvariant=&quot;normal&quot;&gt;&amp;#x221E;&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-5" style="width: 2.015em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.754em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.429em, 1001.7em, 2.404em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-6"><span class="mo" id="MathJax-Span-7"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002B_S_zN.png" style="width: 14px; height: 13px; vertical-align: -1px; margin-right: 0.056em;"></span><span class="mi" id="MathJax-Span-8"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/221E_S_zN.png" style="width: 18px; height: 9px; vertical-align: baseline; margin-right: 0.056em;"></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.152em; border-left: 0px solid; width: 0px; height: 0.876em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>+</mo><mi mathvariant="normal">∞</mi></math></span></span><script type="math/tex" id="MathJax-Element-2">+\infty</script>.
+ This allows us to create additive linear models without worrying about 
+going above 1 or below 0. To get probabilities out of our model, we need
+ to use the <em>inverse logit</em>. There is function for this in base R called <code>plogis()</code>.
+ For example, the predicted log-odds a female in the control group eats 
+vegetables is the intercept: -0.30840. The inverse logit of that is:</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+plogis(-0.30840)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 0.4235053
+</code></pre></div><p>The predicted probability of 0.42 is pretty close to the 0.40 value we used to generate the data.</p><p>The predicted log-odds a female in the treatment group eats vegetables is the intercept plus the coefficient for <code>trttreat</code>: -0.30840 + 2.18835 = 1.87995. The inverse logit is:</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+plogis(1.87995)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 0.8676054
+</code></pre></div><p>The predicted probability of 0.87 is close to the 0.85 value we used to generate the data.</p><p>The predicted log-odds a male in the control group eats vegetables is the intercept plus the coefficient for <code>sexmale</code>: -0.30840 + -0.63440 = -0.9428. The inverse logit is:</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+plogis(-0.9428)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 0.2803351
+</code></pre></div><p>The predicted probability of 0.28 is close to the 0.30 value we used to generate the data.</p><p>Finally
+ the predicted log-odds a male in the treatment group eats vegetables is
+ the sum of all the coefficients: -0.30840 + 2.18835 + -0.63440 + 
+-1.21669 = 0.02886. The inverse logit is:</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+plogis(0.02886)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 0.5072145
+</code></pre></div><p>The predicted probability of 0.51 is very close to the 0.50 value we used to generate the data.</p><p>Instead of using <code>plogis()</code>, we can simply use the <code>predict()</code> function. The <code>re.form = NA</code> argument says to only estimate the fixed effects. The data frame given to the <code>newdata</code> argument represents all possible combinations of subject type.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+predict(m, type = "response", 
+        re.form = NA,
+        newdata = data.frame(sex = c("female", "female", 
+                                     "male", "male"),
+                             trt = c("control", "treat",
+                                     "control", "treat"))
+        )
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+          1         2         3         4 
+  0.4235043 0.8676050 0.2803350 0.5072137
+</code></pre></div><p>The predicted probabilities are the same as we calculated “by hand” above (minus some rounding error).</p><p>We could also interpret the model coefficients. To do this, we exponentiate them to get an <em>odds ratio</em>. For example, exponentiating the <code>treat</code> coefficient yields 8.92.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+exp(2.18835)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 8.920482
+</code></pre></div><p>That says the odds of “success” (i.e., eating 
+vegetables) for a female in the treatment group is about 8.9 times 
+higher than the odds of success for a female in the control group.</p><p>We could also exponentiate the confidence interval to get a lower and upper bound on the odds ratio:</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+exp(confint(m, parm = "trttreat"))
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  Computing profile confidence intervals ...
+              2.5 %   97.5 %
+  trttreat 7.023558 11.44831
+</code></pre></div><p>So we might conclude the odds of “success” are at least 7 times higher for the female treated versus the female control.</p><p>But odds ratios are relative and can sometimes sound alarmist. For example, let’s say the effect of <code>treat</code>
+ caused the probability of success to increase from 0.001 to 0.009. 
+Neither probability is very likely, but the odds ratio is about 9.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+odds1 &lt;- 0.001/(1 - 0.001)
+odds2 &lt;- 0.009/(1 - 0.009)
+odds2/odds1
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+  [1] 9.072654
+</code></pre></div><p>In this case, describing the treatment effect as 
+making the odds of success 9 times more likely may suggest to an 
+unsuspecting reader that it’s more efficacious than it really is. That’s
+ why it’s a good idea to examine expected probabilities in addition to 
+odds ratios.</p><p>In the "Random Effects:" section, we see the 
+estimated standard deviation of the intercept random effect, which we 
+can extract from the model object with the <code>VarCorr()</code> function.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+VarCorr(m)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+   Groups Name        Std.Dev.
+   id     (Intercept) 0.1986
+</code></pre></div><p>0.20 is the estimate of 0.03, the standard 
+deviation we used to simulate our random probability effects. This seems
+ to be a rather poor estimate. However, if we calculate a 95% confidence
+ interval on this estimate, we see that 0.03 falls well within the 
+interval. To do this we call the <code>confint()</code> function and specify <code>parm = "theta_"</code> to indicate we want a confidence interval for the estimated standard deviation of the intercept random effect. Setting <code>oldNames = FALSE</code> provides more informative output.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+confint(m, parm = "theta_", oldNames = FALSE)
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+   Computing profile confidence intervals ...
+                     2.5 %    97.5 %
+   sd_(Intercept)|id     0 0.3453926
+</code></pre></div><p>This confidence interval extends to 0, suggesting there may be no random variability between subjects. However, we <em>know</em>
+ we have variability because we generated the data. Plus the structure 
+of the data dictates we should accommodate variance between subjects as 
+well as within subjects. In other words, we don’t have independent 
+observations. So in real life we wouldn’t seriously entertain dropping 
+the random effect.</p><p>If we were to report this model using mathematical notation, we might write it in this form:</p><p><span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-3-Frame" tabindex="0" style="text-align: center; position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msup&gt;&lt;mtext&gt;logit&lt;/mtext&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;0.31&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mn&gt;2.19&lt;/mn&gt;&lt;mo&gt;&amp;#x00D7;&lt;/mo&gt;&lt;mtext&gt;Treat&lt;/mtext&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;0.63&lt;/mn&gt;&lt;mo&gt;&amp;#x00D7;&lt;/mo&gt;&lt;mtext&gt;Male&lt;/mtext&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1.22&lt;/mn&gt;&lt;mo&gt;&amp;#x00D7;&lt;/mo&gt;&lt;mtext&gt;Treat&lt;/mtext&gt;&lt;mo&gt;&amp;#x00D7;&lt;/mo&gt;&lt;mtext&gt;Male&lt;/mtext&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;u&lt;/mi&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/msub&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-9" style="width: 44.12em; display: inline-block;"><span style="display: inline-block; position: relative; width: 38.7em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.12em, 1038.61em, 2.616em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-10"><span class="texatom" id="MathJax-Span-11"><span class="mrow" id="MathJax-Span-12"><span class="mi" id="MathJax-Span-13"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0050_S_zN.png" style="width: 15px; height: 13px; margin-right: -0.109em;"><span style="display: inline-block; overflow: hidden; height: 1px; width: 0.109em;"></span></span><span class="mi" id="MathJax-Span-14"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0072_S_zN.png" style="width: 9px; height: 9px; vertical-align: baseline; margin-right: 0.021em;"></span><span class="mi" id="MathJax-Span-15"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006F_S_zN.png" style="width: 9px; height: 9px; vertical-align: baseline; margin-right: 0.009em;"></span><span class="mi" id="MathJax-Span-16"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0062_S_zN.png" style="width: 8px; height: 14px; vertical-align: baseline; margin-right: 0.007em;"></span></span></span><span class="mo" id="MathJax-Span-17"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0028_S_zN.png" style="width: 6px; height: 20px; vertical-align: -5px; margin-right: 0.056em;"></span><span class="msubsup" id="MathJax-Span-18"><span style="display: inline-block; position: relative; width: 0.856em; height: 0px;"><span style="position: absolute; clip: rect(3.428em, 1000.5em, 4.385em, -1000em); top: -4.025em; left: 0em;"><span class="mi" id="MathJax-Span-19"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0079_S_zN.png" style="width: 10px; height: 12px; vertical-align: -4px; margin-right: -0.006em;"><span style="display: inline-block; overflow: hidden; height: 1px; width: 0.006em;"></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span><span style="position: absolute; top: -3.875em; left: 0.49em;"><span class="texatom" id="MathJax-Span-20"><span class="mrow" id="MathJax-Span-21"><span class="mi" id="MathJax-Span-22" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006A_S_zN.png" style="width: 6px; height: 12px; vertical-align: -3px; margin-left: -0.012em; margin-right: 0.009em;"></span></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span></span></span><span class="mo" id="MathJax-Span-23" style="padding-left: 0.278em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/003D_S_zN.png" style="width: 14px; height: 5px; vertical-align: 3px; margin-right: 0.056em;"></span><span class="mn" id="MathJax-Span-24" style="padding-left: 0.278em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0031_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.073em;"></span><span class="mo" id="MathJax-Span-25"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0029_S_zN.png" style="width: 6px; height: 20px; vertical-align: -5px; margin-right: 0.095em;"></span><span class="mo" id="MathJax-Span-26" style="padding-left: 0.278em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/003D_S_zN.png" style="width: 14px; height: 5px; vertical-align: 3px; margin-right: 0.056em;"></span><span class="msubsup" id="MathJax-Span-27" style="padding-left: 0.278em;"><span style="display: inline-block; position: relative; width: 2.924em; height: 0px;"><span style="position: absolute; clip: rect(3.176em, 1001.89em, 4.386em, -1000em); top: -4.025em; left: 0em;"><span class="mtext" id="MathJax-Span-28"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006C_S_zN.png" style="width: 5px; height: 14px; margin-right: 0.015em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006F_002_S_zN.png" style="width: 9px; height: 9px; margin-right: 0.029em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0067_S_zN.png" style="width: 9px; height: 13px; vertical-align: -4px; margin-right: 0.015em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0069_S_zN.png" style="width: 5px; height: 13px; margin-right: 0.023em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0074_S_zN.png" style="width: 6px; height: 12px; margin-right: 0.056em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span><span style="position: absolute; top: -4.446em; left: 1.945em;"><span class="texatom" id="MathJax-Span-29"><span class="mrow" id="MathJax-Span-30"><span class="mo" id="MathJax-Span-31" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/2212_S_zN.png" style="width: 10px; height: 1px; vertical-align: 3px; margin-right: 0.084em;"></span><span class="mn" id="MathJax-Span-32" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0031_S_zN.png" style="width: 6px; height: 9px; margin-right: 0.073em;"></span></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span></span></span><span class="mo" id="MathJax-Span-33"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0028_S_zN.png" style="width: 6px; height: 20px; vertical-align: -5px; margin-right: 0.056em;"></span><span class="mo" id="MathJax-Span-34"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/2212_S_zN.png" style="width: 14px; height: 1px; vertical-align: 4px; margin-right: 0.084em;"></span><span class="mn" id="MathJax-Span-35"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0030_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.04em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002E_S_zN.png" style="width: 4px; height: 3px; margin-right: 0.079em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0033_S_zN.png" style="width: 9px; height: 14px; margin-right: 0.043em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0031_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.073em;"></span><span class="mo" id="MathJax-Span-36" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002B_S_zN.png" style="width: 14px; height: 13px; vertical-align: -1px; margin-right: 0.056em;"></span><span class="mn" id="MathJax-Span-37" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0032_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.051em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002E_S_zN.png" style="width: 4px; height: 3px; margin-right: 0.079em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0031_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.073em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0039_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.044em;"></span><span class="mo" id="MathJax-Span-38" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/00D7_S_zN.png" style="width: 12px; height: 10px; vertical-align: baseline; margin-right: 0.148em;"></span><span class="mtext" id="MathJax-Span-39" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0054_S_zN.png" style="width: 13px; height: 14px; margin-right: 0.037em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0072_002_S_zN.png" style="width: 7px; height: 9px; vertical-align: baseline; margin-right: 0.028em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0065_S_zN.png" style="width: 8px; height: 9px; margin-right: 0.029em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0061_S_zN.png" style="width: 10px; height: 9px; margin-right: 0.007em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0074_S_zN.png" style="width: 6px; height: 12px; margin-right: 0.056em;"></span><span class="mo" id="MathJax-Span-40" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/2212_S_zN.png" style="width: 14px; height: 1px; vertical-align: 4px; margin-right: 0.084em;"></span><span class="mn" id="MathJax-Span-41" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0030_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.04em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002E_S_zN.png" style="width: 4px; height: 3px; margin-right: 0.079em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0036_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.044em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0033_S_zN.png" style="width: 9px; height: 14px; margin-right: 0.043em;"></span><span class="mo" id="MathJax-Span-42" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/00D7_S_zN.png" style="width: 12px; height: 10px; vertical-align: baseline; margin-right: 0.148em;"></span><span class="mtext" id="MathJax-Span-43" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/004D_S_zN.png" style="width: 17px; height: 14px; margin-right: 0.03em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0061_S_zN.png" style="width: 10px; height: 9px; margin-right: 0.007em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006C_S_zN.png" style="width: 5px; height: 14px; margin-right: 0.015em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0065_S_zN.png" style="width: 8px; height: 9px; margin-right: 0.029em;"></span><span class="mo" id="MathJax-Span-44" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/2212_S_zN.png" style="width: 14px; height: 1px; vertical-align: 4px; margin-right: 0.084em;"></span><span class="mn" id="MathJax-Span-45" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0031_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.073em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002E_S_zN.png" style="width: 4px; height: 3px; margin-right: 0.079em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0032_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.051em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0032_S_zN.png" style="width: 9px; height: 13px; margin-right: 0.051em;"></span><span class="mo" id="MathJax-Span-46" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/00D7_S_zN.png" style="width: 12px; height: 10px; vertical-align: baseline; margin-right: 0.148em;"></span><span class="mtext" id="MathJax-Span-47" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0054_S_zN.png" style="width: 13px; height: 14px; margin-right: 0.037em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0072_002_S_zN.png" style="width: 7px; height: 9px; vertical-align: baseline; margin-right: 0.028em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0065_S_zN.png" style="width: 8px; height: 9px; margin-right: 0.029em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0061_S_zN.png" style="width: 10px; height: 9px; margin-right: 0.007em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0074_S_zN.png" style="width: 6px; height: 12px; margin-right: 0.056em;"></span><span class="mo" id="MathJax-Span-48" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/00D7_S_zN.png" style="width: 12px; height: 10px; vertical-align: baseline; margin-right: 0.148em;"></span><span class="mtext" id="MathJax-Span-49" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/004D_S_zN.png" style="width: 17px; height: 14px; margin-right: 0.03em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0061_S_zN.png" style="width: 10px; height: 9px; margin-right: 0.007em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006C_S_zN.png" style="width: 5px; height: 14px; margin-right: 0.015em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0065_S_zN.png" style="width: 8px; height: 9px; margin-right: 0.029em;"></span><span class="mo" id="MathJax-Span-50" style="padding-left: 0.222em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002B_S_zN.png" style="width: 14px; height: 13px; vertical-align: -1px; margin-right: 0.056em;"></span><span class="msubsup" id="MathJax-Span-51" style="padding-left: 0.222em;"><span style="display: inline-block; position: relative; width: 0.938em; height: 0px;"><span style="position: absolute; clip: rect(3.428em, 1000.55em, 4.191em, -1000em); top: -4.025em; left: 0em;"><span class="mi" id="MathJax-Span-52"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0075_S_zN.png" style="width: 11px; height: 9px; vertical-align: baseline; margin-right: 0.021em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span><span style="position: absolute; top: -3.875em; left: 0.572em;"><span class="mi" id="MathJax-Span-53" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006A_S_zN.png" style="width: 6px; height: 12px; vertical-align: -3px; margin-left: -0.012em; margin-right: 0.009em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span></span></span><span class="mo" id="MathJax-Span-54"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0029_S_zN.png" style="width: 6px; height: 20px; vertical-align: -5px; margin-right: 0.095em;"></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.394em; border-left: 0px solid; width: 0px; height: 1.47em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow class="MJX-TeXAtom-ORD"><mi>P</mi><mi>r</mi><mi>o</mi><mi>b</mi></mrow><mo stretchy="false">(</mo><msub><mi>y</mi><mrow class="MJX-TeXAtom-ORD"><mi>j</mi></mrow></msub><mo>=</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><msup><mtext>logit</mtext><mrow class="MJX-TeXAtom-ORD"><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="false">(</mo><mo>−</mo><mn>0.31</mn><mo>+</mo><mn>2.19</mn><mo>×</mo><mtext>Treat</mtext><mo>−</mo><mn>0.63</mn><mo>×</mo><mtext>Male</mtext><mo>−</mo><mn>1.22</mn><mo>×</mo><mtext>Treat</mtext><mo>×</mo><mtext>Male</mtext><mo>+</mo><msub><mi>u</mi><mi>j</mi></msub><mo stretchy="false">)</mo></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-3">{Prob}(y_{j} = 1) = \text{logit}^{-1}(-0.31 + 2.19 \times \text{Treat} - 0.63 \times \text{Male} - 1.22 \times \text{Treat} \times \text{Male} + u_j)</script></p><p>where <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-4-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-55" style="width: 0.467em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.413em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.351em, 1000.4em, 2.526em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-56"><span class="mi" id="MathJax-Span-57"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006A_S_zN.png" style="width: 8px; height: 17px; vertical-align: -4px; margin-left: -0.012em; margin-right: 0.009em;"></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.291em; border-left: 0px solid; width: 0px; height: 1.104em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>j</mi></math></span></span><script type="math/tex" id="MathJax-Element-4">j</script> represents the subject id and</p><p><span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-5-Frame" tabindex="0" style="text-align: center; position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;msub&gt;&lt;mi&gt;u&lt;/mi&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x223C;&lt;/mo&gt;&lt;mi&gt;N&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mn&gt;0.04&lt;/mn&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-58" style="width: 7.588em; display: inline-block;"><span style="display: inline-block; position: relative; width: 6.656em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.262em, 1006.56em, 2.616em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-59"><span class="msubsup" id="MathJax-Span-60"><span style="display: inline-block; position: relative; width: 0.938em; height: 0px;"><span style="position: absolute; clip: rect(3.428em, 1000.55em, 4.191em, -1000em); top: -4.025em; left: 0em;"><span class="mi" id="MathJax-Span-61"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0075_S_zN.png" style="width: 11px; height: 9px; vertical-align: baseline; margin-right: 0.021em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span><span style="position: absolute; top: -3.875em; left: 0.572em;"><span class="mi" id="MathJax-Span-62" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006A_S_zN.png" style="width: 6px; height: 12px; vertical-align: -3px; margin-left: -0.012em; margin-right: 0.009em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span></span></span><span class="mo" id="MathJax-Span-63" style="padding-left: 0.278em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/223C_S_zN.png" style="width: 14px; height: 5px; vertical-align: 2px; margin-right: 0.056em;"></span><span class="mi" id="MathJax-Span-64" style="padding-left: 0.278em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/004E_S_zN.png" style="width: 17px; height: 14px; margin-right: -0.085em;"><span style="display: inline-block; overflow: hidden; height: 1px; width: 0.085em;"></span></span><span class="mo" id="MathJax-Span-65"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0028_S_zN.png" style="width: 6px; height: 20px; vertical-align: -5px; margin-right: 0.056em;"></span><span class="mn" id="MathJax-Span-66"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0030_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.04em;"></span><span class="mo" id="MathJax-Span-67"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002C_S_zN.png" style="width: 4px; height: 6px; vertical-align: -4px; margin-right: 0.068em;"></span><span class="mn" id="MathJax-Span-68" style="padding-left: 0.167em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0030_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.04em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/002E_S_zN.png" style="width: 4px; height: 3px; margin-right: 0.079em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0030_S_zN.png" style="width: 9px; height: 14px; vertical-align: baseline; margin-right: 0.04em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0034_S_zN.png" style="width: 9px; height: 14px; margin-right: 0.029em;"></span><span class="mo" id="MathJax-Span-69"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0029_S_zN.png" style="width: 6px; height: 20px; vertical-align: -5px; margin-right: 0.095em;"></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.394em; border-left: 0px solid; width: 0px; height: 1.308em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>u</mi><mi>j</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false">(</mo><mn>0</mn><mo>,</mo><mn>0.04</mn><mo stretchy="false">)</mo></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-5">u_j \sim N(0, 0.04)</script></p><p>The <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-6-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;u&lt;/mi&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-70" style="width: 1.086em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.929em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.57em, 1000.93em, 2.616em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-71"><span class="msubsup" id="MathJax-Span-72"><span style="display: inline-block; position: relative; width: 0.938em; height: 0px;"><span style="position: absolute; clip: rect(3.428em, 1000.55em, 4.191em, -1000em); top: -4.025em; left: 0em;"><span class="mi" id="MathJax-Span-73"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0075_S_zN.png" style="width: 11px; height: 9px; vertical-align: baseline; margin-right: 0.021em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span><span style="position: absolute; top: -3.875em; left: 0.572em;"><span class="mi" id="MathJax-Span-74" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006A_S_zN.png" style="width: 6px; height: 12px; vertical-align: -3px; margin-left: -0.012em; margin-right: 0.009em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span></span></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.394em; border-left: 0px solid; width: 0px; height: 0.957em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>u</mi><mi>j</mi></msub></math></span></span><script type="math/tex" id="MathJax-Element-6">u_j</script>
+ is the random effect for each person. This says each subject’s random 
+effect is assumed to be drawn from a normal distribution with mean 0 and
+ standard deviation 0.20 (variance = 0.04).</p><p><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-7-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msup&gt;&lt;mtext&gt;logit&lt;/mtext&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-75" style="width: 3.357em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.941em; height: 0px; font-size: 114%;"><span style="position: absolute; clip: rect(1.12em, 1002.94em, 2.528em, -1000em); top: -2.167em; left: 0em;"><span class="mrow" id="MathJax-Span-76"><span class="msubsup" id="MathJax-Span-77"><span style="display: inline-block; position: relative; width: 2.924em; height: 0px;"><span style="position: absolute; clip: rect(3.176em, 1001.89em, 4.386em, -1000em); top: -4.025em; left: 0em;"><span class="mtext" id="MathJax-Span-78"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006C_S_zN.png" style="width: 5px; height: 14px; margin-right: 0.015em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/006F_002_S_zN.png" style="width: 9px; height: 9px; margin-right: 0.029em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0067_S_zN.png" style="width: 9px; height: 13px; vertical-align: -4px; margin-right: 0.015em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0069_S_zN.png" style="width: 5px; height: 13px; margin-right: 0.023em;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0074_S_zN.png" style="width: 6px; height: 12px; margin-right: 0.056em;"></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span><span style="position: absolute; top: -4.446em; left: 1.945em;"><span class="texatom" id="MathJax-Span-79"><span class="mrow" id="MathJax-Span-80"><span class="mo" id="MathJax-Span-81" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/2212_S_zN.png" style="width: 10px; height: 1px; vertical-align: 3px; margin-right: 0.084em;"></span><span class="mn" id="MathJax-Span-82" style="font-size: 70.7%;"><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/0031_S_zN.png" style="width: 6px; height: 9px; margin-right: 0.073em;"></span></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 4.025em;"></span></span></span></span></span>&nbsp;<span style="display: inline-block; width: 0px; height: 2.167em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.294em; border-left: 0px solid; width: 0px; height: 1.369em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mtext>logit</mtext><mrow class="MJX-TeXAtom-ORD"><mo>−</mo><mn>1</mn></mrow></msup></math></span></span><script type="math/tex" id="MathJax-Element-7">\text{logit}^{-1}</script> is the <em>inverse logit</em> function, and it corresponds to the <code>plogis()</code> function we used to transform log-odds into probability. In the language of generalized linear models, this is the <em>link</em> function. The logit is the link between an additive linear model and a probability outcome.</p><hr><p><strong>Side note:</strong>
+ Previously, we mentioned that we had generated our fake data 
+incorrectly because we ran the risk of simulating probabilities outside 
+the range of [0,1]. The correct way would have been to use the logit 
+transformation as just described. However, that means working with 
+log-odds instead of probabilities, which are less intuitive. It’s not 
+impossible to do, just inconvenient. Here’s how we could have simulated 
+our response probabilities using log-odds and a logit transformation. <a href="https://rpubs.com/clayford/741841">See this page</a> for how we derived the log-odds.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+d$p2 &lt;- plogis(-0.4054651 + 
+                 2.140066*(d$trt == "treat") +
+                 -0.4418328*(d$sex == "male") +
+                 -1.292768*(d$trt == "treat")*(d$sex == "male") +
+                 rnorm(n = n, mean = 0, sd = 0.03)[d$id])
+d$y2 &lt;- rbinom(n = nrow(d), size = 1, prob = d$p2)
+</code></pre></div><hr><p>Returning to our estimated model, <code>m</code>, we can use it to simulate response data with the <code>simulate()</code>
+ function. If our model is “good,” it should simulate response data 
+similar to what we observed. Here we use it to simulate 100 different 
+data sets. It essentially takes our 3500 observed predictors, feeds them
+ into the model, and generates a new series of ones and zeroes to 
+indicate whether someone ate a vegetable or not. The result is a 100 
+column data frame which we save to an object called <code>sim</code>.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+sim &lt;- simulate(m, nsim = 100)
+</code></pre></div><p>So what can we do with this data frame? One 
+application is to use it to visualize how our estimated model performs 
+compared to our observed data. We can look at our observed data by 
+simply taking the mean of <code>y</code> by <code>trt</code> and <code>sex</code> using the <code>aggregate()</code> function. (Recall the means of zeroes and ones is the proportion of ones.)</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+obs &lt;- aggregate(d$y, by = list(trt = d$trt, sex = d$sex), mean)
+obs
+</code></pre></div><div class="rds-article--output" aria-label="output"><pre><code class="language-plaintext">
+        trt    sex         x
+  1 control female 0.4242424
+  2   treat female 0.8659341
+  3 control   male 0.2820823
+  4   treat   male 0.5071429
+</code></pre></div><p>Notice the observed probabilities are very close to our model predicted probabilities.</p><p>Now let’s do the same thing to all the columns in the <code>sim</code> data frame. We apply the <code>aggregate()</code> function to each column, passing to <code>aggregate()</code> the same arguments we used for the observed data. Then we combine the results into one data frame using the <code>do.call()</code> and <code>rbind()</code> functions.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+s_p &lt;- lapply(sim, aggregate,
+              by = list(trt = d$trt,sex = d$sex),
+              mean)
+s_df &lt;- do.call(rbind, s_p)
+</code></pre></div><p>Now we can plot the observed and simulated data to
+ see how close the model-simulated data comes to the observed data. We 
+use ggplot2 to create this plot. First we use <code>geom_point()</code> to plot the <code>obs</code> data frame, making the observed proportions appear with a bigger blue point. Then we plot the simulated data in the <code>s_df</code> data frame using <code>geom_jitter()</code>, which “jitters” the points sideways. The <code>alpha = 1/2</code> argument makes the points transparent and the <code>shape = 1</code> argument turns the points into open circles.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+library(ggplot2)
+ggplot() +
+  geom_point(aes(y = x, x = trt), data = obs, 
+             size = 4, color = "blue") +
+  geom_jitter(aes(y = x, x = trt), data = s_df, 
+              width = 0.2, height = 0, shape = 1, alpha = 1/2) +
+  facet_wrap(~sex) +
+  labs(x = "Treatment", y = "Predicted Probability", 
+       title = "Model with interaction")
+</code></pre></div><p><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/unnamed-chunk-23-1-1_S_zN.png" alt="One jitter plot" width="600" height="430" loading="lazy"></p><p>We
+ can see our model-simulated data hovers very closely to the observed 
+data, which is not surprising since we fit the “correct” model to the 
+data.</p><p>Let’s fit a wrong model and recreate the plot. Below we fit a model without an interaction of <code>trt</code> and <code>sex</code>.
+ This is not how we simulated the data, so we know the model is wrong. 
+After we fit the model, we rerun the same code above to simulate 
+responses from our model 100 times and plot them with the observed data.</p><div class="rds-article--code" aria-label="code"><pre><code class="language-plaintext">
+m2 &lt;- glmer(y ~ trt + sex + (1|id), data = d, family = binomial)
+sim2 &lt;- simulate(m2, nsim = 100)
+s_p2 &lt;- lapply(sim2, aggregate,
+              by = list(trt = d$trt, sex = d$sex),
+              mean)
+s_df2 &lt;- do.call(rbind, s_p2)
+ggplot() +
+  geom_point(aes(y = x, x = trt), data = obs, 
+             size = 4, color = "blue") +
+  geom_jitter(aes(y = x, x = trt), data = s_df2, 
+              width = 0.2, height = 0, shape = 1, alpha = 1/2) +
+  facet_wrap(~sex) +
+  labs(x = "Treatment", y = "Predicted Probability", 
+       title = "Wrong model: without interaction")
+</code></pre></div><p><img src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/unnamed-chunk-24-1-1_S_zN.png" alt="One jitter plot" width="600" height="430" loading="lazy"></p><p>Our
+ model is systematically under-predicting and over-predicting 
+probabilities of success. If our model was “good,” we would expect it to
+ generate data similar to what we observed.</p><p>Logistic regression 
+and mixed-effects modeling are massive topics and we have just touched 
+on the basics. But hopefully you now have a better idea of how the two 
+can be combined to allow us to model the probability of binary events 
+when we have clustered or repeated measures.</p><div class="section level2"><h2>R session details</h2><p>The
+ analysis was done using the R Statistical language (v4.5.1; R Core 
+Team, 2025) on Windows 11 x64, using the packages lme4 (v1.1.37), Matrix
+ (v1.7.4) and ggplot2 (v3.5.2).</p></div><div class="section level2"><h2>References</h2><ul data-once="body" class="ul-0"><li data-once="ul" class="li-0">Bates D, Maechler M, Bolker B, Walker S (2015). Fitting Linear Mixed-Effects Models Using lme4. <em>Journal of Statistical Software</em>, 67(1), 1-48. <a class="uri" href="https://library.virginia.edu/data/articles/10.18637/jss.v067.i01">doi:10.18637/jss.v067.i01</a>.</li><li data-once="ul" class="li-0">R Core Team (2025). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing, Vienna, Austria. <a class="uri" href="https://www.r-project.org/">https://www.R-project.org/</a>.</li><li data-once="ul" class="li-0">Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.</li></ul></div><hr><p><a href="https://library.virginia.edu/data/tag/clay-ford"><em>Clay Ford</em></a><br><em>Statistical Research Consultant</em><br><em>University of Virginia Library</em><br><em>March 19, 2021</em></p></div></div>
+      
+	</div>
+<div class="block block-block-content block-block-contentec4dd524-54a8-49b8-a2a4-5763269e9fd3">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><div class="tex2jax_process"><hr>
+<p><strong>For questions or clarifications regarding this article, contact&nbsp;<a href="mailto:statlab@virginia.edu">statlab@virginia.edu</a>.</strong></p>
+
+<p><a href="https://library.virginia.edu/data/articles">View the entire collection</a>&nbsp;of UVA Library StatLab articles, or <a href="https://library.virginia.edu/data/statlab/acknowledgments">learn how to cite</a>.</p></div></div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+
+			</div>
+		
+					<div class="layout__region layout__region--second uvalib-col--second">
+
+				<div class="site-sidebar--subnav block block-block-content block-block-contentfc57606f-3f50-4773-b037-c293a4df6a5d">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><h4><a href="https://library.virginia.edu/data">Research Data Services</a></h4><hr class="hr--custom sidebar" aria-hidden="true">
+<nav>
+<ul data-once="body" class="ul-0">
+  <li data-once="ul" class="li-0">Data analysis and visualization
+    <ul data-once="body" class="ul-1">
+      <li data-once="ul" class="li-1"><a href="https://library.virginia.edu/data/statlab">StatLab</a></li>
+      <li data-once="ul" class="li-1"><a href="https://library.virginia.edu/data/research-software/">Research software </a></li>
+    </ul>
+  </li>
+  <li data-once="ul" class="li-0"><a href="https://library.virginia.edu/data/datasources/">Data discovery and access</a><br>
+    <ul data-once="body" class="ul-1">
+      <li data-once="ul" class="li-1"><a href="https://guides.lib.virginia.edu/data">Find data</a></li>
+      <li data-once="ul" class="li-1"><a href="https://library.virginia.edu/data/datasources/licensed/">Licensed data sources</a></li>
+    </ul>
+  </li>
+  <li data-once="ul" class="li-0"><a href="https://library.virginia.edu/data/data-management">Research data management</a>
+    <ul data-once="body" class="ul-1">
+      <li data-once="ul" class="li-1"><a href="https://library.virginia.edu/data/data-management/dmp-support">Data management planning support</a></li>
+      <li data-once="ul" class="li-1"><a href="https://guides.lib.virginia.edu/RDM/">Research data management guide</a></li>
+      <li data-once="ul" class="li-1"><a href="https://library.virginia.edu/data/data-management/funding">Federal agency funding guidelines</a></li>
+      <li data-once="ul" class="li-1"><a href="https://data-storage-finder.library.virginia.edu/">UVA Data Storage Finder</a></li>
+    </ul>
+  </li>
+  <li data-once="ul" class="li-0"><a href="https://library.virginia.edu/data/training">Workshops and events</a></li>
+</ul>
+</nav>
+<br>
+<h4>Subscribe</h4>
+<p>Want updates in your inbox? <a href="https://library.virginia.edu/data/newsletters">Subscribe to our monthly&nbsp;Research Data Services Newsletter!</a></p></div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+<div class="block block-layout-builder block-field-blocknoderds-article-newsfield-categories">
+	
+			<h2>Categories related to this article:</h2>
+		
+			
+  <div class="field field--name-field-categories field--type-entity-reference field--label-visually_hidden">
+    <div class="field__label visually-hidden">Related categories:</div>
+          <div class="field__items">
+              <div class="field__item"><a href="https://library.virginia.edu/data/tag/r" hreflang="en">R</a></div>
+          <div class="field__item"><a href="https://library.virginia.edu/data/tag/logistic-regression" hreflang="en">logistic regression</a></div>
+          <div class="field__item"><a href="https://library.virginia.edu/data/tag/mixed-effect-models" hreflang="en">mixed effect models</a></div>
+          <div class="field__item"><a href="https://library.virginia.edu/data/tag/simulation" hreflang="en">simulation</a></div>
+          <div class="field__item"><a href="https://library.virginia.edu/data/tag/statistical-methods" hreflang="en">statistical methods</a></div>
+          <div class="field__item"><a href="https://library.virginia.edu/data/tag/binomial-glmm" hreflang="en">binomial GLMM</a></div>
+              </div>
+      </div>
+
+	</div>
+
+			</div>
+		
+	</div>
+
+  </div>
+
+</article>
+
+	</div>
+
+
+						</div>
+					</div>
+											</div>
+		</div>
+	</div>
+
+	<button onclick="topFunction()" id="scrollTop" title="Scroll to top" style="display: none;">Top</button>
+
+	<footer>
+		<div class="footer--pre"></div>
+		<div class="footer--main">
+<div id="block-uvalibrary-v2a-footerusingthelibrary" class="block block-block-content block-block-contentbb3ca4ac-cdfd-49f0-a5f5-404f31e6f1d3">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><h2>Using the Library</h2><ul data-once="body" class="ul-0"><li data-once="ul" class="li-0"><a href="https://library.virginia.edu/services">Search, borrow, request</a></li><li data-once="ul" class="li-0"><a href="https://library.virginia.edu/research-and-teaching">Research &amp; teaching</a></li><li data-once="ul" class="li-0"><a href="https://library.virginia.edu/spaces">Library spaces</a></li><li data-once="ul" class="li-0"><a href="https://library.virginia.edu/equipment-and-tech">Equipment &amp; technology</a></li><li data-once="ul" class="li-0"><a href="https://library.virginia.edu/help">Get help</a></li></ul></div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+<div id="block-uvalibrary-v2a-footerabout" class="block block-block-content block-block-content61107d69-826f-4349-aa1f-cd6be9308e33">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><h2><a href="https://library.virginia.edu/about-uva-library">About </a></h2>
+
+<ul data-once="body" class="ul-0">
+	<li data-once="ul" class="li-0"><a href="https://library.virginia.edu/jobs/">Jobs and fellowships</a></li>
+	<li data-once="ul" class="li-0"><a href="https://library.virginia.edu/staff/">Staff directory</a></li>
+	<li data-once="ul" class="li-0"><a href="https://library.virginia.edu/policies">Library policies</a></li>
+</ul>
+
+<p><a href="https://library.virginia.edu/status">Status dashboard</a></p></div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+<div id="block-uvalibrary-v2a-footercontact" class="block block-block-content block-block-content2863ad5b-f9fa-4239-ac50-cd961b833150">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><h2>Contact us</h2>
+
+<address>
+<a href="tel:+1(434)924-3021">(434) 924-3021</a><br>
+<a href="mailto:library@virginia.edu">library@virginia.edu</a><br>
+UVA Shannon Library<br>
+P.O. Box 400113<br>
+160 McCormick Road<br>
+Charlottesville, VA 22904
+</address>
+
+
+<ul data-once="body" class="ul-0">
+	<li data-once="ul" class="li-0"><a href="https://library.virginia.edu/askalibrarian">Ask a Librarian</a></li>
+	<li data-once="ul" class="li-0"><a href="https://library.virginia.edu/site-feedback">Site feedback</a></li>
+</ul>
+<ul class="social-media ul-0" data-once="body">
+	<li data-once="ul" class="li-0"><a href="https://bsky.app/profile/uvalibrary.bsky.social" class="twitter" aria-label="Bluesky"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M439.8 358.7C436.5 358.3 433.1 357.9 429.8 357.4C433.2 357.8 436.5 358.3 439.8 358.7zM320 291.1C293.9 240.4 222.9 145.9 156.9 99.3C93.6 54.6 69.5 62.3 53.6 69.5C35.3 77.8 32 105.9 32 122.4C32 138.9 41.1 258 47 277.9C66.5 343.6 136.1 365.8 200.2 358.6C203.5 358.1 206.8 357.7 210.2 357.2C206.9 357.7 203.6 358.2 200.2 358.6C106.3 372.6 22.9 406.8 132.3 528.5C252.6 653.1 297.1 501.8 320 425.1C342.9 501.8 369.2 647.6 505.6 528.5C608 425.1 533.7 372.5 439.8 358.6C436.5 358.2 433.1 357.8 429.8 357.3C433.2 357.7 436.5 358.2 439.8 358.6C503.9 365.7 573.4 343.5 593 277.9C598.9 258 608 139 608 122.4C608 105.8 604.7 77.7 586.4 69.5C570.6 62.4 546.4 54.6 483.2 99.3C417.1 145.9 346.1 240.4 320 291.1z fill=#ffffff"></path></svg></a></li>
+	<li data-once="ul" class="li-0"><a href="https://www.facebook.com/UVALibrary/" class="facebook" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z"></path></svg></a></li>
+	<li data-once="ul" class="li-0"><a href="https://instagram.com/uvalibrary" class="instagram" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg></a></li>
+</ul></div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+
+</div>
+		<div class="footer--post">
+<div id="block-postfooter-2" class="post-footer block block-block-content block-block-content11c3fd2e-6f8a-4a0b-bf4b-a1a8daa9f68e">
+	
+		
+			  <div class="layout layout--onecol">
+    <div class="layout__region layout__region--content">
+      <div class="block block-layout-builder block-field-blockblock-contentbasicbody">
+	
+		
+			
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><div class="post-footer--copyright">
+<p>Copyright <span class="currentYear">2026</span> by the Rector and Visitors of the University of Virginia</p> 
+  <a href="https://guides.lib.virginia.edu/findinggovinfo">
+    <svg alt="Federal Depository Library Program logo" width="35px" viewBox="0 0 76 69" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><title>Federal Depository Library Program</title><defs></defs><g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="First-Release" transform="translate(-1164.000000, -2888.000000)"><g id="footer" transform="translate(-1.000000, 2650.000000)"><g id="fdlp-emblem-logo-text-cmyk" transform="translate(1164.778054, 238.000000)"><path d="M13.4360945,28.2205532 L2.35993899,28.2205532 C2.35993899,28.2205532 0.577055368,28.0392271 0.575613488,27.3131932 C0.565880804,19.4366373 0.594718388,19.7671834 0.594718388,19.7671834 C0.594718388,19.7671834 1.50598604,20.7522545 2.71824597,20.806251 C3.74774771,20.852221 14.3304201,20.806251 14.3304201,20.806251 C14.3304201,20.806251 17.2444579,21.0645585 16.6543688,23.3356948 C16.1432227,25.2930677 15.6944378,26.5462971 15.601797,29.8915257 L15.5808898,29.870365 C15.0560458,28.2511999 13.4360945,28.2205532 13.4360945,28.2205532" id="Fill-2" fill="#FFFFFF"></path><path d="M1.62277825,39.3398174 C2.12094751,40.9224984 3.90130785,40.1742092 3.90130785,40.1742092 C3.90130785,40.1742092 11.6283384,38.3894062 13.4169896,38.0493742 C15.2002337,37.7104368 16.4759363,38.5907985 16.4759363,38.5907985 C16.4759363,38.5907985 15.6695654,34.9529673 15.4013758,32.8952631 C15.1353491,30.8415721 12.2973704,30.5923856 12.2973704,30.5923856 C12.2973704,30.5923856 3.62230422,30.6022363 2.29649631,30.5923856 C0.89462926,30.579981 0.575613488,29.5058886 0.575613488,29.5058886 C0.575613488,29.5058886 0.610218589,36.0956498 1.62277825,39.3398174" id="Fill-3" fill="#FFFFFF"></path><path d="M18.1340974,26.4142246 C17.2916794,29.9969648 17.5137288,33.4023923 18.5035789,36.8924629 C21.4493381,47.2524927 32.2774904,53.7878925 42.599543,51.7210673 C42.3299116,52.3256091 41.8209283,52.7958894 41.5931114,53.3745275 C39.8444724,57.8595199 38.9851124,61.8942984 37.3824637,66.4445974 C37.1232859,67.1815766 36.5533831,67.7992527 36.0101551,68.372783 C35.8958862,68.4928157 36.0386322,68.6832628 36.166599,68.6894651 C41.1508149,68.9962966 46.0993443,68.2421699 50.8027542,66.5128227 C51.713301,66.181547 52.5816727,65.8626758 53.443556,65.4314335 C66.739845,58.8000805 75.3929225,45.3604264 75.5760411,31.4727474 C75.7259966,20.4629355 71.0557499,10.1277149 63.027727,2.29931795 C62.7069089,1.98117645 63.2814977,1.39816027 63.1081117,0.928609688 C63.027727,0.710799511 62.7872936,0.433520224 62.6009307,0.433520224 C57.3337461,0.421115624 52.153795,0.512325916 46.8916569,0.495908063 C46.5769668,0.495908063 46.2071248,0.933717464 46.0337388,1.30074768 C45.9461447,1.48937056 45.8617947,1.92316671 46.1764849,1.94907043 C47.4514665,2.05998215 47.9752291,3.2825649 49.0443826,3.57115426 C50.161118,3.86777013 51.0370596,3.0592821 52.0827825,2.78820512 C52.834362,2.59119089 53.6749776,2.54777479 54.3537422,2.96770697 C55.078647,3.41938034 54.9149937,4.68428466 54.1785539,5.00643941 C51.8037789,6.03930476 49.2321873,5.20454817 47.1652535,3.54889895 C46.8628193,3.31065767 46.3268008,2.8571601 45.8340385,3.1256832 C43.7883724,4.23334098 40.4972832,3.97722248 39.8307745,6.34431197 C39.3571172,8.02659459 40.4388871,9.90881018 41.1688384,11.5841608 C42.0548732,10.3079464 43.554788,10.1040002 44.9126777,10.5217433 C47.3476512,11.2663842 49.337805,12.5889334 51.0900487,14.381398 C53.2845888,16.6288196 54.3587888,19.5789253 54.6049897,22.6246194 C55.2826729,30.9032303 52.9735034,43.1640826 43.6823943,44.6551884 C28.0538657,47.1689441 24.0681512,37.5520957 24.0681512,32.7489618 C24.0681512,30.8696649 24.0184064,29.1041985 24.4819705,27.343475 C25.4361341,23.716589 27.4194389,20.6249249 30.6925047,18.7511007 C32.025522,17.9893123 33.5950075,17.6262954 34.4947401,16.2435474 C35.1781908,15.1949938 35.0603172,13.9800728 34.6821844,12.8720501 C34.3328892,11.8483058 33.3632254,10.9113937 32.413027,10.9113937 C21.7449233,10.9113937 9.9078161,10.9095695 0.621393153,10.9095695 C0.621393153,13.6221636 0.594718388,14.9177146 0.621393153,17.1443402 C0.632207247,18.1943531 1.28501805,18.7521952 2.40860241,18.7521952 L21.6551664,18.7521952 C20.4173131,21.3301629 18.8207923,23.4929414 18.1340974,26.4142246 Z" id="Fill-4" fill="#FFFFFF"></path><path d="M11.3828585,54.9313047 C12.5742112,54.515021 21.0726472,49.1828673 21.7878192,48.9209113 C22.4258508,48.6888724 22.9550204,48.6111612 23.8875558,49.2802799 C26.3931814,51.080771 29.0235295,52.8995043 30.3186975,52.8995043 C30.3186975,52.8995043 29.9146108,53.2154567 29.1107632,53.9827177 C28.3512533,54.7098461 20.9396338,62.70607 20.9396338,62.70607 C20.9396338,62.70607 19.600849,64.1081546 18.1705048,63.1599324 C18.1705048,63.1599324 13.3016392,59.7238583 9.37323939,55.293592 C9.37323939,55.293592 10.0894929,55.3848023 11.3828585,54.9313047" id="Fill-5" fill="#FFFFFF"></path><path d="M21.3422786,64.9199262 C21.3422786,64.9199262 22.5033518,64.8765101 23.1298483,64.2905752 C23.7545425,63.7020864 31.5673649,54.432202 31.5673649,54.432202 C31.5673649,54.432202 31.8672757,53.4431176 33.3996329,53.7988377 C35.3198555,54.2541595 38.4029537,54.390975 39.0265664,54.3431808 C39.0265664,54.3431808 38.6232007,54.7098461 38.1769391,55.9258617 C37.9166799,56.6376669 35.1421439,66.5026072 34.6057648,67.2705978 C34.0697462,68.0415072 33.9810706,68.7186524 32.1913381,68.4016055 C28.8014801,67.8010769 26.0694795,66.9685093 21.3422786,64.9199262" id="Fill-6" fill="#FFFFFF"></path><path d="M2.46159147,42.2184143 C2.46159147,42.2184143 3.39989436,42.4891264 4.33891818,42.3081652 C6.18308167,41.9528099 13.275325,40.0829989 14.6097841,39.9593177 C16.5307277,39.7765323 16.1738626,40.048339 17.1983178,41.0447202 C18.0803874,41.8940705 19.8340729,45.6968099 20.2817764,45.9693463 C20.7258752,46.2385991 20.9933438,46.7369721 21.754656,46.8756118 C21.754656,46.8756118 11.0227492,52.9334345 10.1868197,53.0220909 C9.29645932,53.1129363 8.42340147,53.9973113 7.50888959,52.661263 C4.33891818,48.0055248 4.25168449,47.3247312 2.86387577,43.4384431 L2.46159147,42.2184143" id="Fill-7" fill="#FFFFFF"></path><polygon id="Fill-8" fill="#C11E42" points="30.9895318 38.5240326 46.0903326 38.5240326 46.0903326 24.2594726 30.9895318 24.2594726"></polygon><path d="M38.5792234,23.2010684 C38.5792234,23.2010684 36.2116577,19.9455907 32.2828974,20.1283761 L32.2828974,22.7964596 L29.7372597,22.7964596 L29.7372597,39.8356366 L36.5238246,39.8356366 C36.5238246,39.8356366 36.8395961,38.750599 37.4181502,38.5240326 L31.0774864,38.5240326 L31.0774864,24.329887 L32.1913381,24.329887 L32.1913381,35.5418209 C32.1913381,35.5418209 35.7390818,35.4586371 37.7501428,38.5316943 L38.8928321,38.5316943" id="Fill-9" fill="#FFFFFF"></path><path d="M38.5792234,23.2010684 C38.5792234,23.2010684 40.9568822,19.9455907 44.8842006,20.1283761 L44.8842006,22.7964596 L47.4276755,22.7964596 L47.4276755,39.8356366 L40.6414711,39.8356366 C40.6414711,39.8356366 40.3303857,38.750599 39.7482269,38.5240326 L46.0903326,38.5240326 L46.0903326,24.329887 L44.9710738,24.329887 L44.9710738,35.5418209 C44.9710738,35.5418209 41.4290976,35.4586371 39.4201994,38.5316943 L38.7609002,38.5316943" id="Fill-10" fill="#FFFFFF"></path><path d="M37.8903656,24.329887 C37.8903656,24.329887 36.4823706,21.619482 33.5326462,21.619482 L33.5326462,34.5001994 C33.5326462,34.5001994 35.9016537,34.7716412 37.5500821,36.0832452 L37.9094705,36.3991976 L37.8903656,24.329887" id="Fill-11" fill="#C11E42"></path><path d="M39.30557,24.329887 C39.30557,24.329887 40.6854484,21.619482 43.6326495,21.619482 L43.6326495,34.5001994 C43.6326495,34.5001994 40.7535772,34.92378 39.735971,35.879299 C39.5377126,36.0660977 39.30557,36.4232772 39.30557,36.4232772 L39.30557,24.329887" id="Fill-12" fill="#C11E42"></path></g></g></g></g></svg>
+    </a>
+</div>
+</div>
+      
+	</div>
+
+    </div>
+  </div>
+
+	</div>
+
+</div>
+	</footer>
+</div>
+
+  </div>
+
+					
+					<script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/2280","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJx9UNtuwzAI_SE7ntaX_o1FDEndEVMZnNR_Py_V9jSVB8S5CHEAVbKYy52SSQ1JdVqEcTAmEUnzWqJ2Ndpc-iLMwxQhJamYpYS_aVqqFKOCDmt7AF_jcRm7ot1oo4DXE_l1oed7A8sM7NU657L-az0ufoA3kj-B__gpx9ClWZxbZqQa7JAkHHWEHUf_qpg1yU61Byk0dLeB3e7wDOM17eFe8cMMSq7twHmuUHvcP-HF7ZkODWefNsHG9A3h84L8","theme":"uvalibrary_v2a","theme_token":null},"ajaxTrustedUrl":[],"ckeditorAccordion":{"accordionStyle":{"collapseAll":1,"keepRowsOpen":1,"animateAccordionOpenAndClose":1,"openTabsWithHash":1,"allowHtmlInTitles":1}},"mathjax":{"config_type":0,"config":{"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"processEscapes":"true"},"showProcessingMessages":"false","messageStyle":"none"}},"user":{"uid":0,"permissionsHash":"1e577b247ee1a07a2c4763e1af70ceb42d4baa522db0a8d25bb7f0145fd5a4d4"}}</script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/jquery.min_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/once.min_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/drupalSettingsLoader_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/drupal_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/drupal.init_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/index.umd.min_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/accordion.frontend.min_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/progress_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/loadjs.min_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/debounce_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/announce_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/message_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/ajax_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/custom_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/config_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/MathJax_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/setup_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/alerts_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/scroll-to-top_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/getdate_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/sc-virgo-search_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/menu-accessibilty_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/mobile-menu-v2_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/phone-format_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/utils_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/dialog_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/staff-bio_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/components_S_zN.js"></script>
+<script src="Getting%20Started%20with%20Binomial%20Generalized%20Linear%20Mixed%20Models%20_%20UVA%20Library_files/sidenav-accordian_S_zN.js"></script>
+
+				
+<div id="drupal-live-announce" class="visually-hidden" aria-live="polite" aria-busy="false"></div><div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-size-adjust: none; font-family: Helvetica;"></div></div><div style="visibility: hidden; overflow: scroll; position: absolute; top: 0px; left: 0px; width: 200px; height: 200px; padding: 0px; border: 0px; margin: 0px; display: none;"><div style="position: absolute; inset: 0px; padding: 0px; border: 0px; margin: 0px;"></div></div></body></html>

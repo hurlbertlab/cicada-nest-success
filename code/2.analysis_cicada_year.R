@@ -20,6 +20,9 @@ library(lubridate) # handling dates
 library(ggplot2) # plotting
 library(png) #for the cicada image
 
+#prevent scientific notation to make a trend table easier to read
+options(scipen=999)
+
 # Read in location.ID climate data
 climate_data<- read.csv("data/filtered_climate_data.csv")
 
@@ -235,8 +238,132 @@ test_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_pr
 summary(test_glm)
 test_glm$formula
 
-postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p"),
-                                      rows_list = original_order)
+
+postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
+                                      rows_list = original_order) |>
+  mutate(model = as.character(model),
+         model_desc = as.character(model_desc),
+         mutate(across(where(is.logical), as.numeric)))
                                       
 #make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
-#save in data/model_output
+#save in model_results/
+for(i in 1:length(original_order)) {
+  
+  sp <- original_order[i]
+  print(i); print(sp)
+  
+  tmp <- postcicada_df |>
+    filter(Species.Name == sp)
+  
+  tmp_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
+                 data = tmp, 
+                 family = binomial(link = "logit"))
+  summary <- summary(tmp_glm)
+  
+  tmp_results <- postcicada_results |>
+    filter(Species.Name == sp) |>
+    mutate(model = as.character(tmp_glm$formula)[3],
+           model_desc = "binomial",
+           intercept = summary$coefficients[1,1],
+           post_emergence = summary$coefficients[2,1],
+           pe_sd = summary$coefficients[2,2],
+           pe_p = summary$coefficients[2,4], 
+           y_anomaly_temp = summary$coefficients[3,1],
+           yat_sd = summary$coefficients[3,2],
+           yat_p = summary$coefficients[3,4],
+           y_anomaly_precip = summary$coefficients[4,1],
+           yap_sd = summary$coefficients[4,2],
+           yap_p = summary$coefficients[4,4],
+           n_noncicada = sum(tmp$cicada_year_binary == 0),
+           n_cicada = sum(tmp$cicada_year_binary == 1)
+             )
+  
+  #double-check nothing messed up in calculating the n() in each group.
+  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  
+  postcicada_results[postcicada_results$Species.Name == sp,] <- tmp_results
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+    #postcicada_results |>
+    #rows_update(tmp_results, by = c("Species.Name"))
+   
+}
+  write.csv(postcicada_results, "model_results/binomial_POSTcicada_results.csv")
+#run both the binomial with tf nest success
+#and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
+
+#Okay! Yay, now do the same for precicada glms
+precicada_df <- analysis_df |>
+  filter(!is.na(pre_emergence))
+
+precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
+                                      rows_list = original_order) |>
+  mutate(model = as.character(model),
+         model_desc = as.character(model_desc),
+         mutate(across(where(is.logical), as.numeric)))
+
+for(i in 1:length(original_order)) {
+  
+  sp <- original_order[i]
+  print(i); print(sp)
+  
+  tmp <- precicada_df |>
+    filter(Species.Name == sp)
+  
+  tmp_glm <- glm(nest_success_tf ~ pre_emergence + y_anomaly_temp + y_anomaly_precip, 
+                 data = tmp, 
+                 family = binomial(link = "logit"))
+  summary <- summary(tmp_glm)
+  
+  tmp_results <- precicada_results |>
+    filter(Species.Name == sp) |>
+    mutate(model = as.character(tmp_glm$formula)[3],
+           model_desc = "binomial",
+           intercept = summary$coefficients[1,1],
+           pre_emergence = summary$coefficients[2,1],
+           pe_sd = summary$coefficients[2,2],
+           pe_p = summary$coefficients[2,4], 
+           y_anomaly_temp = summary$coefficients[3,1],
+           yat_sd = summary$coefficients[3,2],
+           yat_p = summary$coefficients[3,4],
+           y_anomaly_precip = summary$coefficients[4,1],
+           yap_sd = summary$coefficients[4,2],
+           yap_p = summary$coefficients[4,4],
+           n_noncicada = sum(tmp$cicada_year_binary == 0),
+           n_cicada = sum(tmp$cicada_year_binary == 1)
+    )
+  
+  #double-check nothing messed up in calculating the n() in each group.
+  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  
+  precicada_results[precicada_results$Species.Name == sp,] <- tmp_results
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+  #postcicada_results |>
+  #rows_update(tmp_results, by = c("Species.Name"))
+  
+}
+write.csv(precicada_results, "model_results/binomial_PREcicada_results.csv")
+
+#annnnd just to make sure everything worked perfectly and I didn't mess up any of the functions e.g. none of the rows in the two datasets match or something..
+assert_that(
+  all(is.na((left_join(postcicada_results, precicada_results, by = c("pe_sd")))$n_cicada.y))
+   )
+
+#Now, for interpretation. See model_results/ to find a helpful page from the University of Virginia on how to interpret binomial glm results :)
+#The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from   to  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). 
+#add the intercept to get the predicted probability when not in the control group.
+#E.g. we're testing if girls or boys (0,1) are more likely to eat vegetables (0,1)
+#predicted log-odds girls (0) don't eat vegetables (0) = plogis(intercept)
+#predicted log-odds girls (0) do eat vegetables (1) = plogis(intercept + vegetables)
+
+
+#FROM BELLAS CODE
+# Getting predicted values from your models and then reverse logit transforming. This gets the log odds. 
+
+# E.g.
+eabl.climate.pred = predict(eablfledge.climate, nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Eastern Bluebird", c('cicada', 'y_anomaly_temp', 'y_anomaly_precip')])
+
+# Reverse logit transform to get predicted values of success in terms of a probability
+prob.predictions <- 1 / (1 + exp(-eabl.climate.pred))
+
+# Visualing those in a histogram
+hist(prob.predictions)
