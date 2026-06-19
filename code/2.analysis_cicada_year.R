@@ -349,11 +349,13 @@ assert_that(
    )
 
 #Now, for interpretation. See model_results/ to find a helpful page from the University of Virginia on how to interpret binomial glm results :)
-#The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from   to  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). 
-#add the intercept to get the predicted probability when not in the control group.
-#E.g. we're testing if girls or boys (0,1) are more likely to eat vegetables (0,1)
-#predicted log-odds girls (0) don't eat vegetables (0) = plogis(intercept)
-#predicted log-odds girls (0) do eat vegetables (1) = plogis(intercept + vegetables)
+#The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from -inf  to inf  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). To apply plogis() across all our variables at once we can use predict()
+
+#Next steps:
+#PREDICT
+
+#Follow the UVA guide to check how quality the models are.
+#UVA guide also has information about suggested plotting methods
 
 
 #FROM BELLAS CODE
