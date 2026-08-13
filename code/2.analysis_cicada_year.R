@@ -139,7 +139,8 @@ make_n_labels = function(df = summary_data,
 
 # graph mean and standard deviation of pct fledged for each species over cicada year 
 ## group, calc mean & stdev
-summary_data <- analysis_df %>%
+{
+  summary_data <- analysis_df %>%
   group_by(Species.Name, cicada_year) %>%
   summarise(
     mean_pct_survival = mean(pct_fledged, na.rm = TRUE),
@@ -147,10 +148,13 @@ summary_data <- analysis_df %>%
     n = n()
   ) |>
   ungroup() |>
-  arrange(desc((n))) |>
+  arrange(desc((n)))
+
+summary_data <- summary_data |>
   group_by(Species.Name) |>
   mutate(lab = make_n_labels(filter_species = Species.Name)) |>
   ungroup()
+}
 
 # Get the original order of species
 original_order <- unique(summary_data$Species.Name)
@@ -258,6 +262,7 @@ for(i in 1:length(original_order)) {
   tmp_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
                  data = tmp, 
                  family = binomial(link = "logit"))
+  
   summary <- summary(tmp_glm)
   
   tmp_results <- postcicada_results |>
@@ -352,12 +357,174 @@ assert_that(
 #The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from -inf  to inf  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). To apply plogis() across all our variables at once we can use predict()
 
 #Next steps:
+#fit the glm linear model also
+#fit with only cicada in the models.
 #PREDICT
+#plot
+
+# Use a normal distribution to test for an effect not of total nest failure or success, but in how many more or less young fledge. 
+test <- postcicada_df |>
+  filter(Species.Name == "Eastern Bluebird")
+test_glm <- glm(pct_fledged ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
+                data = test, 
+                family = gaussian)
+summary(test_glm)
+test_glm$formula
+
+pct_postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
+                                      rows_list = original_order) |>
+  mutate(model = as.character(model),
+         model_desc = as.character(model_desc),
+         mutate(across(where(is.logical), as.numeric)))
+
+#make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
+#save in model_results/
+for(i in 1:length(original_order)) {
+  
+  sp <- original_order[i]
+  print(i); print(sp)
+  
+  tmp <- postcicada_df |>
+    filter(Species.Name == sp)
+  
+  tmp_glm <- glm(pct_fledged ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
+                 data = tmp, 
+                 family = gaussian)
+  
+  summary <- summary(tmp_glm)
+  
+  tmp_results <- postcicada_results |>
+    filter(Species.Name == sp) |>
+    mutate(model = as.character(tmp_glm$formula)[3],
+           model_desc = "binomial",
+           intercept = summary$coefficients[1,1],
+           post_emergence = summary$coefficients[2,1],
+           pe_sd = summary$coefficients[2,2],
+           pe_p = summary$coefficients[2,4], 
+           y_anomaly_temp = summary$coefficients[3,1],
+           yat_sd = summary$coefficients[3,2],
+           yat_p = summary$coefficients[3,4],
+           y_anomaly_precip = summary$coefficients[4,1],
+           yap_sd = summary$coefficients[4,2],
+           yap_p = summary$coefficients[4,4],
+           n_noncicada = sum(tmp$cicada_year_binary == 0),
+           n_cicada = sum(tmp$cicada_year_binary == 1)
+    )
+  
+  #double-check nothing messed up in calculating the n() in each group.
+  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  
+  pct_postcicada_results[pct_postcicada_results$Species.Name == sp,] <- tmp_results
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+  #postcicada_results |>
+  #rows_update(tmp_results, by = c("Species.Name"))
+  
+}
+write.csv(pct_postcicada_results, "model_results/gaussian_POSTcicada_results.csv")
+
+#Okay, now do the pre-emergence gaussian tests on percent_fledged
+pct_precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
+                                     rows_list = original_order) |>
+  mutate(model = as.character(model),
+         model_desc = as.character(model_desc),
+         mutate(across(where(is.logical), as.numeric)))
+
+for(i in 1:length(original_order)) {
+  
+  sp <- original_order[i]
+  print(i); print(sp)
+  
+  tmp <- precicada_df |>
+    filter(Species.Name == sp)
+  
+  tmp_glm <- glm(pct_fledged ~ pre_emergence + y_anomaly_temp + y_anomaly_precip, 
+                 data = tmp, 
+                 family = gaussian)
+  summary <- summary(tmp_glm)
+  
+  tmp_results <- precicada_results |>
+    filter(Species.Name == sp) |>
+    mutate(model = as.character(tmp_glm$formula)[3],
+           model_desc = "binomial",
+           intercept = summary$coefficients[1,1],
+           pre_emergence = summary$coefficients[2,1],
+           pe_sd = summary$coefficients[2,2],
+           pe_p = summary$coefficients[2,4], 
+           y_anomaly_temp = summary$coefficients[3,1],
+           yat_sd = summary$coefficients[3,2],
+           yat_p = summary$coefficients[3,4],
+           y_anomaly_precip = summary$coefficients[4,1],
+           yap_sd = summary$coefficients[4,2],
+           yap_p = summary$coefficients[4,4],
+           n_noncicada = sum(tmp$cicada_year_binary == 0),
+           n_cicada = sum(tmp$cicada_year_binary == 1)
+    )
+  
+  #double-check nothing messed up in calculating the n() in each group.
+  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  
+  pct_precicada_results[pct_precicada_results$Species.Name == sp,] <- tmp_results
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+  #postcicada_results |>
+  #rows_update(tmp_results, by = c("Species.Name"))
+  
+}
+write.csv(pct_precicada_results, "model_results/gaussian_PREcicada_results.csv")
 
 #Follow the UVA guide to check how quality the models are.
 #UVA guide also has information about suggested plotting methods
 
+#time to fledge (from UNESTIMATED data only.)
+ttf <- analysis_df |>
+  filter(Hatch.Date.Estimated == 0,
+         Fledge.Date.Estimated == 0) |>
+# and in this analysis, it's not a pre/post comparison. It's just a cicada vs non-cicada comparison
+  dplyr::select(-pre_emergence, -post_emergence)
+table2(ttf$Species.Name, ttf$time_to_fledge) #atch. this still contains some values that I would cut for just being like. an unreasonable amount of time to fledge on either end. which is fine... I can filter those... but it makes me have some caveats about interpretation bc it seems like in general, folks might be bad at reporting accurate values for this. Filtering based on when more than 3 species are represented at that time point.
+#hah. However! While some of those bluebird numbers are unreasonable, it does take like purple martin and tree swallow longer to fledge than these other species. Let's filter first just based on removing species that we don't have enough data on anyway (Purple Martin, Carolina Wren, House Sparrow, Prothonotary) and then look again
 
+ttf_filtered <- ttf |>
+  filter(!Species.Name %in% c("Purple Martin", "House Sparrow", "Carolina Wren", "Prothonotary Warbler"))
+table2(ttf_filtered$Species.Name, ttf_filtered$cicada_year_binary)
+#m. Looking at it based on how many datapoints we have in each group, I wouldn't really want to draw conclusions about American Robin, Black-capped and Carolina Chickadees, or Nothern House Wren. They've all got less than 20 observations in the cicada_year_binary 0 category, and there's just too much variation in fledge dates between nests for me to want to attribute any of that elsewhere unless I wanted to run a model with partial pooling. But a single species model? no way.
+
+ttf_filtered <- ttf_filtered |>
+  filter(!Species.Name %in% c("American Robin", "Black-capped and\n Carolina Chickadee", "Northern House Wren"))
+table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge)
+
+#alright and now remove the kinda impossible times. Basing it on where both species have at least one observation but also, that might be hurting the tree swallow tail since they do seem to take a few days longer than bluebirds. No bluebirds days 24/25 but there are tree swallows so we'll cut it there, bc then there's a gap and an outlier tree swallow nest at day 26.
+
+ttf_filtered <- ttf_filtered |>
+  filter(time_to_fledge >= 13) |>
+  filter(time_to_fledge <= 25)
+table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge) #
+
+ ggplot(ttf_filtered, aes(x = time_to_fledge, fill = as.factor(cicada_year_binary))) +
+       geom_density(alpha = 0.5) +
+       facet_wrap(~ Species.Name, ncol = 1) +
+       scale_fill_manual(values = c("0" = "blue", "1" = "red"),
+                      labels = c("No Cicada", "Cicada")) +
+     labs(title = "Time to Fledge by Species and Cicada Status",
+                       x = "Time to Fledge (days)",
+                       y = "Density",
+                       fill = "Cicada") +
+      theme_minimal()
+#Haha okay yeah, those basically all the way overlap, no reason to suspect that the presence of cicadas shifts how long it takes these species to fledge.
+ 
+ glm_ttf_EABL <- glm(time_to_fledge ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip,
+                   data = ttf_filtered[ttf_filtered$Species.Name == "Eastern Bluebird",],
+                   family = gaussian)
+ summary(glm_ttf_EABL) #no effect of cicada, no effect of precip, yes effect of temperature anomaly meaning they fledge like half a day earlier with a 1 unit change in y_anomaly_temp.
+ glm_ttf_TS <- glm(time_to_fledge ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip,
+                   data = ttf_filtered[ttf_filtered$Species.Name == "Tree Swallow",],
+                   family = gaussian)
+ summary(glm_ttf_TS) #effects of everything but like. Let's be realistic this is based on only 107 Tree Swallow records, 41 no cicada 66 cicada. I wouldn't draw conclusions based on that. Sample size is small enough it's unlikely to be robust.
+ 
+ plot(x = ttf_filtered$y_anomaly_temp[ttf_filtered$Species.Name == "Eastern Bluebird"],
+      y = ttf_filtered$time_to_fledge[ttf_filtered$Species.Name == "Eastern Bluebird"]#,
+     # pch = ttf_filtered$cicada_year_binary
+     )
+ 
 #FROM BELLAS CODE
 # Getting predicted values from your models and then reverse logit transforming. This gets the log odds. 
 

@@ -1,0 +1,11 @@
+"","Species.Name","model","model_desc","intercept","post_emergence","pe_sd","pe_p","y_anomaly_temp","yat_sd","yat_p","y_anomaly_precip","yap_sd","yap_p","n_noncicada","n_cicada"
+"1","Eastern Bluebird","post_emergence","binomial",2.91700448662177,-0.182907576742946,0.0932977315836981,0.0499406646930603,NA,NA,NA,NA,NA,NA,4951,4051
+"2","Tree Swallow","post_emergence","binomial",2.46041562977928,0.475350979327555,0.115014391692289,0.0000358106175876353,NA,NA,NA,NA,NA,NA,2834,2629
+"3","Northern House Wren","post_emergence","binomial",2.71681669419834,0.0383336248001236,0.206745813013826,0.852904113581518,NA,NA,NA,NA,NA,NA,910,828
+"4","Black-capped and
+ Carolina Chickadee","post_emergence","binomial",1.98828937202418,0.399990442074696,0.303174681085443,0.187055516809291,NA,NA,NA,NA,NA,NA,293,243
+"5","Purple Martin","post_emergence","binomial",3.95763349755347,-0.873105725216335,0.6993072755983,0.211837231947727,NA,NA,NA,NA,NA,NA,160,163
+"6","Carolina Wren","post_emergence","binomial",3.04452241195426,-0.875468711584737,0.633351236397746,0.166885761670588,NA,NA,NA,NA,NA,NA,97,83
+"7","American Robin","post_emergence","binomial",2.35815494414883,-0.517605310751346,0.52176972076278,0.321188412130718,NA,NA,NA,NA,NA,NA,87,79
+"8","House Sparrow","post_emergence","binomial",0.693147180559741,0.287682072449405,0.583333073768432,0.621892836213849,NA,NA,NA,NA,NA,NA,54,48
+"9","Prothonotary Warbler","post_emergence","binomial",3.55534806145454,-1.43508452525445,1.18401706631072,0.225494327822749,NA,NA,NA,NA,NA,NA,39,28
