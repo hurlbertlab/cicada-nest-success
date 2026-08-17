@@ -19,6 +19,7 @@ library(stringr) # text selection
 library(lubridate) # handling dates
 library(ggplot2) # plotting
 library(png) #for the cicada image
+library(effects) # plotting logistic regression effects
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
@@ -82,16 +83,16 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
     cicada_year == 0 ~ 0, #0 when cicadas have emerged
     TRUE ~ 1
   ),
-  pre_emergence = case_when(
+  pre_emergence = as.factor(case_when(
     cicada_year == -1 ~ 1,
     cicada_year == 0 ~ 0, #when cicadas have emerged
     cicada_year == 1 ~ NA
-  ),
-  post_emergence = case_when(
+  )),
+  post_emergence = as.factor(case_when(
     cicada_year == -1 ~ NA,
     cicada_year == 0 ~ 0, #when cicadas have emerged
     cicada_year == 1 ~ 1
-  )) |>
+  ))) |>
   #make our other variables of interest: pct_fledged and time_to_fledge
   mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total),
          time_to_fledge = (lubridate::interval(ymd(Hatch.Date), ymd(Fledge.Date)))/days()
@@ -242,12 +243,13 @@ test_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_pr
 summary(test_glm)
 test_glm$formula
 
-
-postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
+postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada","prob_intercept","prob_post_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd", "log_odds_emergence", "log_odds_emergence_2.5", "log_odds_emergence_97.5"),
                                       rows_list = original_order) |>
   mutate(model = as.character(model),
          model_desc = as.character(model_desc),
          mutate(across(where(is.logical), as.numeric)))
+
+postcicada_models = list()
                                       
 #make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
 #save in model_results/
@@ -263,6 +265,8 @@ for(i in 1:length(original_order)) {
                  data = tmp, 
                  family = binomial(link = "logit"))
   
+  postcicada_models[[i]] = tmp_glm
+  
   summary <- summary(tmp_glm)
   
   tmp_results <- postcicada_results |>
@@ -280,7 +284,15 @@ for(i in 1:length(original_order)) {
            yap_sd = summary$coefficients[4,2],
            yap_p = summary$coefficients[4,4],
            n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
+           n_cicada = sum(tmp$cicada_year_binary == 1),
+           prob_intercept = plogis(summary$coefficients[1,1]),
+           prob_post_e = plogis(summary$coefficients[2,1]),
+           prob_pe_sd = plogis(summary$coefficients[2,2]),
+           prob_yat = plogis(summary$coefficients[3,1]),
+           prob_yat_sd = plogis(summary$coefficients[3,2]),
+           prob_yap = plogis(summary$coefficients[4,1]),
+           prob_yap_sd = plogis(summary$coefficients[4,2]),
+           log_odds_emergence = exp(summary$coefficients[2,1])
              )
   
   #double-check nothing messed up in calculating the n() in each group.
@@ -293,6 +305,7 @@ for(i in 1:length(original_order)) {
    
 }
   write.csv(postcicada_results, "model_results/binomial_POSTcicada_results.csv")
+  save(postcicada_models, file = "model_results/binomial_POSTcicada_glms.rds")
 #run both the binomial with tf nest success
 #and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
 
@@ -300,11 +313,13 @@ for(i in 1:length(original_order)) {
 precicada_df <- analysis_df |>
   filter(!is.na(pre_emergence))
 
-precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
+precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada", "prob_intercept","prob_pre_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd","log_odds_emergence","log_odds_emergence_2.5", "log_odds_emergence_97.5"),
                                       rows_list = original_order) |>
   mutate(model = as.character(model),
          model_desc = as.character(model_desc),
          mutate(across(where(is.logical), as.numeric)))
+
+precicada_models = list()
 
 for(i in 1:length(original_order)) {
   
@@ -319,6 +334,8 @@ for(i in 1:length(original_order)) {
                  family = binomial(link = "logit"))
   summary <- summary(tmp_glm)
   
+  precicada_models[[i]] = tmp_glm
+  
   tmp_results <- precicada_results |>
     filter(Species.Name == sp) |>
     mutate(model = as.character(tmp_glm$formula)[3],
@@ -334,7 +351,17 @@ for(i in 1:length(original_order)) {
            yap_sd = summary$coefficients[4,2],
            yap_p = summary$coefficients[4,4],
            n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
+           n_cicada = sum(tmp$cicada_year_binary == 1),
+           prob_intercept = plogis(summary$coefficients[1,1]),
+           prob_pre_e = plogis(summary$coefficients[2,1]),
+           prob_pe_sd = plogis(summary$coefficients[2,2]),
+           prob_yat = plogis(summary$coefficients[3,1]),
+           prob_yat_sd = plogis(summary$coefficients[3,2]),
+           prob_yap = plogis(summary$coefficients[4,1]),
+           prob_yap_sd = plogis(summary$coefficients[4,2]),
+           log_odds_emergence = exp(summary$coefficients[2,1])
+#           log_odds_emergence_2.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[1],
+ #          log_odds_emergence_97.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[2]
     )
   
   #double-check nothing messed up in calculating the n() in each group.
@@ -347,6 +374,7 @@ for(i in 1:length(original_order)) {
   
 }
 write.csv(precicada_results, "model_results/binomial_PREcicada_results.csv")
+save(precicada_models, file = "model_results/binomial_PREcicada_glms.rds")
 
 #annnnd just to make sure everything worked perfectly and I didn't mess up any of the functions e.g. none of the rows in the two datasets match or something..
 assert_that(
@@ -357,119 +385,24 @@ assert_that(
 #The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from -inf  to inf  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). To apply plogis() across all our variables at once we can use predict()
 
 #Next steps:
-#fit the glm linear model also
-#fit with only cicada in the models.
+#fit the glm linear model also -- DONE, but also, this is the better model. Few nests that aren't either 0 or 100 on nest success. This works better as a binomial analysis than a normal distribution, given the data.
+#fit with only cicada in the models -- DONE, but again, this is the better model. All worse fit with only cicada in the model. 
 #PREDICT
 #plot
 
-# Use a normal distribution to test for an effect not of total nest failure or success, but in how many more or less young fledge. 
-test <- postcicada_df |>
-  filter(Species.Name == "Eastern Bluebird")
-test_glm <- glm(pct_fledged ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
-                data = test, 
-                family = gaussian)
-summary(test_glm)
-test_glm$formula
+#FROM BELLAS CODE
+# Getting predicted values from your models and then reverse logit transforming. This gets the log odds. 
 
-pct_postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
-                                      rows_list = original_order) |>
-  mutate(model = as.character(model),
-         model_desc = as.character(model_desc),
-         mutate(across(where(is.logical), as.numeric)))
 
-#make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
-#save in model_results/
-for(i in 1:length(original_order)) {
-  
-  sp <- original_order[i]
-  print(i); print(sp)
-  
-  tmp <- postcicada_df |>
-    filter(Species.Name == sp)
-  
-  tmp_glm <- glm(pct_fledged ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
-                 data = tmp, 
-                 family = gaussian)
-  
-  summary <- summary(tmp_glm)
-  
-  tmp_results <- postcicada_results |>
-    filter(Species.Name == sp) |>
-    mutate(model = as.character(tmp_glm$formula)[3],
-           model_desc = "binomial",
-           intercept = summary$coefficients[1,1],
-           post_emergence = summary$coefficients[2,1],
-           pe_sd = summary$coefficients[2,2],
-           pe_p = summary$coefficients[2,4], 
-           y_anomaly_temp = summary$coefficients[3,1],
-           yat_sd = summary$coefficients[3,2],
-           yat_p = summary$coefficients[3,4],
-           y_anomaly_precip = summary$coefficients[4,1],
-           yap_sd = summary$coefficients[4,2],
-           yap_p = summary$coefficients[4,4],
-           n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
-    )
-  
-  #double-check nothing messed up in calculating the n() in each group.
-  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
-  
-  pct_postcicada_results[pct_postcicada_results$Species.Name == sp,] <- tmp_results
-  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
-  #postcicada_results |>
-  #rows_update(tmp_results, by = c("Species.Name"))
-  
-}
-write.csv(pct_postcicada_results, "model_results/gaussian_POSTcicada_results.csv")
 
-#Okay, now do the pre-emergence gaussian tests on percent_fledged
-pct_precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada"),
-                                     rows_list = original_order) |>
-  mutate(model = as.character(model),
-         model_desc = as.character(model_desc),
-         mutate(across(where(is.logical), as.numeric)))
+# E.g.
+eabl.climate.pred = predict(eablfledge.climate, nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Eastern Bluebird", c('cicada', 'y_anomaly_temp', 'y_anomaly_precip')])
 
-for(i in 1:length(original_order)) {
-  
-  sp <- original_order[i]
-  print(i); print(sp)
-  
-  tmp <- precicada_df |>
-    filter(Species.Name == sp)
-  
-  tmp_glm <- glm(pct_fledged ~ pre_emergence + y_anomaly_temp + y_anomaly_precip, 
-                 data = tmp, 
-                 family = gaussian)
-  summary <- summary(tmp_glm)
-  
-  tmp_results <- precicada_results |>
-    filter(Species.Name == sp) |>
-    mutate(model = as.character(tmp_glm$formula)[3],
-           model_desc = "binomial",
-           intercept = summary$coefficients[1,1],
-           pre_emergence = summary$coefficients[2,1],
-           pe_sd = summary$coefficients[2,2],
-           pe_p = summary$coefficients[2,4], 
-           y_anomaly_temp = summary$coefficients[3,1],
-           yat_sd = summary$coefficients[3,2],
-           yat_p = summary$coefficients[3,4],
-           y_anomaly_precip = summary$coefficients[4,1],
-           yap_sd = summary$coefficients[4,2],
-           yap_p = summary$coefficients[4,4],
-           n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
-    )
-  
-  #double-check nothing messed up in calculating the n() in each group.
-  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
-  
-  pct_precicada_results[pct_precicada_results$Species.Name == sp,] <- tmp_results
-  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
-  #postcicada_results |>
-  #rows_update(tmp_results, by = c("Species.Name"))
-  
-}
-write.csv(pct_precicada_results, "model_results/gaussian_PREcicada_results.csv")
+# Reverse logit transform to get predicted values of success in terms of a probability
+prob.predictions <- 1 / (1 + exp(-eabl.climate.pred))
+
+# Visualing those in a histogram
+hist(prob.predictions)
 
 #Follow the UVA guide to check how quality the models are.
 #UVA guide also has information about suggested plotting methods
@@ -524,15 +457,3 @@ table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge) #
       y = ttf_filtered$time_to_fledge[ttf_filtered$Species.Name == "Eastern Bluebird"]#,
      # pch = ttf_filtered$cicada_year_binary
      )
- 
-#FROM BELLAS CODE
-# Getting predicted values from your models and then reverse logit transforming. This gets the log odds. 
-
-# E.g.
-eabl.climate.pred = predict(eablfledge.climate, nestboxes_county_cicada[nestboxes_county_cicada$Species.Name == "Eastern Bluebird", c('cicada', 'y_anomaly_temp', 'y_anomaly_precip')])
-
-# Reverse logit transform to get predicted values of success in terms of a probability
-prob.predictions <- 1 / (1 + exp(-eabl.climate.pred))
-
-# Visualing those in a histogram
-hist(prob.predictions)
