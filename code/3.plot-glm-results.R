@@ -41,3 +41,5 @@ plot(Effect(focal.predictors = c("post_emergence"),
      xlab = "post_emergence",
      main = paste0(original_order[1], "\nPost-emergence Effect Plot")
      )
+
+
