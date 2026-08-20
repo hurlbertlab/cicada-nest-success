@@ -144,8 +144,8 @@ make_n_labels = function(df = summary_data,
   summary_data <- analysis_df %>%
   group_by(Species.Name, cicada_year) %>%
   summarise(
-    mean_pct_survival = mean(pct_fledged, na.rm = TRUE),
-    se_pct_survival = sd(pct_fledged, na.rm = TRUE) / sqrt(n()),
+    mean_pct_nest_success = mean(nest_success_tf, na.rm = TRUE),
+    se_pct_nest_success = sd(nest_success_tf, na.rm = TRUE) / sqrt(n()),
     n = n()
   ) |>
   ungroup() |>
@@ -164,15 +164,15 @@ original_order <- unique(summary_data$Species.Name)
 cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
-png(filename = "figures/2026.06.09_pct_survival.png", 
+png(filename = "figures/2026.08.20_pct_nest_success.png", 
     width = 530,
     height = 530,
     units = "px", 
     type = "windows")
 {
-ggplot(summary_data, aes(x = cicada_year, y = mean_pct_survival, color = Species.Name)) +
+ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Species.Name)) +
   geom_line(linewidth = 1.5) +
-  geom_errorbar(aes(ymin = mean_pct_survival - se_pct_survival, ymax = mean_pct_survival + se_pct_survival), width = 0.2, linewidth = 1.5) +
+  geom_errorbar(aes(ymin = mean_pct_nest_success - se_pct_nest_success, ymax = mean_pct_nest_success + se_pct_nest_success), width = 0.2, linewidth = 1.5) +
   facet_wrap(~ reorder(Species.Name, n, decreasing = TRUE), ncol = 3) +  # Create separate plots for each species, 3 columns. Now, would like the colors to still go in typical ggplot order, but that's okay. Probably I will need to re-do this by hand to make that happen.
   labs(
     x = "Cicada Year",
