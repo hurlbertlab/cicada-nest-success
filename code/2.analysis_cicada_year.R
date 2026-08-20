@@ -97,22 +97,42 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
   mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total),
          time_to_fledge = (lubridate::interval(ymd(Hatch.Date), ymd(Fledge.Date)))/days()
   ) |>
-  dplyr::relocate(pct_fledged:time_to_fledge, .after = Outcome) |>
+  # make a true/false nest success based on pct_fledged
+  mutate(nest_success_tf = ifelse(pct_fledged > 0, 1, 0)) |> #if any young fledged = 1
+  # and then account for cases when pct_fledged is not known, but because an Outcome has been recorded, we know if the nest was successful or not
+  mutate(nest_success_tf = case_when(
+    is.na(nest_success_tf) & Outcome %in% c("s1") ~ 1, 
+    is.na(nest_success_tf) & Outcome %in% c("f", "f1", "f2", "f3", "f4", "f6", "f7") ~ 0, 
+    #I went back and forth about f4 b/c only young of brood parasites fledged still == success in raising young (in the 10 relevant cases where it occurs) b/c SOME number of young were successfully raised. 1 HOSP, 2 CAWR, 7 EABL - BUT. there are likely nests categorized only as 'f' that are actually 'f4' - therefore since nestwatch considers f4 to be a nest failure state I will as well.
+    #there's also 43 weird cases where b/c of ? entry error ? nestwatch error ? we have a !is.na(time_to_fledge) column, but a blank Outcome column + no information about the number of young. But, if any young FLEDGED, we know at least some made it, and should classify these as successful nests.
+    is.na(nest_success_tf) & !is.na(time_to_fledge) ~ 1, #successful nest
+    !is.na(nest_success_tf) ~ nest_success_tf
+    ),
+    #and, if we know the nest failed and otherwise don't have pct_survival, we know survival = 0
+    pct_fledged = case_when(
+      is.na(pct_fledged) & nest_success_tf == 0 ~ 0,
+      TRUE ~ pct_fledged
+    )
+  ) |>
+  # remove Outcome = f5, where there's human intervention to remove a nest for invasive sp management (cough cough House Sparrow)
+  filter(!Outcome %in% "f5") |>
+  # after = 30,029
+  # move columns around for my convience and interpretation..
+  dplyr::relocate(pct_fledged:nest_success_tf, .after = Outcome) |>
   # and we only need to keep records that have at least one of our outcome variables
-  filter(!is.na(pct_fledged) | !is.na(time_to_fledge)) |>
-  #and remove unexpected outcomes (time to fledge is probably still too high but we can deal with that later at that analysis.)
+  filter(!is.na(nest_success_tf) | !is.na(time_to_fledge)) |>
+  # after = 29,761 records
+  #and remove unexpected outcomes like negative fledge times, and pct_fledged that are not between 0 and 1 (time to fledge is probably still too high but we can deal with that later at that analysis.)
   filter(time_to_fledge > 0 & time_to_fledge < 50 | is.na(time_to_fledge),
          pct_fledged >= 0 & pct_fledged <= 1 | is.na(pct_fledged)) |>
-  #after = 25,346 records
+  #after = 29,710 records
   #make chickadees the same species.name, ~80 Black-capped observations per cicada_year.
   mutate(Species.Name = case_when(
     str_detect(Species.Name, "Chickadee") ~ "Black-capped and\n Carolina Chickadee",
     TRUE ~ Species.Name
   ))  |>
   # select just the info we need, don't need all 46 variables.
-  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:time_to_fledge, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) |>
-  # make a true/false nest success based on pct_fledged
-  mutate(nest_success_tf = ifelse(pct_fledged > 0, 1, 0)) #if any young fledged = 1
+  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:nest_success_tf, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) 
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
@@ -144,9 +164,14 @@ make_n_labels = function(df = summary_data,
   summary_data <- analysis_df %>%
   group_by(Species.Name, cicada_year) %>%
   summarise(
+    #nest success 0/1
     mean_pct_nest_success = mean(nest_success_tf, na.rm = TRUE),
     se_pct_nest_success = sd(nest_success_tf, na.rm = TRUE) / sqrt(n()),
-    n = n()
+    #pct fledged (although I'll say, b/c of na.rm this has fewer data points than nest success t/f)
+    mean_pct_survival = mean(pct_fledged, na.rm = TRUE),
+    se_pct_survival = sd(pct_fledged, na.rm = TRUE) / sqrt(n()),
+    n = n(),
+    n_pct_survival = sum(!is.na(pct_fledged))
   ) |>
   ungroup() |>
   arrange(desc((n)))
@@ -159,24 +184,27 @@ summary_data <- summary_data |>
 
 # Get the original order of species
 original_order <- unique(summary_data$Species.Name)
+#okay have to do this a bit dif now b/c HOSP has a year with more obs than American Robin
+original_order <- c("Eastern Bluebird", "Tree Swallow", "Northern House Wren", "Black-capped and\n Carolina Chickadee", "Purple Martin", "Carolina Wren", "American Robin", "House Sparrow", "Prothonotary Warbler")
 
 
 cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
-png(filename = "figures/2026.08.20_pct_nest_success.png", 
+png(filename = "figures/2026.08.21_pct_nest_success.png", 
     width = 530,
     height = 530,
     units = "px", 
     type = "windows")
 {
 ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Species.Name)) +
+  ylim(0, 1) + 
   geom_line(linewidth = 1.5) +
   geom_errorbar(aes(ymin = mean_pct_nest_success - se_pct_nest_success, ymax = mean_pct_nest_success + se_pct_nest_success), width = 0.2, linewidth = 1.5) +
   facet_wrap(~ reorder(Species.Name, n, decreasing = TRUE), ncol = 3) +  # Create separate plots for each species, 3 columns. Now, would like the colors to still go in typical ggplot order, but that's okay. Probably I will need to re-do this by hand to make that happen.
   labs(
     x = "Cicada Year",
-    y = "Mean Percent Survival"
+    y = "Mean Nest Success"
   ) +
   scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
                     labels = c("-1", "X", "1")) +  # Custom text labels) 
@@ -194,7 +222,7 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Spe
                       ungroup() |>
                       mutate(
                         x = c(-.4, -.41, -.52, -.52, -.52, -.6, -.65, -.65, -.65),
-                        y = 0.6
+                        y = 0.24
                       )),
             aes(x = x, y = y, label = lab),
             size = 3, 
