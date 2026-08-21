@@ -84,14 +84,14 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
     TRUE ~ 1
   ),
   pre_emergence = as.factor(case_when(
-    cicada_year == -1 ~ 1,
-    cicada_year == 0 ~ 0, #when cicadas have emerged
+    cicada_year == -1 ~ 0, #year before the cicadas
+    cicada_year == 0 ~ 1, #when cicadas have emerged, so 1 = effect of cicada
     cicada_year == 1 ~ NA
   )),
   post_emergence = as.factor(case_when(
     cicada_year == -1 ~ NA,
     cicada_year == 0 ~ 0, #when cicadas have emerged
-    cicada_year == 1 ~ 1
+    cicada_year == 1 ~ 1 # 1 = effect of post-cicada
   ))) |>
   #make our other variables of interest: pct_fledged and time_to_fledge
   mutate(pct_fledged = ifelse(Young.Total == 0, NA, Young.Fledged / Young.Total),
@@ -192,8 +192,8 @@ cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
 png(filename = "figures/2026.08.21_pct_nest_success.png", 
-    width = 530,
-    height = 530,
+    width = 630,
+    height = 630,
     units = "px", 
     type = "windows")
 {
@@ -209,7 +209,7 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Spe
   scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
                     labels = c("-1", "X", "1")) +  # Custom text labels) 
   scale_color_discrete(limits = original_order) +  # Fix color order to original
-  theme_minimal(base_size = 15) + # increase text size) +
+  theme_minimal(base_size = 19) + # increase text size) +
   theme(
     legend.position = "none", # remove legend
     #panel.grid.major = element_blank(), # Remove major gridlines
@@ -221,8 +221,11 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Spe
                       arrange(desc(n)) |>
                       ungroup() |>
                       mutate(
-                        x = c(-.4, -.41, -.52, -.52, -.52, -.6, -.65, -.65, -.65),
-                        y = 0.24
+                        x = c(-.4, -.41, -.51, -.52, -.52, -.58,
+                              -.58, #House Sparrow Control
+                              -.57, #American Robin Control
+                              -.65),
+                        y = 0.14
                       )),
             aes(x = x, y = y, label = lab),
             size = 3, 
@@ -260,9 +263,11 @@ make_trend_table <- function(cols_list, rows_list = c("NA")) {
   return(trend_table)
 }
 
+# We can start with postcicada, which is the less important result in some ways because this is testing for basically knock-on effects of the cicada emergence in the following year.
 postcicada_df <- analysis_df |>
   filter(!is.na(post_emergence))
 
+# test the glm process...
 test <- postcicada_df |>
   filter(Species.Name == "Eastern Bluebird")
 test_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
@@ -337,7 +342,8 @@ for(i in 1:length(original_order)) {
 #run both the binomial with tf nest success
 #and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
 
-#Okay! Yay, now do the same for precicada glms
+#Okay! Yay, now do the same for precicada glms - test for an effect of cicada emergences compared to the year before the cicada emergences
+  #when preciada = 1 = year of the emergence/effect of the cicadas
 precicada_df <- analysis_df |>
   filter(!is.na(pre_emergence))
 
