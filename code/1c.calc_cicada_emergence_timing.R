@@ -99,6 +99,6 @@ plot(j_date ~ lat, data = test_quant, pch = 16, main = "j_date ~ latitude")
 abline(coef(rqfit), pch = "solid", lwd = 4, col = "lightgreen")
 
 #one test that matters is how different this lat:j_date relationship is for each brood vs all the data together. 
-#right, something to explore next week :)
+#right, something to explore next week :) TrenchR package?
 
 #connect with brood map + filter to overlaps in the correct years for each brood.
