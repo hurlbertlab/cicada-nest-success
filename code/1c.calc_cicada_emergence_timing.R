@@ -104,7 +104,7 @@ abline(coef(rqfit), pch = "solid", lwd = 4, col = "lightgreen")
 #fitting the 5% vs 10% isn't a big change, a difference of intercept more than a huge difference in slope.
 
 # Okay, now export the rqfit so we can load it in in the analysis df and use predict()
-save(rqfit, file = "data/cicada/model_j_date_latitude_05_quartile.R")
+save(rqfit, file = "data/cicada/model_j_date_latitude_05_quartile.Rdata")
 
 #one test that matters is how different this lat:j_date relationship is for each brood vs all the data together. 
   # brood_rqfit <- list()

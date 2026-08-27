@@ -27,7 +27,7 @@ options(scipen=999)
 # Read in location.ID climate data
 climate_data<- read.csv("data/filtered_climate_data.csv")
 # Read in the cicada emergence data
-load("data/cicada/model_j_date_latitude_05_quartile.R")
+load("data/cicada/model_j_date_latitude_05_quartile.Rdata")
 emergence_intercept <- summary(rqfit)$coefficients[1,1]
 emergence_lat_effect <- summary(rqfit)$coefficients[2,1]
 
