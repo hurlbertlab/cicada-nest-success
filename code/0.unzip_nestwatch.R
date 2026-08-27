@@ -8,8 +8,10 @@
 inuse_nestwatch <- "data/nestwatchV6/"
 unzip <- list.files(path = inuse_nestwatch, pattern = ".zip$", full.names = TRUE)
 
-unzip(zipfile = unzip, 
-      overwrite = TRUE,
-      exdir = inuse_nestwatch)
+for(i in 1:length(unzip)) {
+  unzip(zipfile = unzip[i], 
+        overwrite = TRUE,
+        exdir = inuse_nestwatch)
+}
 
 #done! now you can run everything else in the repo that relies on the nestwatch files.
