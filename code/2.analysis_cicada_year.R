@@ -26,6 +26,10 @@ options(scipen=999)
 
 # Read in location.ID climate data
 climate_data<- read.csv("data/filtered_climate_data.csv")
+# Read in the cicada emergence data
+load("data/cicada/model_j_date_latitude_05_quartile.R")
+emergence_intercept <- summary(rqfit)$coefficients[1,1]
+emergence_lat_effect <- summary(rqfit)$coefficients[2,1]
 
 # Dataframe with nest success info and cicada emergence info for nestboxes that are in counties with cicadas
 analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
@@ -132,7 +136,15 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
     TRUE ~ Species.Name
   ))  |>
   # select just the info we need, don't need all 46 variables.
-  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:nest_success_tf, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) 
+  dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:nest_success_tf, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) |>
+  # add in estimate of cicada emergence date
+  left_join(
+    (read.csv("data/nestwatchV6/attempts_locs_20260120.csv") |>
+       dplyr::select(Location.ID, Latitude) |>
+       distinct()), 
+    by = "Location.ID"
+  ) |>
+  mutate(est_cicada_emergence_date = emergence_intercept + emergence_lat_effect*Latitude)
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
