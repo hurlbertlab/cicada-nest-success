@@ -1,0 +1,6 @@
+&without_term_id=28 #remove molt observations
+&without_term_id=5 #remove nymph observations
+&without_term_id=19 #remove dead individuals
+
+From:
+https://forum.inaturalist.org/t/how-to-use-inaturalists-search-urls-wiki-part-2-of-2/18792
