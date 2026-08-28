@@ -1,7 +1,13 @@
 #######################
 #
-# May be depreciated in future.
+# DEPRECIATED - NOT IN USE
 #
+# (2)
+# If the emergence data is sketchy by brood, either b/c of lack of data or b/c of temperature
+# effects we think it's not worth it. 
+# Calc emergence date based soley on air temperature -> convert to soil temperature -> calculate
+# what date cicadas should emerge. And can validate w/the iNat data for recent broods in a few 
+# locations as needed.
 #
 ######################
 

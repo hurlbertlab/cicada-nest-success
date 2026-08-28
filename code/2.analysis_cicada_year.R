@@ -19,7 +19,7 @@ library(stringr) # text selection
 library(lubridate) # handling dates
 library(ggplot2) # plotting
 library(png) #for the cicada image
-library(effects) # plotting logistic regression effects
+#library(effects) # plotting logistic regression effects
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
@@ -27,9 +27,7 @@ options(scipen=999)
 # Read in location.ID climate data
 climate_data<- read.csv("data/filtered_climate_data.csv")
 # Read in the cicada emergence data
-load("data/cicada/model_j_date_latitude_05_quartile.Rdata")
-emergence_intercept <- summary(rqfit)$coefficients[1,1]
-emergence_lat_effect <- summary(rqfit)$coefficients[2,1]
+cicada_bounds <- read.csv("data/cicada_bounds_latitude_by_j_date.csv")
 
 # Dataframe with nest success info and cicada emergence info for nestboxes that are in counties with cicadas
 analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
@@ -137,14 +135,83 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
   ))  |>
   # select just the info we need, don't need all 46 variables.
   dplyr::select(Attempt.ID, Location.ID, Species.Name, First.Lay.Date:nest_success_tf, BROOD_NAME, MULT_BROOD, ST_CNTY_CODE, cycle, Year, emergence_three, emergence_four, cicada_year:post_emergence) |>
-  # add in estimate of cicada emergence date
+  # calculate nest asynchony with cicada emergence dates
+  # first get back the Latitude column
   left_join(
     (read.csv("data/nestwatchV6/attempts_locs_20260120.csv") |>
        dplyr::select(Location.ID, Latitude) |>
        distinct()), 
     by = "Location.ID"
   ) |>
-  mutate(est_cicada_emergence_date = emergence_intercept + emergence_lat_effect*Latitude)
+  #add in average time between lay/hatch/fledge per species
+  #fyi this code gets a little complicated but I'm using an
+  #anonymous function to left_join a summarized version of the analysis_df to this point
+  (\(df) {
+    df |>
+      left_join(
+        (#timing averages
+          df |>
+            mutate(time_lay_to_hatch = (lubridate::interval(ymd(First.Lay.Date), ymd(Hatch.Date)))/days(),
+                   time_lay_to_fledge = (lubridate::interval(ymd(First.Lay.Date), ymd(Fledge.Date)))/days()
+            ) |>
+            group_by(Species.Name) |>
+            summarize(time_hatch_to_fledge = round(mean(time_to_fledge, na.rm = TRUE)),
+                      time_lay_to_hatch = round(mean(time_lay_to_hatch, na.rm = TRUE)),
+                      time_lay_to_fledge = round(mean(time_lay_to_fledge, na.rm = TRUE))
+            ) |>
+            mutate(add = time_lay_to_hatch + time_hatch_to_fledge,
+                   delta = add - time_lay_to_fledge) #awesome, those all add up. I don't care about a delta of a 1 b/c that's just rounding errors and that minor error is fine with me. I want these averages to be in whole-days so they're on the same level as nests where am not needing to add averages.
+          ), 
+        by = "Species.Name"
+      ) #close left join
+  })() |> #close and execute anonymous function B)
+  #table2(analysis_df$Hatch.Date == "", analysis_df$Fledge.Date == "", analysis_df$nest_success_tf)
+#so most cases with no information about hatch and fledge date had 0 success.
+#but some also WERE successful, which means we need to estimate off species averages from hatch.date
+  # calculate j_date for hatch date and fledge date. When one is unknown but nest is successful, calculate based on average for that species. When one is unknown and nest is UNSUCCESSFUL, also calculate based on average for that species. If the nest survived how much cicada WOULD it have experienced.
+  mutate(
+    jday_lay = lubridate::yday(as.Date(First.Lay.Date)),
+    jday_hatch = lubridate::yday(as.Date(Hatch.Date)),
+    jday_fledge = lubridate::yday(as.Date(Fledge.Date))
+         ) |>
+  #okay, if no hatch date, calculate off 1) fledge date 2) lay date
+  mutate(jday_hatch = case_when(
+    !is.na(jday_hatch) ~ jday_hatch, #no issues
+    is.na(jday_hatch) & !is.na(jday_fledge) ~ (jday_fledge - time_hatch_to_fledge), #no hatch date but fledge available
+    is.na(jday_hatch) & !is.na(jday_lay) ~ (jday_lay + time_lay_to_hatch)
+  )) |> #ran table(is.na(analysis_df$jday_hatch)) and we have data for everything now :)
+  #okay now if no fledge data, calculate off hatch date bc we have it for all birds
+  mutate(jday_fledge = case_when(
+    !is.na(jday_fledge) ~ jday_fledge, #no issues
+    is.na(jday_fledge) & !is.na(jday_hatch) ~ (jday_hatch + time_hatch_to_fledge)
+  )) |> #table(is.na(analysis_df$jday_hatch)) #yay, data for everything :) we don't care abt missing jday_lay because we won't use those in our analysis.
+  #and using the time_to_fledge variable later is still a-okay, because we calculated that earlier before doing any of this imputation. Those values contain NAs and should continue to.
+  #Okay! Now, let's impute the 95% cicada window jdays that each nest should experience based on latitude
+  mutate(
+    lat_cicada_start = 
+      cicada_bounds$intercept[cicada_bounds$bound == "min"] + cicada_bounds$lat[cicada_bounds$bound == "min"] * Latitude,
+    lat_cicada_end = 
+      cicada_bounds$intercept[cicada_bounds$bound == "max"] + cicada_bounds$lat[cicada_bounds$bound == "max"] * Latitude,
+    nest_hatch_to_fledge_days = jday_fledge - jday_hatch,
+    f_end = jday_fledge - lat_cicada_end,
+    f_start = jday_fledge - lat_cicada_start,
+    h_end = jday_hatch - lat_cicada_end,
+    h_start = jday_hatch - lat_cicada_start) |>
+  #ONE MORE STEP! Now we must calculate ASYCHRONY for each nest. This will be the proportion of days between hatching and fledging where the nest DOES NOT EXPERIENCE CICADAS (from 0 to 1)
+  mutate(asynchrony = 
+           case_when(
+             # nest is later than cicadas, so all values are positive (and I double checked nothing is == 0)
+             (f_end > 0 & f_start > 0 & h_end > 0 & h_start > 0) ~ 1,
+             # nest is earlier than cicadas, so all values negative
+             (f_end < 0 & f_start < 0 & h_end < 0 & h_start < 0) ~ 1,
+             # nest is fully within cicada window. hatches after cicada start, fledges before cicada end.
+             (f_end < 0 & f_start > 0 & h_end < 0 & h_start > 0) ~ 0, #fully synchronous
+             # nest straddles the cicada emergence. Only f_start is positive
+             (f_end < 0 & f_start > 0 & h_end < 0 & h_start < 0) ~ abs((h_start/nest_hatch_to_fledge_days)), #asynchrony is percent of days before cicada emergence
+             # nest straddles the cicada die-off. Only h_date is negative.
+             (f_end > 0 & f_start > 0 & h_end < 0 & h_start > 0) ~ abs((f_end/nest_hatch_to_fledge_days)) #asynchrony is percent of days after the cicada die-off
+           ))
+    
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
@@ -203,7 +270,7 @@ original_order <- c("Eastern Bluebird", "Tree Swallow", "Northern House Wren", "
 cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
-png(filename = "figures/2026.08.21_pct_nest_success.png", 
+png(filename = "figures/2026.08.28_pct_nest_success.png", 
     width = 630,
     height = 630,
     units = "px", 
@@ -282,13 +349,17 @@ postcicada_df <- analysis_df |>
 # test the glm process...
 test <- postcicada_df |>
   filter(Species.Name == "Eastern Bluebird")
-test_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
+test_glm <- glm(nest_success_tf ~ post_emergence*asynchrony + y_anomaly_temp + y_anomaly_precip, 
                 data = test, 
                 family = binomial(link = "logit"))
 summary(test_glm)
 test_glm$formula
 
-postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada","prob_intercept","prob_post_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd", "log_odds_emergence", "log_odds_emergence_2.5", "log_odds_emergence_97.5"),
+####!!!! mmm, okay, some of this is broken from adding the asynchrony. Need to fix on Monday.
+
+postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "asynchrony", "async_sd", "async_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "async_interction", "async_int_sd", "async_int_p", "n_noncicada", "n_cicada"
+                                                    #"prob_intercept","prob_post_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd", "log_odds_emergence", "log_odds_emergence_2.5", "log_odds_emergence_97.5"
+                                                    ),
                                       rows_list = original_order) |>
   mutate(model = as.character(model),
          model_desc = as.character(model_desc),
@@ -306,7 +377,7 @@ for(i in 1:length(original_order)) {
   tmp <- postcicada_df |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glm(nest_success_tf ~ post_emergence + y_anomaly_temp + y_anomaly_precip, 
+  tmp_glm <- glm(nest_success_tf ~ post_emergence*asynchrony + y_anomaly_temp + y_anomaly_precip, 
                  data = tmp, 
                  family = binomial(link = "logit"))
   
@@ -322,22 +393,29 @@ for(i in 1:length(original_order)) {
            post_emergence = summary$coefficients[2,1],
            pe_sd = summary$coefficients[2,2],
            pe_p = summary$coefficients[2,4], 
-           y_anomaly_temp = summary$coefficients[3,1],
-           yat_sd = summary$coefficients[3,2],
-           yat_p = summary$coefficients[3,4],
-           y_anomaly_precip = summary$coefficients[4,1],
-           yap_sd = summary$coefficients[4,2],
-           yap_p = summary$coefficients[4,4],
+           asynchrony = summary$coefficients[3,1],
+           async_sd = summary$coefficients[3,2],
+           async_p = summary$coefficients[3,4],
+           y_anomaly_temp = summary$coefficients[4,1],
+           yat_sd = summary$coefficients[4,2],
+           yat_p = summary$coefficients[4,4],
+           y_anomaly_precip = summary$coefficients[5,1],
+           yap_sd = summary$coefficients[5,2],
+           yap_p = summary$coefficients[5,4],
+           async_interction = summary$coefficients[6,1], 
+           async_int_sd = summary$coefficients[6,2], 
+           async_int_p = summary$coefficients[6,3],
            n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1),
-           prob_intercept = plogis(summary$coefficients[1,1]),
-           prob_post_e = plogis(summary$coefficients[2,1]),
-           prob_pe_sd = plogis(summary$coefficients[2,2]),
-           prob_yat = plogis(summary$coefficients[3,1]),
-           prob_yat_sd = plogis(summary$coefficients[3,2]),
-           prob_yap = plogis(summary$coefficients[4,1]),
-           prob_yap_sd = plogis(summary$coefficients[4,2]),
-           log_odds_emergence = exp(summary$coefficients[2,1])
+           n_cicada = sum(tmp$cicada_year_binary == 1)
+           
+#           prob_intercept = plogis(summary$coefficients[1,1]),
+#           prob_post_e = plogis(summary$coefficients[2,1]),
+#           prob_pe_sd = plogis(summary$coefficients[2,2]),
+#           prob_yat = plogis(summary$coefficients[3,1]),
+#           prob_yat_sd = plogis(summary$coefficients[3,2]),
+#           prob_yap = plogis(summary$coefficients[4,1]),
+#           prob_yap_sd = plogis(summary$coefficients[4,2]),
+#           log_odds_emergence = exp(summary$coefficients[2,1])
              )
   
   #double-check nothing messed up in calculating the n() in each group.
@@ -349,8 +427,8 @@ for(i in 1:length(original_order)) {
     #rows_update(tmp_results, by = c("Species.Name"))
    
 }
-  write.csv(postcicada_results, "model_results/binomial_POSTcicada_results.csv")
-  save(postcicada_models, file = "model_results/binomial_POSTcicada_glms.rds")
+  write.csv(postcicada_results, "model_results/binomial_POSTcicada_async_results.csv")
+  save(postcicada_models, file = "model_results/binomial_POSTcicada__async_glms.rds")
 #run both the binomial with tf nest success
 #and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
 
@@ -359,7 +437,9 @@ for(i in 1:length(original_order)) {
 precicada_df <- analysis_df |>
   filter(!is.na(pre_emergence))
 
-precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "n_noncicada", "n_cicada", "prob_intercept","prob_pre_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd","log_odds_emergence","log_odds_emergence_2.5", "log_odds_emergence_97.5"),
+precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "asynchrony", "async_sd", "async_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "async_interction", "async_int_sd", "async_int_p", "n_noncicada", "n_cicada" 
+                                                   #"prob_intercept","prob_pre_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd","log_odds_emergence","log_odds_emergence_2.5", "log_odds_emergence_97.5"
+                                                   ),
                                       rows_list = original_order) |>
   mutate(model = as.character(model),
          model_desc = as.character(model_desc),
@@ -375,7 +455,7 @@ for(i in 1:length(original_order)) {
   tmp <- precicada_df |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glm(nest_success_tf ~ pre_emergence + y_anomaly_temp + y_anomaly_precip, 
+  tmp_glm <- glm(nest_success_tf ~ pre_emergence*asynchrony + y_anomaly_temp + y_anomaly_precip, 
                  data = tmp, 
                  family = binomial(link = "logit"))
   summary <- summary(tmp_glm)
@@ -390,22 +470,28 @@ for(i in 1:length(original_order)) {
            pre_emergence = summary$coefficients[2,1],
            pe_sd = summary$coefficients[2,2],
            pe_p = summary$coefficients[2,4], 
-           y_anomaly_temp = summary$coefficients[3,1],
-           yat_sd = summary$coefficients[3,2],
-           yat_p = summary$coefficients[3,4],
-           y_anomaly_precip = summary$coefficients[4,1],
-           yap_sd = summary$coefficients[4,2],
-           yap_p = summary$coefficients[4,4],
+           asynchrony = summary$coefficients[3,1],
+           async_sd = summary$coefficients[3,2],
+           async_p = summary$coefficients[3,4],
+           y_anomaly_temp = summary$coefficients[4,1],
+           yat_sd = summary$coefficients[4,2],
+           yat_p = summary$coefficients[4,4],
+           y_anomaly_precip = summary$coefficients[5,1],
+           yap_sd = summary$coefficients[5,2],
+           yap_p = summary$coefficients[5,4],
+           async_interction = summary$coefficients[6,1], 
+           async_int_sd = summary$coefficients[6,2], 
+           async_int_p = summary$coefficients[6,3],
            n_noncicada = sum(tmp$cicada_year_binary == 0),
            n_cicada = sum(tmp$cicada_year_binary == 1),
-           prob_intercept = plogis(summary$coefficients[1,1]),
-           prob_pre_e = plogis(summary$coefficients[2,1]),
-           prob_pe_sd = plogis(summary$coefficients[2,2]),
-           prob_yat = plogis(summary$coefficients[3,1]),
-           prob_yat_sd = plogis(summary$coefficients[3,2]),
-           prob_yap = plogis(summary$coefficients[4,1]),
-           prob_yap_sd = plogis(summary$coefficients[4,2]),
-           log_odds_emergence = exp(summary$coefficients[2,1])
+#           prob_intercept = plogis(summary$coefficients[1,1]),
+#           prob_pre_e = plogis(summary$coefficients[2,1]),
+#           prob_pe_sd = plogis(summary$coefficients[2,2]),
+#           prob_yat = plogis(summary$coefficients[3,1]),
+#           prob_yat_sd = plogis(summary$coefficients[3,2]),
+#           prob_yap = plogis(summary$coefficients[4,1]),
+#           prob_yap_sd = plogis(summary$coefficients[4,2]),
+#           log_odds_emergence = exp(summary$coefficients[2,1])
 #           log_odds_emergence_2.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[1],
  #          log_odds_emergence_97.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[2]
     )
@@ -419,8 +505,8 @@ for(i in 1:length(original_order)) {
   #rows_update(tmp_results, by = c("Species.Name"))
   
 }
-write.csv(precicada_results, "model_results/binomial_PREcicada_results.csv")
-save(precicada_models, file = "model_results/binomial_PREcicada_glms.rds")
+write.csv(precicada_results, "model_results/binomial_PREcicada_async_results.csv")
+save(precicada_models, file = "model_results/binomial_PREcicada_async_glms.rds")
 
 #annnnd just to make sure everything worked perfectly and I didn't mess up any of the functions e.g. none of the rows in the two datasets match or something..
 assert_that(
