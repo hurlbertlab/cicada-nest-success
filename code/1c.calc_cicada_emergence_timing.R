@@ -32,6 +32,7 @@ library(terra) #package for spatial data
 library(statuser) #for table2
 library(lubridate) #handles dates
 library(quantreg) #for quantile regression
+library(ggplot2) #for plotting
 
 #read in the brood map
 brood_map <- st_read(dsn = "data/cicada/periodical_cicada_with_county.gdb")
@@ -39,9 +40,29 @@ brood_map <- st_read(dsn = "data/cicada/periodical_cicada_with_county.gdb")
 #cicada emergence data
 cicada_emergence_years <- read.csv("data/cicada/cicada_emergence_years_wide.csv")  %>% ## this has broods with 4 emergence years in 4 separate columns
   dplyr::select(-emergence_2019_through_2024)
+#nymph cicada
+nymphs <- read.csv("data/cicada/inaturalist/2.inat_NYMPH_magicicada.csv") |>
+  dplyr::select(id, uuid)
+#dead cicada
+dead <- read.csv("data/cicada/inaturalist/2.inat_DEAD_magicicada.csv") |>
+  dplyr::select(id, uuid)
+#molts
+molts <- read.csv("data/cicada/inaturalist/2.inat_MOLT_magicicada.csv") |>
+  dplyr::select(id) |>
+  #remove obs from molts that also had live cicadas in the observation
+  anti_join(
+    (
+      read.csv("data/cicada/inaturalist/2.inat_ORGANISM_magicicada.csv") |>
+        dplyr::select(id)
+     )
+  , by = "id") #mwahaha. inat doesn't support the without_term_value_id filter in exporting but I am unstoppable.
 
 # read in inaturalist cicada observations
-cicada_obs <- read.csv("data/cicada/inaturalist/inat_magicicada_observations.csv") |>
+cicada_obs <- read.csv("data/cicada/inaturalist/1.inat_magicicada_observations.csv") |>
+  #filter out nymph cicada (not yet available to birds b/c mostly in the ground), dead cicada, and molts where the living cicada is not also in the photo
+  dplyr::filter(!id %in% nymphs$id) |>
+  dplyr::filter(!id %in% dead$id) |> #91 observations that were tagged as both dead and nymph
+  dplyr::filter(!id %in% molts$id) |>
   mutate(year = as.numeric(str_remove(str_extract(observed_on, "[0-9][0-9][0-9][0-9]-"), "-")),
          month = as.numeric(str_remove_all(str_extract(observed_on, "-[0-9][0-9]-"), "-")),
          day = as.numeric(str_remove(str_extract(observed_on, "-[0-9][0-9]$"), "-"))
@@ -71,9 +92,9 @@ cicada_geom <- cicada_obs |>
   left_join(cicada_emergence_years, by = "BROOD_NAME") |>
   #aaand select out some columns we don't need
   dplyr::select(-emergence_one, -emergence_two, -LSAD, -CLASSFP, -MTFCC, -ALAND, -AWATER, -INTPTLAT, -INTPTLON) |>
-  #and we have some duplicated observations joined b/c of overlap with multiple broods. We went from 55168 observations to 70678 after the join. No bueno! And we don't want any straggler cicadas. So we want to only keep observations where the year of the observation matches the emergence_three or emergence_four of the cicada brood in that county. 
+  #and we have some duplicated observations joined b/c of overlap with multiple broods. We went from 45805 observations to 58662 after the join. No bueno! And we don't want any straggler cicadas. So we want to only keep observations where the year of the observation matches the emergence_three or emergence_four of the cicada brood in that county. 
   filter(year == emergence_three | year == emergence_four) 
-  #perf. after == 42770 observations
+  #perf. after == 36166 observations
   
   #and unless we end up needing it later, let's drop the geometry for now
 cicada_points <- cicada_geom |>
@@ -85,6 +106,12 @@ table2(cicada_points$BROOD_NAME) #alllright, yup there's a couple broods that ar
 #ya, went to check in 2.analysis_cicada_year.R with table2(analysis_df$BROOD_NAME) and indeed all the broods are represented (cool for me. )
 #guess its a question of if that latitude:observation date relationship is really actually different for different broods or if they're all along the same line.
 #aaaah.. hm... b/c it doesn't matter what all the dates of observation are of the cicadas. What matters is my estimated emergence date for each brood. Hence, the group by then quantile regression
+ggplot(cicada_points, 
+       aes(x = Lat,
+           y = j_date, 
+           color = BROOD_NAME)) + 
+  geom_point() +
+  theme_minimal()
 plot(y = cicada_points$j_date,
      x = cicada_points$Lat)
 q_glm <- lm(j_date ~ Lat, data = cicada_points)
@@ -93,18 +120,63 @@ summary(q_glm) #okay well yup, latitude of course is related to the day of obser
 #test_quant <- cicada_points |>
 #  filter(BROOD_NAME == "Brood XIII")
 
-rqfit <- rq(j_date ~ Lat, 
-            tau = .05, #tau = what quantile I want, this is the earliest 5%, which should capture the start of emergences
+#set quartiles
+min_quartile = 0.025
+max_quartile = 0.975
+
+min_bound <- rq(j_date ~ Lat, 
+            tau = min_quartile, 
             data = cicada_points)
-summary(rqfit)
+summary(min_bound)
 #this is fit across broods. 
 
-plot(j_date ~ Lat, data = cicada_points, pch = 16, main = "j_date ~ latitude")
-abline(coef(rqfit), pch = "solid", lwd = 4, col = "lightgreen")
-#fitting the 5% vs 10% isn't a big change, a difference of intercept more than a huge difference in slope.
+max_bound <- rq(j_date ~ Lat, 
+                tau = max_quartile, #tau = what quantile I want, this is the earliest 5%, which should capture the start of emergences
+                data = cicada_points)
+summary(max_bound) #awesome, very similar line as the minimum bound but with a different intercept. 
 
+#make polygon
+{
+  min_coef <- coef(min_bound)
+  max_coef <- coef(max_bound)
+  sorted_data <- cicada_points[order(cicada_points$Lat),]
+  polygon_x <- c(28, sorted_data$Lat, 45)
+  polygon_ymin <- min_coef[1] + min_coef[2]*polygon_x
+  polygon_ymax <- max_coef[1] + max_coef[2]*polygon_x
+}
+
+text_size = 1.3
+png(filename = "figures/2026.08.27_obs_by_lat.png", 
+    width = 650,
+    height = 400,
+    units = "px", 
+    type = "windows")
+{
+plot(j_date ~ Lat, data = cicada_points, pch = 1,
+     main = "Cicada Observation Date by Latitude",
+     xlab = "Latitude",
+     ylab = "Julien Day",
+     cex.main = text_size,
+     cex.sub = text_size, 
+     cex.lab = text_size, 
+     cex.axis = text_size)
+abline(coef(min_bound), lty = "dashed", lwd = 4, col = "#619CFF")
+abline(coef(max_bound), lty = "dashed", lwd = 4, col = "#619CFF")
+polygon(c(polygon_x, rev(polygon_x)),
+        c(polygon_ymax, rev(polygon_ymin)),
+        col = adjustcolor("#619CFF", alpha.f = 0.3),
+        border = NA
+        )
+} 
+dev.off()
 # Okay, now export the rqfit so we can load it in in the analysis df and use predict()
-save(rqfit, file = "data/cicada/model_j_date_latitude_05_quartile.Rdata")
+cicada_bounds_latitude_by_j_date <- data.frame(
+                                               bound = c("min", "max"),
+                                               intercept = c(min_coef[1], max_coef[1]),
+                                               lat = c(min_coef[2], max_coef[2]),
+                                               quartile = c(min_quartile, max_quartile)
+                                               )
+write.csv(cicada_bounds_latitude_by_j_date, "data/cicada_bounds_latitude_by_j_date.csv", row.names = FALSE)
 
 #one test that matters is how different this lat:j_date relationship is for each brood vs all the data together. 
   # brood_rqfit <- list()

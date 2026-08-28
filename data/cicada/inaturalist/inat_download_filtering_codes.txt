@@ -4,3 +4,20 @@
 
 From:
 https://forum.inaturalist.org/t/how-to-use-inaturalists-search-urls-wiki-part-2-of-2/18792
+
+Magicicada taxon_id=83854
+
+OH. okay, need to filter the term_id FIRST and then do without_term_value_id. Got it. 
+
+so, to get the list of dead individuals to exclude:
+&term_id=17&term_value_id=19
+
+to get the list of nymph observations to exclude:
+&term_id=1&term_value_id=5
+
+to get the list of molt observations to exclude (but we want to keep ones with both a molt and organism in photo):
+&term_id=22&without_term_value_id=24&term_value_id=28 
+#2283 observations
+#mh. looks like the "without" filters only work on the observations page, and not when going to download. 
+#anti-join based on a download of:
+&term_id=22&term_value_id=24
