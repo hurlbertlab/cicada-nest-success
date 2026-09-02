@@ -1,0 +1,24 @@
+*before remembering to take the absolute value of asynchrony
+
+Bluebird = effect of emergence, nothing with async or interaction
+Tree Swallow = effect of emergence, effect of asynchrony, no interaction
+House Wren = no effects
+Chickadees = effect of cicada:asynchrony interaction
+Purple Martin = no effects
+Carolina Wren = no effects
+American Robin = effect of emergence
+House Sparrow = effects of emergence, maybe effect of asynchrony, and interaction
+Prothonotary Warbler = no effects
+
+Will need to compare d_AICs to see if adding asynchrony improved the models or not. 
+
+*after taking the absolute value of asynchrony
+Bluebird = no effects
+Tree Swallow = effect of emergence, effect of asynchrony, no interaction
+House Wren = no effects
+Chickadees = no effects
+Purple Martin = no effects
+Carolina Wren = no effects
+American Robin = effect of emergence
+House Sparrow = effects of emergence
+Prothonotary Warbler = no effects

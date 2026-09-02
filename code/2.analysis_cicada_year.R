@@ -404,7 +404,7 @@ for(i in 1:length(original_order)) {
            yap_p = summary$coefficients[5,4],
            async_interction = summary$coefficients[6,1], 
            async_int_sd = summary$coefficients[6,2], 
-           async_int_p = summary$coefficients[6,3],
+           async_int_p = summary$coefficients[6,4],
            n_noncicada = sum(tmp$cicada_year_binary == 0),
            n_cicada = sum(tmp$cicada_year_binary == 1)
            
@@ -428,7 +428,7 @@ for(i in 1:length(original_order)) {
    
 }
   write.csv(postcicada_results, "model_results/binomial_POSTcicada_async_results.csv")
-  save(postcicada_models, file = "model_results/binomial_POSTcicada__async_glms.rds")
+  save(postcicada_models, file = "model_results/binomial_POSTcicada_async_glms.rds")
 #run both the binomial with tf nest success
 #and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
 
@@ -481,9 +481,9 @@ for(i in 1:length(original_order)) {
            yap_p = summary$coefficients[5,4],
            async_interction = summary$coefficients[6,1], 
            async_int_sd = summary$coefficients[6,2], 
-           async_int_p = summary$coefficients[6,3],
+           async_int_p = summary$coefficients[6,4],
            n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1),
+           n_cicada = sum(tmp$cicada_year_binary == 1)
 #           prob_intercept = plogis(summary$coefficients[1,1]),
 #           prob_pre_e = plogis(summary$coefficients[2,1]),
 #           prob_pe_sd = plogis(summary$coefficients[2,2]),
