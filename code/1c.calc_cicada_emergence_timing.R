@@ -119,6 +119,7 @@ summary(q_glm) #okay well yup, latitude of course is related to the day of obser
 #set quartiles
 min_quartile = 0.025
 max_quartile = 0.975
+mid_quartile = 0.5
 
 min_bound <- rq(j_date ~ Lat, 
             tau = min_quartile, 
@@ -131,10 +132,16 @@ max_bound <- rq(j_date ~ Lat,
                 data = cicada_points)
 summary(max_bound) #awesome, very similar line as the minimum bound but with a different intercept. 
 
+mid_line <- rq(j_date ~ Lat, 
+               tau = mid_quartile, 
+               data = cicada_points)
+summary(mid_line) #yup, still a very similar line with a different intercept. 
+
 #make polygon
 {
   min_coef <- coef(min_bound)
   max_coef <- coef(max_bound)
+  mid_coef <- coef(mid_line)
   sorted_data <- cicada_points[order(cicada_points$Lat),]
   polygon_x <- c(28, sorted_data$Lat, 45)
   polygon_ymin <- min_coef[1] + min_coef[2]*polygon_x
@@ -142,7 +149,7 @@ summary(max_bound) #awesome, very similar line as the minimum bound but with a d
 }
 
 text_size = 1.3
-png(filename = "figures/2026.08.27_obs_by_lat.png", 
+png(filename = "figures/2026.09.03_obs_by_lat.png", 
     width = 650,
     height = 400,
     units = "px", 
@@ -158,6 +165,7 @@ plot(j_date ~ Lat, data = cicada_points, pch = 1,
      cex.axis = text_size)
 abline(coef(min_bound), lty = "dashed", lwd = 4, col = "#619CFF")
 abline(coef(max_bound), lty = "dashed", lwd = 4, col = "#619CFF")
+abline(coef(mid_line), lty = "dotted", lwd = 4, col = "#619CFF")
 polygon(c(polygon_x, rev(polygon_x)),
         c(polygon_ymax, rev(polygon_ymin)),
         col = adjustcolor("#619CFF", alpha.f = 0.3),
@@ -167,10 +175,10 @@ polygon(c(polygon_x, rev(polygon_x)),
 dev.off()
 # Okay, now export the rqfit so we can load it in in the analysis df and use predict()
 cicada_bounds_latitude_by_j_date <- data.frame(
-                                               bound = c("min", "max"),
-                                               intercept = c(min_coef[1], max_coef[1]),
-                                               lat = c(min_coef[2], max_coef[2]),
-                                               quartile = c(min_quartile, max_quartile)
+                                               bound = c("min", "max", "mid"),
+                                               intercept = c(min_coef[1], max_coef[1], mid_coef[1]),
+                                               lat = c(min_coef[2], max_coef[2], mid_coef[2]),
+                                               quartile = c(min_quartile, max_quartile, mid_quartile)
                                                )
 write.csv(cicada_bounds_latitude_by_j_date, "data/cicada_bounds_latitude_by_j_date.csv", row.names = FALSE)
 

@@ -196,7 +196,11 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
     f_end = jday_fledge - lat_cicada_end,
     f_start = jday_fledge - lat_cicada_start,
     h_end = jday_hatch - lat_cicada_end,
-    h_start = jday_hatch - lat_cicada_start) |>
+    h_start = jday_hatch - lat_cicada_start,
+    # sort of a different aspect here, but let's also calculate difference between the hatch date and the midpoint of the cicada emergence
+    lat_cicada_mid = cicada_bounds$intercept[cicada_bounds$bound == "mid"] + cicada_bounds$lat[cicada_bounds$bound == "mid"] * Latitude,
+    h_mid = (jday_hatch - lat_cicada_mid)
+    ) |>
   #ONE MORE STEP! Now we must calculate ASYCHRONY for each nest. This will be the proportion of days between hatching and fledging where the nest DOES NOT EXPERIENCE CICADAS (from 0 to 1)
   mutate(asynchrony = 
            case_when(
@@ -210,8 +214,10 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
              (f_end < 0 & f_start > 0 & h_end < 0 & h_start < 0) ~ abs((h_start/nest_hatch_to_fledge_days)), #asynchrony is percent of days before cicada emergence
              # nest straddles the cicada die-off. Only h_date is negative.
              (f_end > 0 & f_start > 0 & h_end < 0 & h_start > 0) ~ abs((f_end/nest_hatch_to_fledge_days)) #asynchrony is percent of days after the cicada die-off
-           ))
+           )) 
     
+#save analysis_df
+write.csv(analysis_df, "data/analysis_df.csv", row.names = FALSE)
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
@@ -270,7 +276,7 @@ original_order <- c("Eastern Bluebird", "Tree Swallow", "Northern House Wren", "
 cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
-png(filename = "figures/2026.08.28_pct_nest_success.png", 
+png(filename = "figures/2026.09.03_pct_nest_success.png", 
     width = 630,
     height = 630,
     units = "px", 
@@ -349,7 +355,7 @@ postcicada_df <- analysis_df |>
 # test the glm process...
 test <- postcicada_df |>
   filter(Species.Name == "Eastern Bluebird")
-test_glm <- glm(nest_success_tf ~ post_emergence*asynchrony + y_anomaly_temp + y_anomaly_precip, 
+test_glm <- glm(nest_success_tf ~ post_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
                 data = test, 
                 family = binomial(link = "logit"))
 summary(test_glm)
@@ -377,7 +383,7 @@ for(i in 1:length(original_order)) {
   tmp <- postcicada_df |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glm(nest_success_tf ~ post_emergence*asynchrony + y_anomaly_temp + y_anomaly_precip, 
+  tmp_glm <- glm(nest_success_tf ~ post_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
                  data = tmp, 
                  family = binomial(link = "logit"))
   
@@ -427,8 +433,8 @@ for(i in 1:length(original_order)) {
     #rows_update(tmp_results, by = c("Species.Name"))
    
 }
-  write.csv(postcicada_results, "model_results/binomial_POSTcicada_async_results.csv")
-  save(postcicada_models, file = "model_results/binomial_POSTcicada_async_glms.rds")
+  write.csv(postcicada_results, "model_results/binomial_POSTcicada_hmid_results.csv")
+  save(postcicada_models, file = "model_results/binomial_POSTcicada_hmid_glms.rds")
 #run both the binomial with tf nest success
 #and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
 
@@ -455,7 +461,7 @@ for(i in 1:length(original_order)) {
   tmp <- precicada_df |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glm(nest_success_tf ~ pre_emergence*asynchrony + y_anomaly_temp + y_anomaly_precip, 
+  tmp_glm <- glm(nest_success_tf ~ pre_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
                  data = tmp, 
                  family = binomial(link = "logit"))
   summary <- summary(tmp_glm)
@@ -505,8 +511,8 @@ for(i in 1:length(original_order)) {
   #rows_update(tmp_results, by = c("Species.Name"))
   
 }
-write.csv(precicada_results, "model_results/binomial_PREcicada_async_results.csv")
-save(precicada_models, file = "model_results/binomial_PREcicada_async_glms.rds")
+write.csv(precicada_results, "model_results/binomial_PREcicada_hmid_results.csv")
+save(precicada_models, file = "model_results/binomial_PREcicada_mid_glms.rds")
 
 #annnnd just to make sure everything worked perfectly and I didn't mess up any of the functions e.g. none of the rows in the two datasets match or something..
 assert_that(
