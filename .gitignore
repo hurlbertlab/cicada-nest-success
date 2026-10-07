@@ -54,3 +54,6 @@ data/nestwatchV3/attempts_locs_20250131.csv
 data/nestwatchV3/checks_20250131.csv
 data/nestwatchV6/attempts_locs_20260120.csv
 data/nestwatchV6/checks_20260120.csv
+
+*MAPS data that's too big.
+data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_data.csv

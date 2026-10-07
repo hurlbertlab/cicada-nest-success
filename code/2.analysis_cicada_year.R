@@ -217,7 +217,7 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
            )) 
     
 #save analysis_df
-write.csv(analysis_df, "data/analysis_df.csv", row.names = FALSE)
+write.csv(analysis_df, "data/nestwatch_analysis_df.csv", row.names = FALSE)
 
 statuser::table2(analysis_df$cicada_year,
                  analysis_df$Species.Name)
