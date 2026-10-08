@@ -53,7 +53,9 @@ filter_nest_sum <- nestwatch |>
   mutate(Species.Name = case_when(
     Species.Name == "Northern House Wren (Northern)" ~ "Northern House Wren",
     TRUE ~ Species.Name
-  )) 
+  )) |>
+  #remove House Sparrow because their nests are often removed for invasive species management (f5) - to the tune of 61.6% of nest Outcomes being f5. We can't determine when ones listed as f are actually f5 and just didn't have as much information given.
+  filter(Species.Name != "House Sparrow")
   #previously we also filtered the Species.Name for %in% c("Eastern Bluebird", "House Wren", "Carolina Chickadee", "Black-capped Chickadee", "Tree Swallow")
   #for now, going to make this file with all species with more than 2k observations. Later, if we want to exclude species b/c of lacking enough data with overlap with cicadas, we definitely can.
   #Well, we chose the prev. species for widespread distribution, high representation in nestwatch data, and insectivorous diets. Combining the chickadees (7k + 3k) that sets the minimum bound of observations at 15k for inclusion. 
