@@ -30,7 +30,8 @@ locations <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_STATION_location_a
   #filter out when it's not within a brood location
   filter(!is.na(BROOD_NAME))
 
-ggplot(locations) + geom_sf()
+ggplot(locations) + 
+  geom_sf()
 
   n_distinct(locations$STATION_NAME)
   #283 locations.
@@ -138,6 +139,68 @@ if(file.exists("data/maps_climate_data.csv")) {
   write.csv(maps_climate, "data/maps_climate_data.csv", row.names = FALSE)
 
 } #end if/else to get climate data
+
+#OKAY. Now I have to actually um read in the dataset. 
   
+# filter to the locations + years with suitable data:
+location_years <- locations |>
+  #remove Y columns because we only care about operation years if the data is also available to us
+  select(-starts_with("Y0")) |>
+  select(-starts_with("Y1")) |>
+  #pivot
+  tidyr::pivot_longer(cols = D89:D18, names_to = "year", names_prefix = "D", values_to = "run_in_year") |>
+  #fix years so they're more interpretable when picking up the dataset
+  mutate(year = case_when(as.numeric(year) > 70 ~ as.numeric(paste0("19",year)),
+                          as.numeric(year) < 70 ~ as.numeric(paste0("20", year))
+                          )
+         ) |>
+  #keep only year-location combinations when we have the data
+  filter(run_in_year == "X") |>
+  #add in all the information about all potential brood years...
+  left_join(
+    cicada_emergence_years,
+    by = c("BROOD_NAME")
+  ) |>
+  #okay, and now we keep location-year combinations where they have data during one of the emergence years, or a year before, or a year after. hehe okay long filter...go!
+  filter(
+    year == emergence_one - 1 |
+      year == emergence_one |
+      year == emergence_one + 1 |
+      year == emergence_two - 1 |
+      year == emergence_two |
+      year == emergence_two + 1 |
+      year == emergence_three - 1 |
+      year == emergence_three |
+      year == emergence_three + 1 |
+      year == emergence_four - 1 | 
+      year == emergence_four |
+      year == emergence_four + 1 
+  ) |>
+  #okay now similarly, we need a case_when to tell us this kinda year before/ year of / year after information.
+  mutate(cicada_year = 
+           case_when(
+             year == emergence_one | year == emergence_two | year == emergence_three | year == emergence_four ~ 0,
+             year == emergence_one -1 | year == emergence_two -1 | year == emergence_three -1 | year == emergence_four -1 ~ -1,
+             year == emergence_one +1 | year == emergence_two +1 | year == emergence_three +1 | year == emergence_four +1 ~ 1
+           )) |>
+  #awright and now make a binary one while we're here..
+  mutate(cicada_year_binary = 
+           case_when(cicada_year == 0 ~ 1,
+                     cicada_year == -1 | cicada_year == 1 ~ 0))
+
+#some quick visualization
+hist(location_years$year)
+hist(location_years$cicada_year)
+table(location_years$cicada_year) #epic, all about the same.
+table(location_years$cicada_year_binary)
+
+n_distinct(location_years$LOC)
+#cool, and we have 99 unique sites remaining where they banded in +-1 of a cicada year.
+  
+#get the captures information 
+#you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
+captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_data.csv") |>
+  #filter to just the year/location combos of interest
+  filter(LOC %in% location_years$LOC & year %in% location_years$year) #cool, we retain about 41% of the capture data. YAY
 
   

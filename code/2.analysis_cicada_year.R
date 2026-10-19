@@ -82,8 +82,8 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
   ungroup() |> 
   # after = 30,764 observations
   mutate(cicada_year_binary = case_when(
-    cicada_year == 0 ~ 0, #0 when cicadas have emerged
-    TRUE ~ 1
+    cicada_year == 0 ~ 1, #binary 1 when cicadas have emerged, bc its the change. I know it doesn't match the layout of the -1/0/1 but that's okay..
+    TRUE ~ 0
   ),
   pre_emergence = as.factor(case_when(
     cicada_year == -1 ~ 0, #year before the cicadas
@@ -229,17 +229,25 @@ statuser::table2(analysis_df$cicada_year,
 
 #function to make the n = labels for the figures
 make_n_labels = function(df = summary_data, 
-                         filter_species = "Eastern Bluebird") {
+                         filter_species = "Eastern Bluebird", 
+                         labs = "before/after" #options = before/after or cicada/non
+                         ) {
   
   df <- df |>
     filter(Species.Name == filter_species)
-  
+  if(labs == "before/after") {
+    lab = paste0("n = ",
+                 df$n[df$cicada_year == -1], 
+                 ", ",
+                 df$n[df$cicada_year == -0], 
+                 ", ",
+                 df$n[df$cicada_year == 1]
+    )
+  } else if(labs == "cicada/non")
   lab = paste0("n = ",
-               df$n[df$cicada_year == -1], 
+               df$n[df$cicada_year_binary == 1], 
                ", ",
-               df$n[df$cicada_year == -0], 
-               ", ",
-               df$n[df$cicada_year == 1]
+               df$n[df$cicada_year_binary == 0] #when cicadas have emerged
   )
 }
 
@@ -247,7 +255,7 @@ make_n_labels = function(df = summary_data,
 ## group, calc mean & stdev
 {
   summary_data <- analysis_df %>%
-  group_by(Species.Name, cicada_year) %>%
+  group_by(Species.Name, cicada_year_binary) %>%
   summarise(
     #nest success 0/1
     mean_pct_nest_success = mean(nest_success_tf, na.rm = TRUE),
@@ -263,26 +271,26 @@ make_n_labels = function(df = summary_data,
 
 summary_data <- summary_data |>
   group_by(Species.Name) |>
-  mutate(lab = make_n_labels(filter_species = Species.Name)) |>
+  mutate(lab = make_n_labels(filter_species = Species.Name, labs = "cicada/non")) |>
   ungroup()
 }
 
 # Get the original order of species
 original_order <- unique(summary_data$Species.Name)
 #okay have to do this a bit dif now b/c HOSP has a year with more obs than American Robin
-original_order <- c("Eastern Bluebird", "Tree Swallow", "Northern House Wren", "Black-capped and\n Carolina Chickadee", "Purple Martin", "Carolina Wren", "American Robin", "House Sparrow", "Prothonotary Warbler")
+original_order <- c("Eastern Bluebird", "Tree Swallow", "Northern House Wren", "Black-capped and\n Carolina Chickadee", "Purple Martin", "Carolina Wren", "American Robin", "Prothonotary Warbler")
 
 
 cicada_image = readPNG("figures/cicada_outline.png")
 
 ## ok now graph
-png(filename = "figures/2026.09.03_pct_nest_success.png", 
+png(filename = "figures/2026.10.12_pct_nest_success.png", 
     width = 630,
     height = 630,
     units = "px", 
     type = "windows")
 {
-ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Species.Name)) +
+ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_nest_success, color = Species.Name)) +
   ylim(0, 1) + 
   geom_line(linewidth = 1.5) +
   geom_errorbar(aes(ymin = mean_pct_nest_success - se_pct_nest_success, ymax = mean_pct_nest_success + se_pct_nest_success), width = 0.2, linewidth = 1.5) +
@@ -291,8 +299,10 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Spe
     x = "Cicada Year",
     y = "Mean Nest Success"
   ) +
-  scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
-                    labels = c("-1", "X", "1")) +  # Custom text labels) 
+  scale_x_continuous(breaks = c(0, 1),  # Numeric breaks at -1, 0, and 1
+                    labels = c("0", "X")) +  # Custom text labels) 
+  #scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
+  #                  labels = c("-1", "X", "1")) +  # Custom text labels) 
   scale_color_discrete(limits = original_order) +  # Fix color order to original
   theme_minimal(base_size = 19) + # increase text size) +
   theme(
@@ -306,10 +316,7 @@ ggplot(summary_data, aes(x = cicada_year, y = mean_pct_nest_success, color = Spe
                       arrange(desc(n)) |>
                       ungroup() |>
                       mutate(
-                        x = c(-.4, -.41, -.51, -.52, -.52, -.58,
-                              -.58, #House Sparrow Control
-                              -.57, #American Robin Control
-                              -.65),
+                        x = .2,
                         y = 0.14
                       )),
             aes(x = x, y = y, label = lab),
@@ -518,6 +525,114 @@ save(precicada_models, file = "model_results/binomial_PREcicada_mid_glms.rds")
 assert_that(
   all(is.na((left_join(postcicada_results, precicada_results, by = c("pe_sd")))$n_cicada.y))
    )
+
+
+#and! okay! since we see that /\ shape to the cicada graph, this IS something we can fit with a binary. There's no need to have a seperate pre and post cicada model. We can just do a binary 0/1 change, and only use the years surrounding a cicada emergence to control better for various climate factors etc. Let's run it this way now.
+binary_df <- analysis_df
+
+binary_results = make_trend_table(cols_list = 
+                                    c("Species.Name",
+                                      "model", 
+                                      "model_desc", 
+                                      "intercept",
+                                      "emergence",
+                                      "e_sd", 
+                                      "e_p",
+                                      #"asynchrony", 
+                                      #"async_sd", 
+                                      #"async_p",
+                                      "y_anomaly_temp",
+                                      "yat_sd",
+                                      "yat_p", 
+                                      "y_anomaly_precip",
+                                      "yap_sd", 
+                                      "yap_p",
+                                      #"async_interction",
+                                      #"async_int_sd", 
+                                      #"async_int_p",
+                                      "n_noncicada", 
+                                      "n_cicada",
+                                      #"prob_intercept",
+                                      "prob_e",
+                                      #"prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd", 
+                                      "log_odds_emergence"
+                                      #"log_odds_emergence_2.5","log_odds_emergence_97.5"
+                                    ),
+                                  rows_list = original_order) |>
+  mutate(model = as.character(model),
+         model_desc = as.character(model_desc),
+         mutate(across(where(is.logical), as.numeric)))
+
+binary_models = list()
+binary_glmer = list()
+
+for(i in 1:length(original_order)) {
+  
+  sp <- original_order[i]
+  print(i); print(sp)
+  
+  tmp <- binary_df |>
+    filter(Species.Name == sp)
+  
+  tmp_glm <- glm(nest_success_tf ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip + (1|Year), 
+                   data = tmp, 
+                   family = binomial(link = "logit"))
+  
+  tmp_glmer <- glmer(nest_success_tf ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip + (1|Year), 
+                 data = tmp, 
+                 family = binomial(link = "logit"))
+  
+  summary <- summary(tmp_glm)
+  
+  binary_models[[i]] = tmp_glm
+  binary_glmer[[i]] = tmp_glmer
+  
+  tmp_results <- binary_results |>
+    filter(Species.Name == sp) |>
+    mutate(model = as.character(tmp_glm$formula)[3],
+           model_desc = "binomial",
+           intercept = summary$coefficients[1,1],
+           emergence = summary$coefficients[2,1],
+           e_sd = summary$coefficients[2,2],
+           e_p = summary$coefficients[2,4], 
+           #asynchrony = summary$coefficients[3,1],
+           #async_sd = summary$coefficients[3,2],
+           #async_p = summary$coefficients[3,4],
+           y_anomaly_temp = summary$coefficients[3,1],
+           yat_sd = summary$coefficients[3,2],
+           yat_p = summary$coefficients[3,4],
+           y_anomaly_precip = summary$coefficients[4,1],
+           yap_sd = summary$coefficients[4,2],
+           yap_p = summary$coefficients[4,4],
+           #async_interction = summary$coefficients[6,1], 
+           #async_int_sd = summary$coefficients[6,2], 
+           #async_int_p = summary$coefficients[6,4],
+           n_noncicada = sum(tmp$cicada_year_binary == 0),
+           n_cicada = sum(tmp$cicada_year_binary == 1),
+           #           prob_intercept = plogis(summary$coefficients[1,1]),
+                      prob_e = plogis(summary$coefficients[2,1]),
+           #           prob_pe_sd = plogis(summary$coefficients[2,2]),
+           #           prob_yat = plogis(summary$coefficients[3,1]),
+           #           prob_yat_sd = plogis(summary$coefficients[3,2]),
+           #           prob_yap = plogis(summary$coefficients[4,1]),
+           #           prob_yap_sd = plogis(summary$coefficients[4,2]),
+                      log_odds_emergence = exp(summary$coefficients[2,1])
+           #           log_odds_emergence_2.5 = exp(confint(tmp_glm, parm = "cicada_year_binary"))[1],
+            #         log_odds_emergence_97.5 = exp(confint(tmp_glm, parm = "cicada_year_binary"))[2]
+    )
+  
+  #double-check nothing messed up in calculating the n() in each group.
+  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  
+  binary_results[binary_results$Species.Name == sp,] <- tmp_results
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+  #postcicada_results |>
+  #rows_update(tmp_results, by = c("Species.Name"))
+  
+}
+
+save(binary_models, file = "model_results/binomial_BINARY_glms.rds")
+save(binary_glmer, file = "model_results/binomail_BINARY_glmER.rds")
 
 #Now, for interpretation. See model_results/ to find a helpful page from the University of Virginia on how to interpret binomial glm results :)
 #The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from -inf  to inf  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). To apply plogis() across all our variables at once we can use predict()
