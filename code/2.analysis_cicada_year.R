@@ -245,9 +245,9 @@ make_n_labels = function(df = summary_data,
     )
   } else if(labs == "cicada/non")
   lab = paste0("n = ",
-               df$n[df$cicada_year_binary == 1], 
+               df$n[df$cicada_year_binary == 0], 
                ", ",
-               df$n[df$cicada_year_binary == 0] #when cicadas have emerged
+               df$n[df$cicada_year_binary == 1] #when cicadas have emerged
   )
 }
 

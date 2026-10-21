@@ -12,6 +12,7 @@ library(sf)
 library(stringr)
 library(ggplot2)
 library(daymetr)
+library(scales)
 
 #read in cicada info
 cicada_emergence_years <- read.csv("data/cicada/cicada_emergence_years_wide.csv")  %>% ## this has broods with 4 emergence years in 4 separate columns
@@ -200,19 +201,44 @@ table(location_years$cicada_year_binary)
 
 n_distinct(location_years$STATION_NAME)
 #cool, and we have 156 unique stations remaining where they banded in +-1 of a cicada year.
+
+#k, and also, let's keep in mind stations are only suitable forr use if in SUITABILITY_station_and_year things look good.
+station_suitability <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_Analysis_SUITABILITY_station_and_year.csv") |>
+  #pivot
+  tidyr::pivot_longer(cols = D92:D18, names_to = "year", names_prefix = "D", values_to = "suitable_in_year") |>
+  #fix years so they're more interpretable when picking up the dataset
+  mutate(year = case_when(as.numeric(year) > 70 ~ as.numeric(paste0("19",year)),
+                          as.numeric(year) < 70 ~ as.numeric(paste0("20", year))
+                          ) #end casewhen
+  ) |> #end mutate
+  mutate(loc_year = paste0(LOC, year),
+         sta_year = paste0(STA, year)) |>
+    #stations are only suitable for use if they have the value "B" or "C"
+  filter(suitable_in_year %in% c("B", "C")) |> 
+  #and there's only one record of "C", so I think that's fine to filter out. MAPS thinks the data is suitable for these purposes even if it doesn't quiiiitttee meet their established standards, but I don't want to have to worry about it.
+  filter(suitable_in_year == "B") |> 
+  #and now filter to the location years that are relevant for cicada...
+  filter(loc_year %in% location_years$loc_year)
+  
   
 #get the captures information 
 #you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
 captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_data.csv") |>
   #start with 728096 total records
   #filter to just the year/location combos of interest
-  mutate(loc_year = paste0(LOC, year)) |>
+  mutate(loc_year = paste0(LOC, year),
+         sta_year = paste0(STA, year)) |>
   filter(loc_year %in% location_years$loc_year) |> #cool, we retain about 10% of the capture data. YAY
   #73607/728096
-  #create month and day columns, we'll see if we want to filter on those later.
+  #and also filter only to the stations that are suitable for analysis
+  filter(sta_year %in% station_suitability$sta_year) |>
+  #72346/728096
+  #add cicada year information based on location, I checked and all stations within a location experience the same cicada year.
   left_join(
     (location_years |>
-       select(LOC, year, STA, STATION_NAME, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary)), by = c("LOC", "year", "STA")) |>
+       select(LOC, year, loc_year, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary) |>
+       distinct(LOC, year, .keep_all = TRUE)), by = c("LOC", "year")) |>
+  #create month and day columns, we'll see if we want to filter on those later.
   mutate(month = as.numeric(str_remove_all(str_extract(DATE, "-[0-9][0-9]-"), "-")),
          day = as.numeric(str_remove_all(str_extract(DATE, "-[0-9][0-9]$"), "-"))
          ) |>
@@ -221,7 +247,7 @@ captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_dat
   filter(C %in% c("N", "R"))  |>
   #and also filter to only records meant to be used in productivity or survivorship analyses
   filter(N %in% c("-"))
-  #70027/728096, #9.6% of data retained.
+  #68788/728096, #9.4% of data retained.
 
 #let's start consensing all this information down
 summary_captures <- captures |>
@@ -229,15 +255,31 @@ summary_captures <- captures |>
   distinct(year, BAND, LOC, .keep_all = TRUE) |>
   summarize(n_young = sum(AGE == 4 | AGE == 2), #local or hatching year birds
             n_adults = sum(AGE == 1 | AGE >= 5), #bird is at least an after-hatching-year bird through after-third-year bird. We don't worry about score 0s, indeterminable age birds (which accounts for only 2,770 records anyway. Like 1%)
+            n_stations = n_distinct(STA), 
             .by = c(LOC, year, SPEC, cicada_year, cicada_year_binary) # u know.. let's group by location rather than banding station? way fewer 0s
             ) |>
   mutate(productivity = n_young/n_adults) |>
   #and, we can't use any years where no adults were captured, as that brings productivity to infinity
   filter(!is.infinite(productivity)) |>
   #let's also remove weirdly high values, like a productivity of 32 where 98 baltimore oriole young were captured and only 3 adults. That's an outlier adn should not be counted. that still leaves us some cases of high productivity but .. those are .. okay?
-  filter(productivity < 20)
+  filter(productivity < 20) #|>
+  #add in climate data
+  #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! URg. this is having problems. ok fine ignore climate data for now #bliss
+  #left_join(
+  #  (maps_climate |>
+  #     #add LOC for each STATION_NAME
+  #     left_join(
+  #       (locations |>
+  #          select(LOC, STATION_NAME) |>
+  #          st_drop_geometry()),
+  #       by = c("STATION_NAME")
+  #       )
+  #     ) |>
+  #     summarize()
+  #)
 
 table(summary_captures$productivity > 2) #6,875 cases where productivity is less than 2, and 284 cases where productivity is higher than that. Eh, we may filter those out at the end, but I think perhaps okay for now. Probably a lot of those are going to be affect by filters to remove sp without enough data.
+table(summary_captures$cicada_year_binary)
 
 ggplot(summary_captures[summary_captures$productivity < 2,], aes(x = productivity, )) +
   geom_density(alpha = 0.5)
@@ -247,13 +289,173 @@ n_obser <- summary_captures |>
   group_by(SPEC) |>
   summarize(n = n(),
             n_y_gtr_1 = sum(n_young > 1),
-            perc_w_y = n_y_gtr_1/n) |>
+            perc_w_y = n_y_gtr_1/n,
+            n_cicada = sum(cicada_year_binary == 1),
+            perc_cicada = n_cicada/n) |>
   #well, first step, species where young are never observed should be cut
   filter(n_y_gtr_1 > 0) |>
   #and I want at least 30 total observations to work with
   filter(n >= 30) |>
   #oh! and we have eastern bluebird on this list! okay well we definitely want EABL so we can compare between the two data-sets. lets use that as a minimum bound and say at least 20% of the time, we have to have observed young. That means at least 6 observations with young with our minimum bound of 30. hm. think about if that boundary is actually well placed...
   filter(perc_w_y >= .20)
-  
 
+# I want a bar chart for species where each species has a plot showing both perc_w_y and perc_cicada in two different colors. 
+#did use chatgpt to generate this plot.
+# Reshape the two percentage columns into a long format
+plot_data <- n_obser |>
+  select(SPEC, perc_w_y, perc_cicada) |>
+  pivot_longer(
+    cols = c(perc_w_y, perc_cicada),
+    names_to = "measure",
+    values_to = "proportion"
+  ) |>
+  mutate(
+    measure = recode(
+      measure,
+      perc_w_y = "% Banding Location-Years \n with Young",
+      perc_cicada = "% Banding Location-Years \n with Cicada"
+    ),
+    # Order species by percentage of observations with young
+    SPEC = reorder(SPEC, proportion)
+  )
   
+ggplot(plot_data, aes(x = SPEC, y = proportion, fill = measure)) +
+  geom_col(
+    position = position_dodge(width = .8),
+    width = .9
+  ) +
+  scale_y_continuous(
+    labels = percent_format(accuracy = 1),
+    limits = c(0, 1),
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  scale_fill_manual(
+    values = c(
+      "% Banding Location-Years \n with Young" = "#2C7FB8",
+      "% Banding Location-Years \n with Cicada" = "#D95F02"
+    )
+  ) +
+  labs(
+    x = "Species",
+    y = "Percentage of observations",
+    fill = NULL,
+    title = "Banding Location-Year Stats by Species"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "top",
+    axis.text = element_text(color = "black")
+  ) +
+  #add average lines for the averages
+  geom_hline(
+    yintercept = mean(n_obser$perc_w_y, na.rm = TRUE),
+    color = "#2C7FB8",
+    linetype = "dashed",
+    linewidth = 1
+  ) +
+  geom_hline(
+    yintercept = mean(n_obser$perc_cicada, na.rm = TRUE),
+    color = "#D95F02",
+    linetype = "dashed",
+    linewidth = 1
+  )
+
+#Now, I think the question is, do we limit this analysis to ONLY banding location-years where any young are captured? how informative are those zeros?
+#well, we know banding occured with sufficient effort, so, there was every OPPORTUNITY to capture young.
+
+#okay, and now last step! filter the summary_captures to only the species that are left aftering filtering out based on minimum data bounds from n_obser
+maps_analysis_df <- summary_captures |>
+  filter(SPEC %in% n_obser$SPEC) |>
+  group_by(SPEC, cicada_year_binary) |>
+  mutate(n_sp_cyrbin = n()) |>
+  ungroup() |>
+  #also, let's add a full species name...
+  left_join(
+    (read.csv("data/MAPS_1992-2018_cicada_region/IBP-AOS-list25-birdcode-taxonomy.csv") |>
+       select(SPEC, COMMONNAME, SCINAME)),
+    by = c("SPEC")
+  ) |>
+  rename(Species.Name = COMMONNAME) |>
+  mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
+                                  TRUE ~ Species.Name))
+
+write.csv(maps_analysis_df, "data/maps_analysis_df.csv", row.names = FALSE)
+
+#hm. I want summary plots like I have for the nestwatch data.
+make_n_labels = function(df = summary_data, 
+                         filter_species = "Eastern Bluebird", 
+                         labs = "cicada/non" #options = before/after or cicada/non
+) {
+  
+  df <- df |>
+    filter(Species.Name == filter_species)
+  if(labs == "before/after") {
+    lab = paste0("n = ",
+                 df$n[df$cicada_year == -1], 
+                 ", ",
+                 df$n[df$cicada_year == -0], 
+                 ", ",
+                 df$n[df$cicada_year == 1]
+    )
+  } else if(labs == "cicada/non")
+    lab = paste0("n = ",
+                 df$n[df$cicada_year_binary == 0], 
+                 ", ",
+                 df$n[df$cicada_year_binary == 1] #when cicadas have emerged
+    )
+}
+
+# graph mean and standard deviation of pct fledged for each species over cicada year 
+## group, calc mean & stdev
+{
+  summary_data <- maps_analysis_df %>%
+    group_by(Species.Name, cicada_year_binary) %>%
+    summarise(
+      #nest success 0/1
+      mean_pct_young = mean(productivity, na.rm = TRUE),
+      se_pct_young = sd(productivity, na.rm = TRUE) / sqrt(n()),
+      n = n(),
+    ) |>
+    ungroup() |>
+    arrange(desc((n)))
+  
+  summary_data <- summary_data |>
+    group_by(Species.Name) |>
+    mutate(lab = make_n_labels(filter_species = Species.Name, labs = "cicada/non")) |>
+    ungroup()
+}
+
+ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = Species.Name)) +
+  ylim(0, 2) + 
+  geom_line(linewidth = 1.5) +
+  geom_errorbar(aes(ymin = mean_pct_young - se_pct_young, ymax = mean_pct_young + se_pct_young), width = 0.2, linewidth = 1.5) +
+  facet_wrap(~ reorder(Species.Name, n, decreasing = TRUE), ncol = 6) +  # Create separate plots for each species, 3 columns. Now, would like the colors to still go in typical ggplot order, but that's okay. Probably I will need to re-do this by hand to make that happen.
+  labs(
+    x = "Cicada Year",
+    y = "Mean Productivity"
+  ) +
+  scale_x_continuous(breaks = c(0, 1),  # Numeric breaks at -1, 0, and 1
+                     labels = c("0", "X")) +  # Custom text labels) 
+  #scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
+  #                  labels = c("-1", "X", "1")) +  # Custom text labels) 
+  scale_color_discrete() + #limits = original_order) +  # Fix color order to original
+  theme_minimal(base_size = 19) + # increase text size) +
+  theme(
+    legend.position = "none", # remove legend
+    #panel.grid.major = element_blank(), # Remove major gridlines
+    panel.grid.minor = element_blank()  # Remove minor gridlines
+  ) + 
+  geom_text(data = (summary_data |>
+                      group_by(Species.Name) |>
+                      slice(1) |>
+                      arrange(desc(n)) |>
+                      ungroup() |>
+                      mutate(
+                        x = .2,
+                        y = 1.9
+                      )),
+            aes(x = x, y = y, label = lab),
+            size = 3, 
+            vjust = 1,
+            inherit.aes = FALSE) 
