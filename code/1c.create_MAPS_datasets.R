@@ -186,7 +186,11 @@ location_years <- locations |>
   #awright and now make a binary one while we're here..
   mutate(cicada_year_binary = 
            case_when(cicada_year == 0 ~ 1,
-                     cicada_year == -1 | cicada_year == 1 ~ 0))
+                     cicada_year == -1 | cicada_year == 1 ~ 0)) |>
+  #ope, we also need to filter to years >= 1992 b/c there was another protocol used before then and capture efforts are not comprable.
+  filter(year >= 1992) |>
+  ungroup() |>
+  mutate(loc_year = paste0(LOC, year))
 
 #some quick visualization
 hist(location_years$year)
@@ -194,13 +198,62 @@ hist(location_years$cicada_year)
 table(location_years$cicada_year) #epic, all about the same.
 table(location_years$cicada_year_binary)
 
-n_distinct(location_years$LOC)
-#cool, and we have 99 unique sites remaining where they banded in +-1 of a cicada year.
+n_distinct(location_years$STATION_NAME)
+#cool, and we have 156 unique stations remaining where they banded in +-1 of a cicada year.
   
 #get the captures information 
 #you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
 captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_data.csv") |>
+  #start with 728096 total records
   #filter to just the year/location combos of interest
-  filter(LOC %in% location_years$LOC & year %in% location_years$year) #cool, we retain about 41% of the capture data. YAY
+  mutate(loc_year = paste0(LOC, year)) |>
+  filter(loc_year %in% location_years$loc_year) |> #cool, we retain about 10% of the capture data. YAY
+  #73607/728096
+  #create month and day columns, we'll see if we want to filter on those later.
+  left_join(
+    (location_years |>
+       select(LOC, year, STA, STATION_NAME, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary)), by = c("LOC", "year", "STA")) |>
+  mutate(month = as.numeric(str_remove_all(str_extract(DATE, "-[0-9][0-9]-"), "-")),
+         day = as.numeric(str_remove_all(str_extract(DATE, "-[0-9][0-9]$"), "-"))
+         ) |>
+  #awesome, well table(captures$month) shows us we've only got information from May to August. Seems good to me!
+  #filter to newly banded or recaptured birds. birds without bands we can't know anything about and will not keep records of?
+  filter(C %in% c("N", "R"))  |>
+  #and also filter to only records meant to be used in productivity or survivorship analyses
+  filter(N %in% c("-"))
+  #70027/728096, #9.6% of data retained.
+
+#let's start consensing all this information down
+summary_captures <- captures |>
+  #ah! before we summarize, we need to remove duplicate captures. keep just one unique capture of each bird per year per location to filter out recaptures of the same bird within the season + year
+  distinct(year, BAND, LOC, .keep_all = TRUE) |>
+  summarize(n_young = sum(AGE == 4 | AGE == 2), #local or hatching year birds
+            n_adults = sum(AGE == 1 | AGE >= 5), #bird is at least an after-hatching-year bird through after-third-year bird. We don't worry about score 0s, indeterminable age birds (which accounts for only 2,770 records anyway. Like 1%)
+            .by = c(LOC, year, SPEC, cicada_year, cicada_year_binary) # u know.. let's group by location rather than banding station? way fewer 0s
+            ) |>
+  mutate(productivity = n_young/n_adults) |>
+  #and, we can't use any years where no adults were captured, as that brings productivity to infinity
+  filter(!is.infinite(productivity)) |>
+  #let's also remove weirdly high values, like a productivity of 32 where 98 baltimore oriole young were captured and only 3 adults. That's an outlier adn should not be counted. that still leaves us some cases of high productivity but .. those are .. okay?
+  filter(productivity < 20)
+
+table(summary_captures$productivity > 2) #6,875 cases where productivity is less than 2, and 284 cases where productivity is higher than that. Eh, we may filter those out at the end, but I think perhaps okay for now. Probably a lot of those are going to be affect by filters to remove sp without enough data.
+
+ggplot(summary_captures[summary_captures$productivity < 2,], aes(x = productivity, )) +
+  geom_density(alpha = 0.5)
+
+  #alright, and now we need to set some minimum filter band on species. We only want to look at species with X number of year/location observations where at least one young was captured. 
+n_obser <- summary_captures |>
+  group_by(SPEC) |>
+  summarize(n = n(),
+            n_y_gtr_1 = sum(n_young > 1),
+            perc_w_y = n_y_gtr_1/n) |>
+  #well, first step, species where young are never observed should be cut
+  filter(n_y_gtr_1 > 0) |>
+  #and I want at least 30 total observations to work with
+  filter(n >= 30) |>
+  #oh! and we have eastern bluebird on this list! okay well we definitely want EABL so we can compare between the two data-sets. lets use that as a minimum bound and say at least 20% of the time, we have to have observed young. That means at least 6 observations with young with our minimum bound of 30. hm. think about if that boundary is actually well placed...
+  filter(perc_w_y >= .20)
+  
 
   
