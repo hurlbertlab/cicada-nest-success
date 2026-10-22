@@ -13,6 +13,7 @@ library(stringr)
 library(ggplot2)
 library(daymetr)
 library(scales)
+library(assertthat)
 
 #read in cicada info
 cicada_emergence_years <- read.csv("data/cicada/cicada_emergence_years_wide.csv")  %>% ## this has broods with 4 emergence years in 4 separate columns
@@ -220,6 +221,19 @@ station_suitability <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_Analysis
   #and now filter to the location years that are relevant for cicada...
   filter(loc_year %in% location_years$loc_year)
   
+
+# add location and station sutability to the climate information;
+maps_climate <- read.csv("data/maps_climate_data.csv") |>
+  #add LOC for each STATION_NAME
+  left_join(
+    (locations |> 
+       st_drop_geometry() |>
+       select(LOC, STATION, STATION_NAME, STA) |>
+       distinct(STATION_NAME, .keep_all = TRUE)),
+    by = c("STATION_NAME")
+  ) 
+assertthat::assert_that(sum(is.na(maps_climate$LOC) == TRUE) == 0)
+  table(is.na(maps_climate$LOC)) #awesome, no errors.
   
 #get the captures information 
 #you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
