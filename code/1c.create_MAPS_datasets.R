@@ -14,6 +14,7 @@ library(ggplot2)
 library(daymetr)
 library(scales)
 library(assertthat)
+library(statuser)
 
 source("code/2.functions.R")
 
@@ -230,13 +231,14 @@ maps_climate <- read.csv("data/maps_climate_data.csv") |>
   left_join(
     (locations |> 
        st_drop_geometry() |>
-       select(LOC, STATION, STATION_NAME, STA) |>
+       select(LOC, STATION, STATION_NAME, STA, BROOD_NAME) |>
        distinct(STATION_NAME, .keep_all = TRUE)),
     by = c("STATION_NAME")
   ) 
 assertthat::assert_that(sum(is.na(maps_climate$LOC) == TRUE) == 0)
   table(is.na(maps_climate$LOC)) #awesome, no errors.
   
+#get climate by location
 location_climate <- maps_climate |>
   group_by(LOC, Year) |>
   mutate(loc_y_temp = mean(y_temp),
@@ -255,6 +257,26 @@ location_climate <- maps_climate |>
   select(LOC, year, loc_y_temp:loc_y_anomaly_precip)
 #hist(location_climate$y_anomaly_temp - location_climate$loc_y_anomaly_temp)
 #hm, yeah cool that histogram looks great. Stations within a location generally agree.
+
+#get climate by brood
+brood_climate <- maps_climate |>
+  group_by(BROOD_NAME, Year) |>
+  #average over all the stations within the brood.
+  mutate(brood_y_temp = mean(y_temp),
+         brood_y_precip = mean(y_precip)) |>
+  ungroup() |>
+  group_by(BROOD_NAME) |>
+  mutate(brood_mean_temp = mean(brood_y_temp),
+         brood_mean_precip = mean(brood_y_precip)) |>
+  #make anomaly
+  mutate(brood_y_anomaly_temp = brood_y_temp - brood_mean_temp,
+         brood_y_anomaly_precip = brood_y_precip - brood_mean_precip) |>
+  ungroup() |>
+  rename(year = Year) |>
+  #remove duplicated columns for the various broods
+  distinct(BROOD_NAME, year, .keep_all = TRUE) |>
+  #keep just some columns
+  select(BROOD_NAME, year, brood_y_temp:brood_y_anomaly_precip)
   
 #get the captures information 
 #you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
@@ -271,7 +293,7 @@ captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_dat
   #add cicada year information based on location, I checked and all stations within a location experience the same cicada year.
   left_join(
     (location_years |>
-       select(LOC, year, loc_year, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary) |>
+       select(LOC, year, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary) |>
        distinct(LOC, year, .keep_all = TRUE)), by = c("LOC", "year")) |>
   #create month and day columns, we'll see if we want to filter on those later.
   mutate(month = as.numeric(str_remove_all(str_extract(DATE, "-[0-9][0-9]-"), "-")),
@@ -281,8 +303,12 @@ captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_dat
   #filter to newly banded or recaptured birds. birds without bands we can't know anything about and will not keep records of?
   filter(C %in% c("N", "R"))  |>
   #and also filter to only records meant to be used in productivity or survivorship analyses
-  filter(N %in% c("-"))
+  filter(N %in% c("-")) |>
   #68788/728096, #9.4% of data retained.
+  #combine the chickadees because I did that for the nestwatch data too and they're so ecologically similar ^u^
+  mutate(SPEC = case_when(SPEC == "BCCH" ~ "BCCC", #for black-capped/carolina chickadee
+                          SPEC == "CACH" ~ "BCCC",
+                          TRUE ~ SPEC)) #mwhaha. MWHAHAHA
 
 #let's start consensing all this information down
 summary_captures <- captures |>
@@ -291,15 +317,20 @@ summary_captures <- captures |>
   summarize(n_young = sum(AGE == 4 | AGE == 2), #local or hatching year birds
             n_adults = sum(AGE == 1 | AGE >= 5), #bird is at least an after-hatching-year bird through after-third-year bird. We don't worry about score 0s, indeterminable age birds (which accounts for only 2,770 records anyway. Like 1%)
             n_stations = n_distinct(STA), 
-            .by = c(LOC, year, SPEC, cicada_year, cicada_year_binary) # u know.. let's group by location rather than banding station? way fewer 0s
+            .by = c(BROOD_NAME, year, SPEC, cicada_year, cicada_year_binary) # u know.. let's group by location rather than banding station? way fewer 0s -> advanced this to grouping by brood, since MAPS productivity analyses are often done over larger scales than single locations, like BCRs etc.
             ) |>
   mutate(productivity = n_young/n_adults) |>
   #and, we can't use any years where no adults were captured, as that brings productivity to infinity
   filter(!is.infinite(productivity)) |>
   #let's also remove weirdly high values, like a productivity of 32 where 98 baltimore oriole young were captured and only 3 adults. That's an outlier adn should not be counted. that still leaves us some cases of high productivity but .. those are .. okay?
-  filter(productivity < 20) |>
+  #filter(productivity < 20) |>
   #add in climate data
-  left_join(location_climate, by = c("LOC", "year"))
+  left_join(brood_climate, by = c("BROOD_NAME", "year"))
+
+table2(summary_captures$n_stations)
+#hm, there's still some brood_years where productivity here is defined by just 1 station. Which, if it's an ABUNDANT SPECIES is fine. But we are going to need to filter based on like, a minimum bound of confidence. Where at least 5 adults are captured.. and maybe a minimum bound on those young too
+table2(summary_captures$n_young >= 2, summary_captures$n_adults >= 5)
+
 
 table(summary_captures$productivity > 2) #6,875 cases where productivity is less than 2, and 284 cases where productivity is higher than that. Eh, we may filter those out at the end, but I think perhaps okay for now. Probably a lot of those are going to be affect by filters to remove sp without enough data.
 table(summary_captures$cicada_year_binary)
@@ -312,15 +343,23 @@ n_obser <- summary_captures |>
   group_by(SPEC) |>
   summarize(n = n(),
             n_y_gtr_1 = sum(n_young > 1),
+            n_a_grt_5 = sum(n_adults >= 5),
+            n_a_grt_10 = sum(n_adults >= 10),
+            n_y1_a10 = sum(n_adults >= 10 & n_young > 1),
             perc_w_y = n_y_gtr_1/n,
             n_cicada = sum(cicada_year_binary == 1),
             perc_cicada = n_cicada/n) |>
   #well, first step, species where young are never observed should be cut
   filter(n_y_gtr_1 > 0) |>
   #and I want at least 30 total observations to work with
-  filter(n >= 30) |>
-  #oh! and we have eastern bluebird on this list! okay well we definitely want EABL so we can compare between the two data-sets. lets use that as a minimum bound and say at least 20% of the time, we have to have observed young. That means at least 6 observations with young with our minimum bound of 30. hm. think about if that boundary is actually well placed...
-  filter(perc_w_y >= .20)
+  filter(n >= 28) |> #cutoff at 28 as that lets me keep HOWR in the study, and have an additional species with a comparison btwn MAPS and Nestwatch data
+  #And we need the young of these birds to get caught with some regularity in banding years across broods. Might have to raise this later, but for now let's say at least half of the banding-years young have to be caught. Max is like, 90% of brood-years
+  filter(perc_w_y >= .50)
+  #after looking at this, let's keep just species with n_a_grt_10 > 20. 
+
+keep_species <- n_obser |>
+  filter(n_a_grt_10 >= 20)
+
 
 # I want a bar chart for species where each species has a plot showing both perc_w_y and perc_cicada in two different colors. 
 #did use chatgpt to generate this plot.
@@ -335,8 +374,8 @@ plot_data <- n_obser |>
   mutate(
     measure = recode(
       measure,
-      perc_w_y = "% Banding Location-Years \n with Young",
-      perc_cicada = "% Banding Location-Years \n with Cicada"
+      perc_w_y = "% Banding Brood-Years \n with Young",
+      perc_cicada = "% Banding Brood-Years \n with Cicada"
     ),
     # Order species by percentage of observations with young
     SPEC = reorder(SPEC, proportion)
@@ -354,15 +393,15 @@ ggplot(plot_data, aes(x = SPEC, y = proportion, fill = measure)) +
   ) +
   scale_fill_manual(
     values = c(
-      "% Banding Location-Years \n with Young" = "#2C7FB8",
-      "% Banding Location-Years \n with Cicada" = "#D95F02"
+      "% Banding Brood-Years \n with Young" = "#2C7FB8",
+      "% Banding Brood-Years \n with Cicada" = "#D95F02"
     )
   ) +
   labs(
     x = "Species",
-    y = "Percentage of observations",
+    y = "Percentage of Brood-Years",
     fill = NULL,
-    title = "Banding Location-Year Stats by Species"
+    title = "Banding Brood-Year Stats by Species"
   ) +
   theme_minimal(base_size = 14) +
   theme(
@@ -389,7 +428,10 @@ ggplot(plot_data, aes(x = SPEC, y = proportion, fill = measure)) +
 
 #okay, and now last step! filter the summary_captures to only the species that are left aftering filtering out based on minimum data bounds from n_obser
 maps_analysis_df <- summary_captures |>
-  filter(SPEC %in% n_obser$SPEC) |>
+  #keep only species with more than 20 observations with more than 10 adult captures
+  filter(SPEC %in% keep_species$SPEC) |>
+  #and then keep ONLY those >10 adult captures. bc when we're using proportion later, we're not going to be accounting for how many individuals were captured. If it's not at least 10, sampling effort wasn't high enough in that brood-year to include it in our model.
+  filter(n_adults >= 10) |>
   group_by(SPEC, cicada_year_binary) |>
   mutate(n_sp_cyrbin = n()) |>
   ungroup() |>
@@ -401,6 +443,7 @@ maps_analysis_df <- summary_captures |>
   ) |>
   rename(Species.Name = COMMONNAME) |>
   mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
+                                  SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
                                   TRUE ~ Species.Name))
 
 write.csv(maps_analysis_df, "data/maps_analysis_df.csv", row.names = FALSE)
@@ -424,7 +467,7 @@ for(i in 1:length(unique(maps_analysis_df$Species.Name))) {
   tmp <- maps_analysis_df |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glm(productivity ~ cicada_year_binary + loc_y_anomaly_temp + loc_y_anomaly_precip, 
+  tmp_glm <- glm(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip, 
                  data = tmp, 
                  family = gaussian) #gaussian?
   
@@ -531,4 +574,17 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_s
             aes(x = x, y = y, label = lab),
             size = 3, 
             vjust = 1,
-            inherit.aes = FALSE) 
+            inherit.aes = FALSE) +
+  geom_text(data = (summary_data |>
+                      group_by(Species.Name) |>
+                      slice(1) |>
+                      arrange(desc(n)) |>
+                      ungroup() |>
+                      mutate(
+                        x = .8,
+                        y = 1.9
+                      )),
+            aes(x = x, y = y, label = as.character(round(e_p, 3))),
+            size = 3, 
+            vjust = 1,
+            inherit.aes = FALSE)
