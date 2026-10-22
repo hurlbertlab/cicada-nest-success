@@ -21,6 +21,8 @@ library(ggplot2) # plotting
 library(png) #for the cicada image
 #library(effects) # plotting logistic regression effects
 
+source("code/2.functions.R")
+
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
 
@@ -330,30 +332,6 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_nest_success, colo
 dev.off()
 
 #okay in the test for the effects, make a loop that goes through species names or smthing. Would love to do it in dplyr :D. But anyway! Run two models. Filter for postcicada=0 to run the %survival ~ pre-cicada + temp + etc. and filter for precicada=0 to run the %survival ~ post-cicada + temp + etc.
-
-# Function to create and initialize a trend table, based off a list of the names of columns
-make_trend_table <- function(cols_list, rows_list = c("NA")) {
-  #make trend table
-  trend_table <- as.data.frame(matrix(ncol = length(cols_list), nrow = 0))
-  #name the columns
-  colnames(trend_table) <- cols_list
-  #initiate trend table with first row, fill with NAs
-  trend_table[1,] <- NA
-  
-  #if first column (rows_list) is not NA, fill it in
-  if(rows_list[1] == "NA") {
-    #do nothing
-  } else {
-    #add in the list that makes up the data in the first column
-    for(s in 1:length(rows_list)) {
-      
-      trend_table[s,1] <- rows_list[s]
-      
-    }
-  }
-  
-  return(trend_table)
-}
 
 # We can start with postcicada, which is the less important result in some ways because this is testing for basically knock-on effects of the cicada emergence in the following year.
 postcicada_df <- analysis_df |>

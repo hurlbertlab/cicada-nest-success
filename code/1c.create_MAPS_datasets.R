@@ -15,6 +15,8 @@ library(daymetr)
 library(scales)
 library(assertthat)
 
+source("code/2.functions.R")
+
 #read in cicada info
 cicada_emergence_years <- read.csv("data/cicada/cicada_emergence_years_wide.csv")  %>% ## this has broods with 4 emergence years in 4 separate columns
   dplyr::select(-emergence_2019_through_2024)
@@ -236,11 +238,23 @@ assertthat::assert_that(sum(is.na(maps_climate$LOC) == TRUE) == 0)
   table(is.na(maps_climate$LOC)) #awesome, no errors.
   
 location_climate <- maps_climate |>
+  group_by(LOC, Year) |>
+  mutate(loc_y_temp = mean(y_temp),
+         loc_y_precip = mean(y_precip)) |>
+  ungroup() |>
   group_by(LOC) |>
-  mutate(loc_y_anomaly_temp = mean(y_anomaly_temp),
-         loc_y_anomaly_precip = mean(y_anomaly_precip))
-hist(location_climate$y_anomaly_temp - location_climate$loc_y_anomaly_temp)
-#hm, okay, so all the stations within a location do not necessarily agree. Going to need a different approach to averaging where I average the temperatures across the years for all the stations etc..
+  mutate(loc_mean_temp = mean(loc_y_temp),
+         loc_mean_precip = mean(loc_y_precip)) |>
+  mutate(loc_y_anomaly_temp = loc_y_temp - loc_mean_temp,
+         loc_y_anomaly_precip = loc_y_precip - loc_mean_precip) |>
+  ungroup() |>
+  rename(year = Year) |>
+  #remove duplicated columns for the various stations.
+  distinct(LOC, year, .keep_all = TRUE) |>
+  #keep just some columns
+  select(LOC, year, loc_y_temp:loc_y_anomaly_precip)
+#hist(location_climate$y_anomaly_temp - location_climate$loc_y_anomaly_temp)
+#hm, yeah cool that histogram looks great. Stations within a location generally agree.
   
 #get the captures information 
 #you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
@@ -283,21 +297,9 @@ summary_captures <- captures |>
   #and, we can't use any years where no adults were captured, as that brings productivity to infinity
   filter(!is.infinite(productivity)) |>
   #let's also remove weirdly high values, like a productivity of 32 where 98 baltimore oriole young were captured and only 3 adults. That's an outlier adn should not be counted. that still leaves us some cases of high productivity but .. those are .. okay?
-  filter(productivity < 20) #|>
+  filter(productivity < 20) |>
   #add in climate data
-  #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! URg. this is having problems. ok fine ignore climate data for now #bliss
-  #left_join(
-  #  (maps_climate |>
-  #     #add LOC for each STATION_NAME
-  #     left_join(
-  #       (locations |>
-  #          select(LOC, STATION_NAME) |>
-  #          st_drop_geometry()),
-  #       by = c("STATION_NAME")
-  #       )
-  #     ) |>
-  #     summarize()
-  #)
+  left_join(location_climate, by = c("LOC", "year"))
 
 table(summary_captures$productivity > 2) #6,875 cases where productivity is less than 2, and 284 cases where productivity is higher than that. Eh, we may filter those out at the end, but I think perhaps okay for now. Probably a lot of those are going to be affect by filters to remove sp without enough data.
 table(summary_captures$cicada_year_binary)
@@ -403,29 +405,77 @@ maps_analysis_df <- summary_captures |>
 
 write.csv(maps_analysis_df, "data/maps_analysis_df.csv", row.names = FALSE)
 
-#hm. I want summary plots like I have for the nestwatch data.
-make_n_labels = function(df = summary_data, 
-                         filter_species = "Eastern Bluebird", 
-                         labs = "cicada/non" #options = before/after or cicada/non
-) {
+#Modeling time!! YAYYYY
+maps_results <- make_trend_table(cols_list = 
+                              c("Species.Name", "model", "model_desc", "intercept", "emergence", "e_sd", "e_p", "e_signif", "y_anomaly_temp", "yat_sd", "yat_p", "yat_signif", "y_anomaly_precip", "yap_sd", "yap_p", "yap_signif", "n_noncicada", "n_cicada"),
+                            rows_list = unique(maps_analysis_df$Species.Name)) |>
+  mutate(model = as.character(model),
+         model_desc = as.character(model_desc),
+         mutate(across(where(is.logical), as.numeric)))
+
+maps_models = list()
+
+#loop through the species!
+for(i in 1:length(unique(maps_analysis_df$Species.Name))) {
   
-  df <- df |>
-    filter(Species.Name == filter_species)
-  if(labs == "before/after") {
-    lab = paste0("n = ",
-                 df$n[df$cicada_year == -1], 
-                 ", ",
-                 df$n[df$cicada_year == -0], 
-                 ", ",
-                 df$n[df$cicada_year == 1]
+  sp <- unique(maps_analysis_df$Species.Name)[i]
+  print(i); print(sp)
+  
+  tmp <- maps_analysis_df |>
+    filter(Species.Name == sp)
+  
+  tmp_glm <- glm(productivity ~ cicada_year_binary + loc_y_anomaly_temp + loc_y_anomaly_precip, 
+                 data = tmp, 
+                 family = gaussian) #gaussian?
+  
+  maps_models[[i]] = tmp_glm
+  
+  summary <- summary(tmp_glm)
+  
+  tmp_results <- maps_results |>
+    filter(Species.Name == sp) |>
+    mutate(model = as.character(tmp_glm$formula)[3],
+           model_desc = "gaussian",
+           intercept = summary$coefficients[1,1],
+           emergence = summary$coefficients[2,1],
+           e_sd = summary$coefficients[2,2],
+           e_p = summary$coefficients[2,4], 
+           e_signif = ifelse(summary$coefficients[2,4] < 0.05, "signif", "no"),
+           y_anomaly_temp = summary$coefficients[3,1],
+           yat_sd = summary$coefficients[3,2],
+           yat_p = summary$coefficients[3,4],
+           yat_signif = ifelse(summary$coefficients[3,4] < 0.05, "signif", "no"),
+           y_anomaly_precip = summary$coefficients[4,1],
+           yap_sd = summary$coefficients[4,2],
+           yap_p = summary$coefficients[4,4],
+           yap_signif = ifelse(summary$coefficients[4,4] < 0.05, "signif", "no"),
+           n_noncicada = sum(tmp$cicada_year_binary == 0),
+           n_cicada = sum(tmp$cicada_year_binary == 1)
+           
+           #           prob_intercept = plogis(summary$coefficients[1,1]),
+           #           prob_post_e = plogis(summary$coefficients[2,1]),
+           #           prob_pe_sd = plogis(summary$coefficients[2,2]),
+           #           prob_yat = plogis(summary$coefficients[3,1]),
+           #           prob_yat_sd = plogis(summary$coefficients[3,2]),
+           #           prob_yap = plogis(summary$coefficients[4,1]),
+           #           prob_yap_sd = plogis(summary$coefficients[4,2]),
+           #           log_odds_emergence = exp(summary$coefficients[2,1])
     )
-  } else if(labs == "cicada/non")
-    lab = paste0("n = ",
-                 df$n[df$cicada_year_binary == 0], 
-                 ", ",
-                 df$n[df$cicada_year_binary == 1] #when cicadas have emerged
-    )
+  
+  #double-check nothing messed up in calculating the n() in each group.
+  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  
+  maps_results[maps_results$Species.Name == sp,] <- tmp_results
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+  #postcicada_results |>
+  #rows_update(tmp_results, by = c("Species.Name"))
+  
 }
+
+write.csv(maps_results, "model_results/maps_gaussian_results.csv")
+save(maps_models, file = "model_results/maps_gaussian_glms.rds")
+
+
 
 # graph mean and standard deviation of pct fledged for each species over cicada year 
 ## group, calc mean & stdev
@@ -444,10 +494,12 @@ make_n_labels = function(df = summary_data,
   summary_data <- summary_data |>
     group_by(Species.Name) |>
     mutate(lab = make_n_labels(filter_species = Species.Name, labs = "cicada/non")) |>
-    ungroup()
+    ungroup() |>
+    #add in results
+    left_join(maps_results, by = c("Species.Name"))
 }
 
-ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = Species.Name)) +
+ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_signif)) +
   ylim(0, 2) + 
   geom_line(linewidth = 1.5) +
   geom_errorbar(aes(ymin = mean_pct_young - se_pct_young, ymax = mean_pct_young + se_pct_young), width = 0.2, linewidth = 1.5) +
