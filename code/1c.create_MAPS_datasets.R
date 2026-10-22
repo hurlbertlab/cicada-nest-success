@@ -235,6 +235,13 @@ maps_climate <- read.csv("data/maps_climate_data.csv") |>
 assertthat::assert_that(sum(is.na(maps_climate$LOC) == TRUE) == 0)
   table(is.na(maps_climate$LOC)) #awesome, no errors.
   
+location_climate <- maps_climate |>
+  group_by(LOC) |>
+  mutate(loc_y_anomaly_temp = mean(y_anomaly_temp),
+         loc_y_anomaly_precip = mean(y_anomaly_precip))
+hist(location_climate$y_anomaly_temp - location_climate$loc_y_anomaly_temp)
+#hm, okay, so all the stations within a location do not necessarily agree. Going to need a different approach to averaging where I average the temperatures across the years for all the stations etc..
+  
 #get the captures information 
 #you may have to unzip the file if you haven't yet, b/c it is stored on github only in zipped form.
 captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_data.csv") |>
