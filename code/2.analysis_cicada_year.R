@@ -334,175 +334,175 @@ dev.off()
 #okay in the test for the effects, make a loop that goes through species names or smthing. Would love to do it in dplyr :D. But anyway! Run two models. Filter for postcicada=0 to run the %survival ~ pre-cicada + temp + etc. and filter for precicada=0 to run the %survival ~ post-cicada + temp + etc.
 
 # We can start with postcicada, which is the less important result in some ways because this is testing for basically knock-on effects of the cicada emergence in the following year.
-postcicada_df <- analysis_df |>
-  filter(!is.na(post_emergence))
-
-# test the glm process...
-test <- postcicada_df |>
-  filter(Species.Name == "Eastern Bluebird")
-test_glm <- glm(nest_success_tf ~ post_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
-                data = test, 
-                family = binomial(link = "logit"))
-summary(test_glm)
-test_glm$formula
-
-####!!!! mmm, okay, some of this is broken from adding the asynchrony. Need to fix on Monday.
-
-postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "asynchrony", "async_sd", "async_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "async_interction", "async_int_sd", "async_int_p", "n_noncicada", "n_cicada"
-                                                    #"prob_intercept","prob_post_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd", "log_odds_emergence", "log_odds_emergence_2.5", "log_odds_emergence_97.5"
-                                                    ),
-                                      rows_list = original_order) |>
-  mutate(model = as.character(model),
-         model_desc = as.character(model_desc),
-         mutate(across(where(is.logical), as.numeric)))
-
-postcicada_models = list()
-                                      
-#make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
-#save in model_results/
-for(i in 1:length(original_order)) {
-  
-  sp <- original_order[i]
-  print(i); print(sp)
-  
-  tmp <- postcicada_df |>
-    filter(Species.Name == sp)
-  
-  tmp_glm <- glm(nest_success_tf ~ post_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
-                 data = tmp, 
-                 family = binomial(link = "logit"))
-  
-  postcicada_models[[i]] = tmp_glm
-  
-  summary <- summary(tmp_glm)
-  
-  tmp_results <- postcicada_results |>
-    filter(Species.Name == sp) |>
-    mutate(model = as.character(tmp_glm$formula)[3],
-           model_desc = "binomial",
-           intercept = summary$coefficients[1,1],
-           post_emergence = summary$coefficients[2,1],
-           pe_sd = summary$coefficients[2,2],
-           pe_p = summary$coefficients[2,4], 
-           asynchrony = summary$coefficients[3,1],
-           async_sd = summary$coefficients[3,2],
-           async_p = summary$coefficients[3,4],
-           y_anomaly_temp = summary$coefficients[4,1],
-           yat_sd = summary$coefficients[4,2],
-           yat_p = summary$coefficients[4,4],
-           y_anomaly_precip = summary$coefficients[5,1],
-           yap_sd = summary$coefficients[5,2],
-           yap_p = summary$coefficients[5,4],
-           async_interction = summary$coefficients[6,1], 
-           async_int_sd = summary$coefficients[6,2], 
-           async_int_p = summary$coefficients[6,4],
-           n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
-           
-#           prob_intercept = plogis(summary$coefficients[1,1]),
-#           prob_post_e = plogis(summary$coefficients[2,1]),
-#           prob_pe_sd = plogis(summary$coefficients[2,2]),
-#           prob_yat = plogis(summary$coefficients[3,1]),
-#           prob_yat_sd = plogis(summary$coefficients[3,2]),
-#           prob_yap = plogis(summary$coefficients[4,1]),
-#           prob_yap_sd = plogis(summary$coefficients[4,2]),
-#           log_odds_emergence = exp(summary$coefficients[2,1])
-             )
-  
-  #double-check nothing messed up in calculating the n() in each group.
-  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
-  
-  postcicada_results[postcicada_results$Species.Name == sp,] <- tmp_results
-  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
-    #postcicada_results |>
-    #rows_update(tmp_results, by = c("Species.Name"))
-   
-}
-  write.csv(postcicada_results, "model_results/binomial_POSTcicada_hmid_results.csv")
-  save(postcicada_models, file = "model_results/binomial_POSTcicada_hmid_glms.rds")
-#run both the binomial with tf nest success
-#and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
-
-#Okay! Yay, now do the same for precicada glms - test for an effect of cicada emergences compared to the year before the cicada emergences
-  #when preciada = 1 = year of the emergence/effect of the cicadas
-precicada_df <- analysis_df |>
-  filter(!is.na(pre_emergence))
-
-precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "asynchrony", "async_sd", "async_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "async_interction", "async_int_sd", "async_int_p", "n_noncicada", "n_cicada" 
-                                                   #"prob_intercept","prob_pre_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd","log_odds_emergence","log_odds_emergence_2.5", "log_odds_emergence_97.5"
-                                                   ),
-                                      rows_list = original_order) |>
-  mutate(model = as.character(model),
-         model_desc = as.character(model_desc),
-         mutate(across(where(is.logical), as.numeric)))
-
-precicada_models = list()
-
-for(i in 1:length(original_order)) {
-  
-  sp <- original_order[i]
-  print(i); print(sp)
-  
-  tmp <- precicada_df |>
-    filter(Species.Name == sp)
-  
-  tmp_glm <- glm(nest_success_tf ~ pre_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
-                 data = tmp, 
-                 family = binomial(link = "logit"))
-  summary <- summary(tmp_glm)
-  
-  precicada_models[[i]] = tmp_glm
-  
-  tmp_results <- precicada_results |>
-    filter(Species.Name == sp) |>
-    mutate(model = as.character(tmp_glm$formula)[3],
-           model_desc = "binomial",
-           intercept = summary$coefficients[1,1],
-           pre_emergence = summary$coefficients[2,1],
-           pe_sd = summary$coefficients[2,2],
-           pe_p = summary$coefficients[2,4], 
-           asynchrony = summary$coefficients[3,1],
-           async_sd = summary$coefficients[3,2],
-           async_p = summary$coefficients[3,4],
-           y_anomaly_temp = summary$coefficients[4,1],
-           yat_sd = summary$coefficients[4,2],
-           yat_p = summary$coefficients[4,4],
-           y_anomaly_precip = summary$coefficients[5,1],
-           yap_sd = summary$coefficients[5,2],
-           yap_p = summary$coefficients[5,4],
-           async_interction = summary$coefficients[6,1], 
-           async_int_sd = summary$coefficients[6,2], 
-           async_int_p = summary$coefficients[6,4],
-           n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
-#           prob_intercept = plogis(summary$coefficients[1,1]),
-#           prob_pre_e = plogis(summary$coefficients[2,1]),
-#           prob_pe_sd = plogis(summary$coefficients[2,2]),
-#           prob_yat = plogis(summary$coefficients[3,1]),
-#           prob_yat_sd = plogis(summary$coefficients[3,2]),
-#           prob_yap = plogis(summary$coefficients[4,1]),
-#           prob_yap_sd = plogis(summary$coefficients[4,2]),
-#           log_odds_emergence = exp(summary$coefficients[2,1])
-#           log_odds_emergence_2.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[1],
- #          log_odds_emergence_97.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[2]
-    )
-  
-  #double-check nothing messed up in calculating the n() in each group.
-  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
-  
-  precicada_results[precicada_results$Species.Name == sp,] <- tmp_results
-  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
-  #postcicada_results |>
-  #rows_update(tmp_results, by = c("Species.Name"))
-  
-}
-write.csv(precicada_results, "model_results/binomial_PREcicada_hmid_results.csv")
-save(precicada_models, file = "model_results/binomial_PREcicada_mid_glms.rds")
-
-#annnnd just to make sure everything worked perfectly and I didn't mess up any of the functions e.g. none of the rows in the two datasets match or something..
-assert_that(
-  all(is.na((left_join(postcicada_results, precicada_results, by = c("pe_sd")))$n_cicada.y))
-   )
+# postcicada_df <- analysis_df |>
+#   filter(!is.na(post_emergence))
+# 
+# # test the glm process...
+# test <- postcicada_df |>
+#   filter(Species.Name == "Eastern Bluebird")
+# test_glm <- glm(nest_success_tf ~ post_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
+#                 data = test, 
+#                 family = binomial(link = "logit"))
+# summary(test_glm)
+# test_glm$formula
+# 
+# ####!!!! mmm, okay, some of this is broken from adding the asynchrony. Need to fix on Monday.
+# 
+# postcicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "post_emergence", "pe_sd", "pe_p", "asynchrony", "async_sd", "async_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "async_interction", "async_int_sd", "async_int_p", "n_noncicada", "n_cicada"
+#                                                     #"prob_intercept","prob_post_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd", "log_odds_emergence", "log_odds_emergence_2.5", "log_odds_emergence_97.5"
+#                                                     ),
+#                                       rows_list = original_order) |>
+#   mutate(model = as.character(model),
+#          model_desc = as.character(model_desc),
+#          mutate(across(where(is.logical), as.numeric)))
+# 
+# postcicada_models = list()
+#                                       
+# #make a loop, stringr select to get the chickadees filtered without issue with that /n character in there    
+# #save in model_results/
+# for(i in 1:length(original_order)) {
+#   
+#   sp <- original_order[i]
+#   print(i); print(sp)
+#   
+#   tmp <- postcicada_df |>
+#     filter(Species.Name == sp)
+#   
+#   tmp_glm <- glm(nest_success_tf ~ post_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
+#                  data = tmp, 
+#                  family = binomial(link = "logit"))
+#   
+#   postcicada_models[[i]] = tmp_glm
+#   
+#   summary <- summary(tmp_glm)
+#   
+#   tmp_results <- postcicada_results |>
+#     filter(Species.Name == sp) |>
+#     mutate(model = as.character(tmp_glm$formula)[3],
+#            model_desc = "binomial",
+#            intercept = summary$coefficients[1,1],
+#            post_emergence = summary$coefficients[2,1],
+#            pe_sd = summary$coefficients[2,2],
+#            pe_p = summary$coefficients[2,4], 
+#            asynchrony = summary$coefficients[3,1],
+#            async_sd = summary$coefficients[3,2],
+#            async_p = summary$coefficients[3,4],
+#            y_anomaly_temp = summary$coefficients[4,1],
+#            yat_sd = summary$coefficients[4,2],
+#            yat_p = summary$coefficients[4,4],
+#            y_anomaly_precip = summary$coefficients[5,1],
+#            yap_sd = summary$coefficients[5,2],
+#            yap_p = summary$coefficients[5,4],
+#            async_interction = summary$coefficients[6,1], 
+#            async_int_sd = summary$coefficients[6,2], 
+#            async_int_p = summary$coefficients[6,4],
+#            n_noncicada = sum(tmp$cicada_year_binary == 0),
+#            n_cicada = sum(tmp$cicada_year_binary == 1)
+#            
+# #           prob_intercept = plogis(summary$coefficients[1,1]),
+# #           prob_post_e = plogis(summary$coefficients[2,1]),
+# #           prob_pe_sd = plogis(summary$coefficients[2,2]),
+# #           prob_yat = plogis(summary$coefficients[3,1]),
+# #           prob_yat_sd = plogis(summary$coefficients[3,2]),
+# #           prob_yap = plogis(summary$coefficients[4,1]),
+# #           prob_yap_sd = plogis(summary$coefficients[4,2]),
+# #           log_odds_emergence = exp(summary$coefficients[2,1])
+#              )
+#   
+#   #double-check nothing messed up in calculating the n() in each group.
+#   assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+#   
+#   postcicada_results[postcicada_results$Species.Name == sp,] <- tmp_results
+#   #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+#     #postcicada_results |>
+#     #rows_update(tmp_results, by = c("Species.Name"))
+#    
+# }
+#   write.csv(postcicada_results, "model_results/binomial_POSTcicada_hmid_results.csv")
+#   save(postcicada_models, file = "model_results/binomial_POSTcicada_hmid_glms.rds")
+# #run both the binomial with tf nest success
+# #and the other model with % nest success. I think this should just be a linear regression, yeah? The logistic/binomial one is the one above where I'd coded things as just success or failure.
+# 
+# #Okay! Yay, now do the same for precicada glms - test for an effect of cicada emergences compared to the year before the cicada emergences
+#   #when preciada = 1 = year of the emergence/effect of the cicadas
+# precicada_df <- analysis_df |>
+#   filter(!is.na(pre_emergence))
+# 
+# precicada_results = make_trend_table(cols_list = c("Species.Name", "model", "model_desc", "intercept", "pre_emergence", "pe_sd", "pe_p", "asynchrony", "async_sd", "async_p", "y_anomaly_temp", "yat_sd", "yat_p", "y_anomaly_precip", "yap_sd", "yap_p", "async_interction", "async_int_sd", "async_int_p", "n_noncicada", "n_cicada" 
+#                                                    #"prob_intercept","prob_pre_e","prob_pe_sd","prob_yat","prob_yat_sd","prob_yap","prob_yap_sd","log_odds_emergence","log_odds_emergence_2.5", "log_odds_emergence_97.5"
+#                                                    ),
+#                                       rows_list = original_order) |>
+#   mutate(model = as.character(model),
+#          model_desc = as.character(model_desc),
+#          mutate(across(where(is.logical), as.numeric)))
+# 
+# precicada_models = list()
+# 
+# for(i in 1:length(original_order)) {
+#   
+#   sp <- original_order[i]
+#   print(i); print(sp)
+#   
+#   tmp <- precicada_df |>
+#     filter(Species.Name == sp)
+#   
+#   tmp_glm <- glm(nest_success_tf ~ pre_emergence*h_mid + y_anomaly_temp + y_anomaly_precip, 
+#                  data = tmp, 
+#                  family = binomial(link = "logit"))
+#   summary <- summary(tmp_glm)
+#   
+#   precicada_models[[i]] = tmp_glm
+#   
+#   tmp_results <- precicada_results |>
+#     filter(Species.Name == sp) |>
+#     mutate(model = as.character(tmp_glm$formula)[3],
+#            model_desc = "binomial",
+#            intercept = summary$coefficients[1,1],
+#            pre_emergence = summary$coefficients[2,1],
+#            pe_sd = summary$coefficients[2,2],
+#            pe_p = summary$coefficients[2,4], 
+#            asynchrony = summary$coefficients[3,1],
+#            async_sd = summary$coefficients[3,2],
+#            async_p = summary$coefficients[3,4],
+#            y_anomaly_temp = summary$coefficients[4,1],
+#            yat_sd = summary$coefficients[4,2],
+#            yat_p = summary$coefficients[4,4],
+#            y_anomaly_precip = summary$coefficients[5,1],
+#            yap_sd = summary$coefficients[5,2],
+#            yap_p = summary$coefficients[5,4],
+#            async_interction = summary$coefficients[6,1], 
+#            async_int_sd = summary$coefficients[6,2], 
+#            async_int_p = summary$coefficients[6,4],
+#            n_noncicada = sum(tmp$cicada_year_binary == 0),
+#            n_cicada = sum(tmp$cicada_year_binary == 1)
+# #           prob_intercept = plogis(summary$coefficients[1,1]),
+# #           prob_pre_e = plogis(summary$coefficients[2,1]),
+# #           prob_pe_sd = plogis(summary$coefficients[2,2]),
+# #           prob_yat = plogis(summary$coefficients[3,1]),
+# #           prob_yat_sd = plogis(summary$coefficients[3,2]),
+# #           prob_yap = plogis(summary$coefficients[4,1]),
+# #           prob_yap_sd = plogis(summary$coefficients[4,2]),
+# #           log_odds_emergence = exp(summary$coefficients[2,1])
+# #           log_odds_emergence_2.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[1],
+#  #          log_odds_emergence_97.5 = exp(confint(tmp_glm, parm = "pre_emergence"))[2]
+#     )
+#   
+#   #double-check nothing messed up in calculating the n() in each group.
+#   assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+#   
+#   precicada_results[precicada_results$Species.Name == sp,] <- tmp_results
+#   #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+#   #postcicada_results |>
+#   #rows_update(tmp_results, by = c("Species.Name"))
+#   
+# }
+# write.csv(precicada_results, "model_results/binomial_PREcicada_hmid_results.csv")
+# save(precicada_models, file = "model_results/binomial_PREcicada_mid_glms.rds")
+# 
+# #annnnd just to make sure everything worked perfectly and I didn't mess up any of the functions e.g. none of the rows in the two datasets match or something..
+# assert_that(
+#   all(is.na((left_join(postcicada_results, precicada_results, by = c("pe_sd")))$n_cicada.y))
+#    )
 
 
 #and! okay! since we see that /\ shape to the cicada graph, this IS something we can fit with a binary. There's no need to have a seperate pre and post cicada model. We can just do a binary 0/1 change, and only use the years surrounding a cicada emergence to control better for various climate factors etc. Let's run it this way now.
