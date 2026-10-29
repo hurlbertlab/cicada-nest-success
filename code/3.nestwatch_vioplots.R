@@ -202,8 +202,8 @@ for(i in 1:length(unique(maps$Species.Name))) {
     summarize(mean_productivity = mean(productivity),
               se_productivity = sd(productivity),
               n = n()) |>
-    mutate(plot_size = case_when(n == 1 ~ .5,
-                                 TRUE ~ 1)) |>
+    #mutate(plot_size = case_when(n == 1 ~ .5,
+    #                             TRUE ~ 1)) |>
     ungroup()
   
   c <- one_sp |>
@@ -222,7 +222,7 @@ for(i in 1:length(unique(maps$Species.Name))) {
     x = nc$year,
     y = nc$mean_productivity,
     pch = 16,
-    ylim = c(0, 6),
+    ylim = c(0, 5), #this does cut just one outlier productivity at like. 7 but that's okay, probably a species I should cut from analysis anyway.
     cex = nc$plot_size,
     main = nc$Species.Name[1],
     xlab = "Year",
@@ -254,7 +254,7 @@ for(i in 1:length(unique(maps$Species.Name))) {
            y1 = 10,
            col = "grey85",
            lty = "dashed")
-  legend("bottomright", 
+  legend("topright", 
          legend = c("No Cicada",
                     "Cicada Exposure"),
          fill = c("black", "orange"),
