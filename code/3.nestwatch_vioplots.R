@@ -8,6 +8,8 @@
 ############################
 
 library(dplyr)
+library(stringr)
+library(lubridate)
 library(vioplot)
 
 # Read in location.ID climate data
@@ -121,6 +123,8 @@ summary <- analysis_df |>
   ungroup() |>
   arrange(desc((n)))
 
+pdf(file = "figures/nestwatch_vioplots.pdf")
+
 for(i in 1:length(unique(summary$Species.Name))) {
   one_sp <- summary |>
   filter(Species.Name == unique(summary$Species.Name)[i]) |>
@@ -181,3 +185,80 @@ legend("bottomright",
        fill = c("black", "orange"),
        bty = "n")
 }
+
+dev.off()
+
+
+
+#okay, let's also actually do maps vioplots too while we're here.
+maps <- read.csv("data/maps_analysis_df.csv") 
+
+pdf(file = "figures/maps_vioplots.pdf")
+
+for(i in 1:length(unique(maps$Species.Name))) {
+  one_sp <- maps |>
+    filter(Species.Name == unique(maps$Species.Name)[i]) |>
+    group_by(Species.Name, year, cicada_year == 0)  |>
+    summarize(mean_productivity = mean(productivity),
+              se_productivity = sd(productivity),
+              n = n()) |>
+    mutate(plot_size = case_when(n == 1 ~ .5,
+                                 TRUE ~ 1)) |>
+    ungroup()
+  
+  c <- one_sp |>
+    filter(`cicada_year == 0` == TRUE)
+  
+  nc <- one_sp |>
+    filter(`cicada_year == 0` == FALSE)
+  
+  #I would size the dots based on n but that makes them like, super hard to read.
+  #maybe better to scale the coloration of the dots by n?
+  #or don't.. worry about it.... because the sd is really wide for years without a lot of data.
+  #but I think this nicely shows that cicada nests are doing better for Eastern Bluebirds
+  #OR! When n = 1, plot_size = .5, else plot_size = 1
+  
+  plot(
+    x = nc$year,
+    y = nc$mean_productivity,
+    pch = 16,
+    ylim = c(0, 6),
+    cex = nc$plot_size,
+    main = nc$Species.Name[1],
+    xlab = "Year",
+    ylab = "Productivity",
+    xaxt = "n"
+  )
+  axis(1, at = 1992:2025, labels = 1992:2025)
+  segments(x0 = nc$year,
+           x1 = nc$year,
+           y0 = nc$mean_productivity - nc$se_productivity,
+           y1 = nc$mean_productivity + nc$se_productivity,
+           lwd = 2)
+  points(
+    x = c$year + .25,
+    y = c$mean_productivity,
+    pch = 16,
+    col = "orange",
+    cex = c$plot_size
+  )
+  segments(x0 = c$year + .25,
+           x1 = c$year + .25,
+           y0 = c$mean_productivity - c$se_productivity,
+           y1 = c$mean_productivity + c$se_productivity,
+           col = "orange",
+           lwd = 2)
+  segments(x0 = nc$year + .5,
+           x1 = nc$year + .5,
+           y0 = -.2,
+           y1 = 10,
+           col = "grey85",
+           lty = "dashed")
+  legend("bottomright", 
+         legend = c("No Cicada",
+                    "Cicada Exposure"),
+         fill = c("black", "orange"),
+         bty = "n")
+}
+
+dev.off()

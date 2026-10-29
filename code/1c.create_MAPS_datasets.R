@@ -167,31 +167,35 @@ location_years <- locations |>
     by = c("BROOD_NAME")
   ) |>
   #okay, and now we keep location-year combinations where they have data during one of the emergence years, or a year before, or a year after. hehe okay long filter...go!
-  filter(
-    year == emergence_one - 1 |
-      year == emergence_one |
-      year == emergence_one + 1 |
-      year == emergence_two - 1 |
-      year == emergence_two |
-      year == emergence_two + 1 |
-      year == emergence_three - 1 |
-      year == emergence_three |
-      year == emergence_three + 1 |
-      year == emergence_four - 1 | 
-      year == emergence_four |
-      year == emergence_four + 1 
-  ) |>
+  #removing this bc we want to filter on cicada_year later if we're going to... but for now let's keep all the data b/c we might! we might not limit it to within +-1 cicada year.
+  #filter(
+  #  year == emergence_one - 1 |
+  #   year == emergence_one |
+  #    year == emergence_one + 1 |
+  #    year == emergence_two - 1 |
+  #    year == emergence_two |
+  #    year == emergence_two + 1 |
+  #    year == emergence_three - 1 |
+  #    year == emergence_three |
+  #    year == emergence_three + 1 |
+  #    year == emergence_four - 1 | 
+  #    year == emergence_four |
+  #    year == emergence_four + 1 
+  #) |>
   #okay now similarly, we need a case_when to tell us this kinda year before/ year of / year after information.
   mutate(cicada_year = 
            case_when(
              year == emergence_one | year == emergence_two | year == emergence_three | year == emergence_four ~ 0,
              year == emergence_one -1 | year == emergence_two -1 | year == emergence_three -1 | year == emergence_four -1 ~ -1,
-             year == emergence_one +1 | year == emergence_two +1 | year == emergence_three +1 | year == emergence_four +1 ~ 1
+             year == emergence_one +1 | year == emergence_two +1 | year == emergence_three +1 | year == emergence_four +1 ~ 1,
+             #case when it's NOT a cicada year
+             TRUE ~ 999 #we'll just leave this as clearly not a cicada year for now. that's kinda all we reallllyyy need to know.
            )) |>
   #awright and now make a binary one while we're here..
   mutate(cicada_year_binary = 
            case_when(cicada_year == 0 ~ 1,
-                     cicada_year == -1 | cicada_year == 1 ~ 0)) |>
+                     cicada_year == -1 | cicada_year == 1 ~ 0,
+                     cicada_year == 999 ~ NA)) |>
   #ope, we also need to filter to years >= 1992 b/c there was another protocol used before then and capture efforts are not comprable.
   filter(year >= 1992) |>
   ungroup() |>
@@ -285,8 +289,9 @@ captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_dat
   #filter to just the year/location combos of interest
   mutate(loc_year = paste0(LOC, year),
          sta_year = paste0(STA, year)) |>
-  filter(loc_year %in% location_years$loc_year) |> #cool, we retain about 10% of the capture data. YAY
-  #73607/728096
+  filter(loc_year %in% location_years$loc_year) |> #cool, we retain about 10% of the capture data. YAY ---- WHEN limited to +-1 cicada year. When we don't limit it 48%
+  #73607/728096 #+-1 cicada year
+  # 351825/728096 #without limits, just within brood areas.
   #and also filter only to the stations that are suitable for analysis
   filter(sta_year %in% station_suitability$sta_year) |>
   #72346/728096
@@ -347,7 +352,7 @@ n_obser <- summary_captures |>
             n_a_grt_10 = sum(n_adults >= 10),
             n_y1_a10 = sum(n_adults >= 10 & n_young > 1),
             perc_w_y = n_y_gtr_1/n,
-            n_cicada = sum(cicada_year_binary == 1),
+            n_cicada = sum(cicada_year_binary == 1, na.rm = TRUE),
             perc_cicada = n_cicada/n) |>
   #well, first step, species where young are never observed should be cut
   filter(n_y_gtr_1 > 0) |>
@@ -358,7 +363,8 @@ n_obser <- summary_captures |>
   #after looking at this, let's keep just species with n_a_grt_10 > 20. 
 
 keep_species <- n_obser |>
-  filter(n_a_grt_10 >= 20)
+  filter(n_a_grt_10 >= 20) |>
+  filter(n_cicada >= 9)
 
 
 # I want a bar chart for species where each species has a plot showing both perc_w_y and perc_cicada in two different colors. 
