@@ -75,8 +75,11 @@ analysis_df <- read.csv("data/nestboxes_w_county+cicada.csv",
          MULT_BROOD <= 2 #filter out multiple broods over 2
          ) |>
   #after = 150,765 nests.
+  #DEPRECIATED COMMMENT -----------
   #As well, previous analyses (Bella's work on this project) looked multiple years in the past + future of a cicada emergence. But, there are a lot of things that could vary between years. I want to try and control for the effect of cicada emergence as much as possible. Therefore, just going to look at the year before, year of, and year after a cicada emergence
-  filter(cicada_year %in% c(-1, 0, 1)) |>
+  #DEPRECIATED COMMMENT -----------
+  #we actually will NOT filter those out, and instead after consideration keep them. We can ask a more limited question about knock-on effects later down in the script, but as our main analyses, really interested in comparing cicada years to all the other years, and being able to look at the effects of birds exposed to cicadas vs birds not exposed to cicadas within the same year! that will give us a more comprehensive look at the effects of cicadas hashtag-yay
+  #filter(cicada_year %in% c(-1, 0, 1)) |>
   #after = 30,805 observations 
   #HM. And actually for the two-brood records we don't want to remove these completely, it's just that we want to keep only one record. Let's use distinct() but for the most part I've already handled it. Either it was a year of a cicada emergence, a year earlier, or a year after. Most multiple broods are not overlapping in years as well. And for those multiple broods that do overlap in years in some counties, we're solid b/c they're just duplicates of each other anyway.
   group_by(Attempt.ID, Location.ID, Year, Hatch.Date) |>

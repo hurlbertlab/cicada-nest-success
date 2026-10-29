@@ -195,7 +195,7 @@ location_years <- locations |>
   mutate(cicada_year_binary = 
            case_when(cicada_year == 0 ~ 1,
                      cicada_year == -1 | cicada_year == 1 ~ 0,
-                     cicada_year == 999 ~ NA)) |>
+                     cicada_year == 999 ~ 0)) |>
   #ope, we also need to filter to years >= 1992 b/c there was another protocol used before then and capture efforts are not comprable.
   filter(year >= 1992) |>
   ungroup() |>
@@ -457,3 +457,55 @@ write.csv(maps_productivity_df, "data/maps_productivity_df.csv", row.names = FAL
 
 #mmm, and going to need to do something different to get that capture weight information in there.
 weight <- captures |>
+  #what we want is WEIGHT and F (for fat content, which is an ORDINAL variable) and SEX b/c it should be a WEIGHT*SEX .. probably? are female warblers much heavier than males? Anyway! We can account for it. WNG is wing chord, if we want to create a body composition ratio like e.g. this bird is large (mass in grams) for it's wing size. Only some of that gets accounted for with fat content (variable F)
+  #look there's so much info in captures, I AM going to trim it down.
+  select(BAND, WEIGHT, `F`, WNG, DATE, LOC:STATION, SPEC, AGE, SEX, year:day) |>
+  left_join(
+    (read.csv("data/MAPS_1992-2018_cicada_region/IBP-AOS-list25-birdcode-taxonomy.csv") |>
+       select(SPEC, COMMONNAME, SCINAME)),
+    by = c("SPEC")
+  ) |>
+  rename(Species.Name = COMMONNAME,
+         fat_content = `F`,
+         mass_in_g = WEIGHT,
+         wing_chord = WNG) |>
+  mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
+  #haha okayyyyy when it comes to weight there might be differences in Black-Capped and Carolinas.. so I won't join them... here :3d
+  #                                SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
+                                  TRUE ~ Species.Name)) |>
+  #hm! and because this is weight, and we're thinking about how asynch doesn't affect bc ADULT body conditions are better, let's just keep the birds that are adults
+  filter(AGE %in% c(1, 5, 6, 7, 8))
+
+#hm, how often are birds recaptured in the same year? if not often I'll just exclude them probably, rather than fussing about having to average their weight or smthng to account for catching them twice.
+recaptures <- weight |>
+  summarize(n = n(), 
+            .by = c(BAND, year)) |>
+  filter(n > 1) #huh! okay 33,252 examples of birds being captured more than once within a year. alright then, we'll average it. but some of the birds are caught multiple times..
+all_captures <- sum(recaptures$n)
+
+weight_averaged <- weight |>
+  group_by(BAND, year) |>
+  mutate(mass_in_g = mean(mass_in_g),
+         wing_chord = mean(wing_chord),
+         fat_content = mean(fat_content)) |>
+  distinct(BAND, year, .keep_all = TRUE) |>
+  ungroup() |>
+  #and since we still have geometry hanging around..
+  sf::st_drop_geometry() |>
+  select(-geometry)
+
+#and just check really quick we didn't lose any birds or anything..
+nrow(weight_averaged) == nrow(weight) - all_captures + nrow(recaptures)
+#epic.
+
+weight_obser <- weight_averaged |>
+  summarize(n = n(),
+            .by = c(SPEC, cicada_year_binary)) |>
+  #well, at the very least I think it's reasonable to say a species needs at least 30 weights within cicada years to be eligible. We can always filter more later. presumably, if there are 30 observations within cicada years, we will also have 30 or greater observations outside of cicada years since there's so many more opportunities.
+  filter(cicada_year_binary == 1 & n >= 30)
+
+#we'll leave the filtering on which species should be used for this to the analysis script.
+weight_averaged |>
+  filter(SPEC %in% weight_obser$SPEC) |>
+  write.csv("data/maps_weight_df.csv", row.names = FALSE)
+  #191,117 observations.

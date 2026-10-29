@@ -198,7 +198,7 @@ pdf(file = "figures/maps_vioplots.pdf")
 for(i in 1:length(unique(maps$Species.Name))) {
   one_sp <- maps |>
     filter(Species.Name == unique(maps$Species.Name)[i]) |>
-    group_by(Species.Name, year, cicada_year == 0)  |>
+    group_by(Species.Name, year, cicada_year_binary)  |>
     summarize(mean_productivity = mean(productivity),
               se_productivity = sd(productivity),
               n = n()) |>
@@ -207,10 +207,10 @@ for(i in 1:length(unique(maps$Species.Name))) {
     ungroup()
   
   c <- one_sp |>
-    filter(`cicada_year == 0` == TRUE)
+    filter(cicada_year_binary == 1)
   
   nc <- one_sp |>
-    filter(`cicada_year == 0` == FALSE)
+    filter(cicada_year_binary == 0)
   
   #I would size the dots based on n but that makes them like, super hard to read.
   #maybe better to scale the coloration of the dots by n?

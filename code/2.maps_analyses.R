@@ -18,12 +18,13 @@ library(statuser)
 source("code/2.functions.R")
 
 
-maps_analysis_df <- read.csv("data/maps_productivity_df.csv")
+maps_productivity <- read.csv("data/maps_productivity_df.csv")
+maps_weight <- read.csv("data/maps_weight_df.csv")
 
 #Modeling time!! YAYYYY
 maps_results <- make_trend_table(cols_list = 
                                    c("Species.Name", "model", "model_desc", "intercept", "emergence", "e_sd", "e_p", "e_signif", "y_anomaly_temp", "yat_sd", "yat_p", "yat_signif", "y_anomaly_precip", "yap_sd", "yap_p", "yap_signif", "n_noncicada", "n_cicada"),
-                                 rows_list = unique(maps_analysis_df$Species.Name)) |>
+                                 rows_list = unique(maps_productivity$Species.Name)) |>
   mutate(model = as.character(model),
          model_desc = as.character(model_desc),
          mutate(across(where(is.logical), as.numeric)))
@@ -31,12 +32,12 @@ maps_results <- make_trend_table(cols_list =
 maps_models = list()
 
 #loop through the species!
-for(i in 1:length(unique(maps_analysis_df$Species.Name))) {
+for(i in 1:length(unique(maps_productivity$Species.Name))) {
   
-  sp <- unique(maps_analysis_df$Species.Name)[i]
+  sp <- unique(maps_productivity$Species.Name)[i]
   print(i); print(sp)
   
-  tmp <- maps_analysis_df |>
+  tmp <- maps_productivity |>
     filter(Species.Name == sp)
   
   tmp_glm <- glm(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip, 
@@ -95,7 +96,7 @@ save(maps_models, file = "model_results/maps_gaussian_glms.rds")
 # graph mean and standard deviation of pct fledged for each species over cicada year 
 ## group, calc mean & stdev
 {
-  summary_data <- maps_analysis_df %>%
+  summary_data <- maps_productivity %>%
     group_by(Species.Name, cicada_year_binary) %>%
     summarise(
       #nest success 0/1
