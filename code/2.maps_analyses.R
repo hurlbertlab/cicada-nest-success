@@ -8,6 +8,8 @@
 #
 ######################
 library(dplyr)
+library(lme4)
+library(broom.mixed)
 library(tidyverse)
 library(stringr)
 library(ggplot2)
@@ -40,7 +42,7 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
   tmp <- maps_productivity |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glm(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip, 
+  tmp_glm <- glmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|year) + (1|brood_ID), 
                  data = tmp, 
                  family = gaussian) #gaussian?
   

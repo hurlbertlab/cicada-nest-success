@@ -166,6 +166,9 @@ location_years <- locations |>
     cicada_emergence_years,
     by = c("BROOD_NAME")
   ) |>
+  group_by(BROOD_NAME) |>
+  mutate(brood_ID = cur_group_id()) |>
+  ungroup() |>
   #okay, and now we keep location-year combinations where they have data during one of the emergence years, or a year before, or a year after. hehe okay long filter...go!
   #removing this bc we want to filter on cicada_year later if we're going to... but for now let's keep all the data b/c we might! we might not limit it to within +-1 cicada year.
   #filter(
@@ -474,7 +477,12 @@ weight <- captures |>
   #                                SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
                                   TRUE ~ Species.Name)) |>
   #hm! and because this is weight, and we're thinking about how asynch doesn't affect bc ADULT body conditions are better, let's just keep the birds that are adults
-  filter(AGE %in% c(1, 5, 6, 7, 8))
+  filter(AGE %in% c(1, 5, 6, 7, 8)) |>
+  #filter out when weight == 0
+  filter(mass_in_g != 0) |>
+  #m, and there's some weird cases when mass is too low for birds that wouldn't be. let's just cut it at 4 grams. going to cut like, a few BBGN but that's okay. there's like a 4 gram INBU which is. not correct.
+  filter(mass_in_g > 4)
+  #and just be aware there are some cases when fat_content == NA, so those will need to be removed for that analysis.
 
 #hm, how often are birds recaptured in the same year? if not often I'll just exclude them probably, rather than fussing about having to average their weight or smthng to account for catching them twice.
 recaptures <- weight |>
