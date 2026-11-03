@@ -9,6 +9,7 @@
 ######################
 library(dplyr)
 library(lme4)
+library(lmerTest) #gives p-values for lmer
 library(broom.mixed)
 library(tidyverse)
 library(stringr)
@@ -20,16 +21,17 @@ library(statuser)
 source("code/2.functions.R")
 
 
-maps_productivity <- read.csv("data/maps_productivity_df.csv")
-maps_weight <- read.csv("data/maps_weight_df.csv")
+maps_productivity <- read.csv("data/maps_productivity_df.csv") |>
+  group_by(BROOD_NAME) |>
+  mutate(brood_ID = cur_group_id()) |>
+  ungroup()
+maps_weight <- read.csv("data/maps_weight_df.csv") |>
+  group_by(BROOD_NAME) |>
+  mutate(brood_ID = cur_group_id()) |>
+  ungroup()
 
 #Modeling time!! YAYYYY
-maps_results <- make_trend_table(cols_list = 
-                                   c("Species.Name", "model", "model_desc", "intercept", "emergence", "e_sd", "e_p", "e_signif", "y_anomaly_temp", "yat_sd", "yat_p", "yat_signif", "y_anomaly_precip", "yap_sd", "yap_p", "yap_signif", "n_noncicada", "n_cicada"),
-                                 rows_list = unique(maps_productivity$Species.Name)) |>
-  mutate(model = as.character(model),
-         model_desc = as.character(model_desc),
-         mutate(across(where(is.logical), as.numeric)))
+maps_results <- as.data.frame(NULL)
 
 maps_models = list()
 
@@ -42,48 +44,86 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
   tmp <- maps_productivity |>
     filter(Species.Name == sp)
   
-  tmp_glm <- glmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|year) + (1|brood_ID), 
-                 data = tmp, 
-                 family = gaussian) #gaussian?
+  tmp_glmer <- lme4::lmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|year) + (1|brood_ID), 
+                 data = tmp) #gaussian?
   
-  maps_models[[i]] = tmp_glm
+  maps_models[[i]] = tmp_glmer
   
-  summary <- summary(tmp_glm)
+  summary <- summary(tmp_glmer)
   
-  tmp_results <- maps_results |>
-    filter(Species.Name == sp) |>
-    mutate(model = as.character(tmp_glm$formula)[3],
-           model_desc = "gaussian",
-           intercept = summary$coefficients[1,1],
-           emergence = summary$coefficients[2,1],
-           e_sd = summary$coefficients[2,2],
-           e_p = summary$coefficients[2,4], 
-           e_signif = ifelse(summary$coefficients[2,4] < 0.05, "signif", "no"),
-           y_anomaly_temp = summary$coefficients[3,1],
-           yat_sd = summary$coefficients[3,2],
-           yat_p = summary$coefficients[3,4],
-           yat_signif = ifelse(summary$coefficients[3,4] < 0.05, "signif", "no"),
-           y_anomaly_precip = summary$coefficients[4,1],
-           yap_sd = summary$coefficients[4,2],
-           yap_p = summary$coefficients[4,4],
-           yap_signif = ifelse(summary$coefficients[4,4] < 0.05, "signif", "no"),
+  #will need to use lmertest to get the p-values
+  #deeply annoying bc it gives them automatically for binomial models but w/e
+  
+  tmp_results <- broom.mixed::tidy(
+    tmp_glmer,
+    effects      = "fixed",
+    conf.int     = TRUE,
+    exponentiate = FALSE   # keep log-odds so we can add our own transforms
+  ) |>
+    mutate(
+      formula         = paste(deparse(formula(tmp_glmer)), collapse = " "),
+      odds_ratio      = exp(estimate),
+      or_conf_low     = exp(conf.low),
+      or_conf_high    = exp(conf.high),
+      pct_change_odds = (odds_ratio - 1) * 100,
+      baseline_prob   = ifelse(term == "(Intercept)", plogis(estimate), NA_real_)
+    ) |>
+    rename(
+      std_error = std.error,
+      t_value   = statistic,
+      #p_value   = p.value
+    ) |>
+    #add in the random effects
+    bind_rows(
+      (broom.mixed::tidy(tmp_glmer, effects = "ran_pars", scales = "vcov") |>
+         mutate(term = paste0(group, ", ", term)) |>
+         select(-group))
+    ) |>
+    #add species and significance, and rearrange to my preferences
+    mutate(Species.Name = sp,
+           #mark as signif only if it's not the intercept term.
+           #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
            n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)
-           
-           #           prob_intercept = plogis(summary$coefficients[1,1]),
-           #           prob_post_e = plogis(summary$coefficients[2,1]),
-           #           prob_pe_sd = plogis(summary$coefficients[2,2]),
-           #           prob_yat = plogis(summary$coefficients[3,1]),
-           #           prob_yat_sd = plogis(summary$coefficients[3,2]),
-           #           prob_yap = plogis(summary$coefficients[4,1]),
-           #           prob_yap_sd = plogis(summary$coefficients[4,2]),
-           #           log_odds_emergence = exp(summary$coefficients[2,1])
-    )
+           n_cicada = sum(tmp$cicada_year_binary == 1)) |>
+    relocate(Species.Name, .before = effect) #|>
+    #relocate(signif, .before = p_value) |>
+    #select(-z_value)
+  
+  # tmp_results <- maps_results |>
+  #   filter(Species.Name == sp) |>
+  #   mutate(model = as.character(tmp_glm$formula)[3],
+  #          model_desc = "gaussian",
+  #          intercept = summary$coefficients[1,1],
+  #          emergence = summary$coefficients[2,1],
+  #          e_sd = summary$coefficients[2,2],
+  #          e_p = summary$coefficients[2,4], 
+  #          e_signif = ifelse(summary$coefficients[2,4] < 0.05, "signif", "no"),
+  #          y_anomaly_temp = summary$coefficients[3,1],
+  #          yat_sd = summary$coefficients[3,2],
+  #          yat_p = summary$coefficients[3,4],
+  #          yat_signif = ifelse(summary$coefficients[3,4] < 0.05, "signif", "no"),
+  #          y_anomaly_precip = summary$coefficients[4,1],
+  #          yap_sd = summary$coefficients[4,2],
+  #          yap_p = summary$coefficients[4,4],
+  #          yap_signif = ifelse(summary$coefficients[4,4] < 0.05, "signif", "no"),
+  #          n_noncicada = sum(tmp$cicada_year_binary == 0),
+  #          n_cicada = sum(tmp$cicada_year_binary == 1)
+  #          
+  #          #           prob_intercept = plogis(summary$coefficients[1,1]),
+  #          #           prob_post_e = plogis(summary$coefficients[2,1]),
+  #          #           prob_pe_sd = plogis(summary$coefficients[2,2]),
+  #          #           prob_yat = plogis(summary$coefficients[3,1]),
+  #          #           prob_yat_sd = plogis(summary$coefficients[3,2]),
+  #          #           prob_yap = plogis(summary$coefficients[4,1]),
+  #          #           prob_yap_sd = plogis(summary$coefficients[4,2]),
+  #          #           log_odds_emergence = exp(summary$coefficients[2,1])
+  #   )
   
   #double-check nothing messed up in calculating the n() in each group.
-  assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
+  #assert_that(tmp_results$n_noncicada + tmp_results$n_cicada == nrow(tmp))
   
-  maps_results[maps_results$Species.Name == sp,] <- tmp_results
+  #maps_results[maps_results$Species.Name == sp,] <- tmp_results
+  maps_results <- bind_rows(maps_results, tmp_results)
   #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
   #postcicada_results |>
   #rows_update(tmp_results, by = c("Species.Name"))
@@ -163,3 +203,6 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_s
             size = 3, 
             vjust = 1,
             inherit.aes = FALSE)
+
+
+#okay, now run the analyses on weight :D
