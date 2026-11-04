@@ -21,14 +21,8 @@ library(statuser)
 source("code/2.functions.R")
 
 
-maps_productivity <- read.csv("data/maps_productivity_df.csv") |>
-  group_by(BROOD_NAME) |>
-  mutate(brood_ID = cur_group_id()) |>
-  ungroup()
-maps_weight <- read.csv("data/maps_weight_df.csv") |>
-  group_by(BROOD_NAME) |>
-  mutate(brood_ID = cur_group_id()) |>
-  ungroup()
+maps_productivity <- read.csv("data/maps_productivity_df.csv") 
+maps_weight <- read.csv("data/maps_weight_df.csv") 
 
 #Modeling time!! YAYYYY
 maps_results <- as.data.frame(NULL)
@@ -44,8 +38,30 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
   tmp <- maps_productivity |>
     filter(Species.Name == sp)
   
-  tmp_glmer <- lme4::lmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|year) + (1|brood_ID), 
-                 data = tmp) #gaussian?
+  if(sp %in% c("Black-and-white Warbler", "White-eyed Vireo", "Acadian Flycatcher", "Kentucky Warbler", "Field Sparrow", "Common Yellowthroat", "American Robin", "Carolina Wren", "Downy Woodpecker", "White-breasted Nuthatch", "Blue-gray Gnatcatcher")) { #species with a singular fit (random effect at 0) in year
+    tmp_glmer <- lme4::lmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|brood_ID), 
+                            data = tmp) #gaussian?
+    glm_check = FALSE
+    
+  } else if(sp %in% c("Eastern Towhee")) {
+    #species with a singular fit (random effect at 0) in brood
+    tmp_glmer <- lme4::lmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|year), 
+                            data = tmp) #gaussian?
+    glm_check = FALSE
+    
+  } else if(sp %in% c("Ovenbird", "Hairy Woodpecker")) {
+    #species with a singular fit (random effect at 0) in both year and brood
+    tmp_glmer <- glm(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip, 
+                            data = tmp) #gaussian?
+    
+    glm_check = TRUE
+    
+  } else {
+    #all other species without singularity issues ^u^
+    tmp_glmer <- lme4::lmer(productivity ~ cicada_year_binary + brood_y_anomaly_temp + brood_y_anomaly_precip + (1|year) + (1|brood_ID), 
+                            data = tmp) #gaussian?
+    glm_check = FALSE
+  }
   
   maps_models[[i]] = tmp_glmer
   
@@ -53,39 +69,63 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
   
   #will need to use lmertest to get the p-values
   #deeply annoying bc it gives them automatically for binomial models but w/e
-  
-  tmp_results <- broom.mixed::tidy(
-    tmp_glmer,
-    effects      = "fixed",
-    conf.int     = TRUE,
-    exponentiate = FALSE   # keep log-odds so we can add our own transforms
-  ) |>
-    mutate(
-      formula         = paste(deparse(formula(tmp_glmer)), collapse = " "),
-      odds_ratio      = exp(estimate),
-      or_conf_low     = exp(conf.low),
-      or_conf_high    = exp(conf.high),
-      pct_change_odds = (odds_ratio - 1) * 100,
-      baseline_prob   = ifelse(term == "(Intercept)", plogis(estimate), NA_real_)
+  if(glm_check == FALSE) {
+    tmp_results <- broom.mixed::tidy(
+      tmp_glmer,
+      effects      = "fixed",
+      conf.int     = TRUE,
+      exponentiate = FALSE   # keep log-odds so we can add our own transforms
     ) |>
-    rename(
-      std_error = std.error,
-      t_value   = statistic,
-      #p_value   = p.value
+      mutate(
+        formula         = paste(deparse(formula(tmp_glmer)), collapse = " "),
+        odds_ratio      = exp(estimate),
+        or_conf_low     = exp(conf.low),
+        or_conf_high    = exp(conf.high),
+        pct_change_odds = (odds_ratio - 1) * 100,
+        baseline_prob   = ifelse(term == "(Intercept)", plogis(estimate), NA_real_)
+      ) |>
+      rename(
+        std_error = std.error,
+        t_value   = statistic,
+        #p_value   = p.value
+      ) |>
+      #add in the random effects
+      bind_rows(
+        (broom.mixed::tidy(tmp_glmer, effects = "ran_pars", scales = "vcov") |>
+           mutate(term = paste0(group, ", ", term)) |>
+           select(-group))
+      ) |>
+      #add species and significance, and rearrange to my preferences
+      mutate(Species.Name = sp,
+             #mark as signif only if it's not the intercept term.
+             #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
+             n_noncicada = sum(tmp$cicada_year_binary == 0),
+             n_cicada = sum(tmp$cicada_year_binary == 1)) |>
+      relocate(Species.Name, .before = effect)
+  } else {
+    tmp_results <- broom.mixed::tidy(
+      tmp_glmer,
+      #effects      = "fixed",
+      conf.int     = TRUE,
+      exponentiate = FALSE   # this is gaussian, doesn't need exponentiation.
     ) |>
-    #add in the random effects
-    bind_rows(
-      (broom.mixed::tidy(tmp_glmer, effects = "ran_pars", scales = "vcov") |>
-         mutate(term = paste0(group, ", ", term)) |>
-         select(-group))
-    ) |>
-    #add species and significance, and rearrange to my preferences
-    mutate(Species.Name = sp,
-           #mark as signif only if it's not the intercept term.
-           #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
-           n_noncicada = sum(tmp$cicada_year_binary == 0),
-           n_cicada = sum(tmp$cicada_year_binary == 1)) |>
-    relocate(Species.Name, .before = effect) #|>
+      mutate(
+        formula         = paste(deparse(formula(tmp_glmer)), collapse = " ")
+      ) |>
+      rename(
+        std_error = std.error,
+        t_value   = statistic,
+        p_value   = p.value
+      ) |>
+      #no random effects to add in.
+      #add species and significance, and rearrange to my preferences
+      mutate(Species.Name = sp,
+             #mark as signif only if it's not the intercept term.
+             #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
+             n_noncicada = sum(tmp$cicada_year_binary == 0),
+             n_cicada = sum(tmp$cicada_year_binary == 1)) 
+  }
+   #|>
     #relocate(signif, .before = p_value) |>
     #select(-z_value)
   
@@ -129,6 +169,14 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
   #rows_update(tmp_results, by = c("Species.Name"))
   
 }
+
+#ya just cardinal has an effect of cicada with a confidence interval that doesn't cross zero.
+
+#Hm, about half of the species have the issue:
+#boundary (singular) fit: see help('isSingular')
+#which is not good! suggests I need to drop one or more of the random effects for those species. But which one to drop?
+#Ah! Can look at the results. EG when i = 25, variance for the 1|year group in Black and White Warbler == 0. So that's the group I want to drop for that species. Going through by hand.
+#Logic for methods = when model fits were singular, I dropped the random effect with 0 variance / 0 std.dev.
 
 write.csv(maps_results, "model_results/maps_gaussian_results.csv")
 save(maps_models, file = "model_results/maps_gaussian_glms.rds")
@@ -206,3 +254,39 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_s
 
 
 #okay, now run the analyses on weight :D
+n_distinct(maps_weight$SPEC)
+#species needed at least 30 weights within cicada years to be eligible.
+
+#let's test just on NOCA
+tmp <- maps_weight |>
+  filter(SPEC == "WOTH") |> #504 cicada year captures, out of like 8536 overall
+  filter(!is.na(wing_chord)) |>
+  filter(!is.na(relative_mass)) |>
+  filter(!is.infinite(relative_mass))
+#um, there's some unexpectedly high numbers in there. Going to need to remove outliers in mass and wing_chord for each species b/c they're probably data entry errors.
+  
+tmp_glm <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary + (1|year) + (1|brood_ID),
+               data = tmp)
+#urg, still have to compute a p-value
+summary(tmp_glm)
+
+broom.mixed::tidy(tmp_glm,
+                  conf.int = TRUE)
+#kay yeah, doesn't have an effect on NOCA weight, or on WOTH weight.
+#huh. m. weird!! maybe it doesn't have an effect on weight!!
+
+
+table(maps_weight$cicada_year_binary)
+#0      1 
+#142281   8544 
+#kinda a pretty compelling reason here to jointly model all the species. Even if that becomes like, supplementary data? terns unstoned and all. If all the birds are gaining weight, we might not see the effect within individual species but we might see it ACROSS species....
+
+test <- lme4::lmer(log_mass ~ cicada_year_binary + (1|brood_ID) + (1|year) + (1|sp_id),
+     data = maps_weight)
+summary(test)
+a <- broom.mixed::tidy(test,
+                  conf.int = TRUE)
+#alright, hm! across all species there's a small effect on log_mass going up.
+summary(
+  glm(log_mass ~ cicada_year_binary + SEX, 
+      data = maps_weight))

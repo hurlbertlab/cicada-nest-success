@@ -356,14 +356,18 @@ n_obser <- summary_captures |>
             n_y1_a10 = sum(n_adults >= 10 & n_young > 1),
             perc_w_y = n_y_gtr_1/n,
             n_cicada = sum(cicada_year_binary == 1, na.rm = TRUE),
-            perc_cicada = n_cicada/n) |>
+            perc_cicada = n_cicada/n,
+            n_a10_w_c = sum(n_adults >= 10 & cicada_year_binary == 1),
+            n_a10_y1_w_c = sum(n_adults >= 10 & cicada_year_binary == 1 & n_young > 1)) |>
   #well, first step, species where young are never observed should be cut
   filter(n_y_gtr_1 > 0) |>
   #and I want at least 30 total observations to work with
   filter(n >= 28) |> #cutoff at 28 as that lets me keep HOWR in the study, and have an additional species with a comparison btwn MAPS and Nestwatch data
   #And we need the young of these birds to get caught with some regularity in banding years across broods. Might have to raise this later, but for now let's say at least half of the banding-years young have to be caught. Max is like, 90% of brood-years
-  filter(perc_w_y >= .50)
+  filter(perc_w_y >= .50) |>
   #after looking at this, let's keep just species with n_a_grt_10 > 20. 
+  #HM. Not looking so hot after that. The MAXIMUM number of cicada years with adults > 10 is like. small. 10? Hm HM. Maybe going to have to rethink my filters, or my grouping. Well. I mean right now I'm grouping by whole broods. Again an issue of like, all this data, but sampling is low so... hm. still doesn't make sense to me to include records where like, one individual was caught in assessing productivity, it's just not a fair test. Also don't want to group by the whole .. year.. because of latitiude effects? And then I'd be seperating out productivity in the brood area during the brood year from productivity in the whole cicada region during the brood year? and then I can't (1|Brood) anyway. HM. Discuss w Allen
+  filter(n_a10_w_c > 5)
 
 keep_species <- n_obser |>
   filter(n_a_grt_10 >= 20) |>
@@ -440,7 +444,7 @@ maps_productivity_df <- summary_captures |>
   #keep only species with more than 20 observations with more than 10 adult captures
   filter(SPEC %in% keep_species$SPEC) |>
   #and then keep ONLY those >10 adult captures. bc when we're using proportion later, we're not going to be accounting for how many individuals were captured. If it's not at least 10, sampling effort wasn't high enough in that brood-year to include it in our model.
-  filter(n_adults >= 10) |>
+  filter(n_adults >= 10) |> #HM. BGGN gets cut b/c most captures of BGGN are less than 10.
   group_by(SPEC, cicada_year_binary) |>
   mutate(n_sp_cyrbin = n()) |>
   ungroup() |>
@@ -453,7 +457,10 @@ maps_productivity_df <- summary_captures |>
   rename(Species.Name = COMMONNAME) |>
   mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
                                   SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
-                                  TRUE ~ Species.Name))
+                                  TRUE ~ Species.Name)) |>
+  group_by(BROOD_NAME) |>
+  mutate(brood_ID = cur_group_id()) |>
+  ungroup()
 
 write.csv(maps_productivity_df, "data/maps_productivity_df.csv", row.names = FALSE)
 
@@ -515,5 +522,13 @@ weight_obser <- weight_averaged |>
 #we'll leave the filtering on which species should be used for this to the analysis script.
 weight_averaged |>
   filter(SPEC %in% weight_obser$SPEC) |>
+  group_by(BROOD_NAME) |>
+  mutate(brood_ID = cur_group_id()) |>
+  ungroup() |>
+  mutate(relative_mass = mass_in_g/wing_chord,
+         log_mass = log(mass_in_g)) |>
+  group_by(SPEC) |>
+  mutate(sp_id = cur_group_id()) |>
+  ungroup() |>
   write.csv("data/maps_weight_df.csv", row.names = FALSE)
   #191,117 observations.
