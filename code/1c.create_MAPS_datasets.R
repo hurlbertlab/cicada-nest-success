@@ -506,6 +506,7 @@ weight <- captures |>
   mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
   #haha okayyyyy when it comes to weight there might be differences in Black-Capped and Carolinas.. so I won't join them... here :3d
   #                                SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
+                                  SPEC == "AMGO" ~ "American Goldfinch",
                                   TRUE ~ Species.Name),
   Species.Name = case_when(chickadee == "BCCH" ~ "Black-capped Chickadee",
                            chickadee == "CACH" ~ "Carolina Chickadee",
