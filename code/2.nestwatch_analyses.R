@@ -593,10 +593,17 @@ for(i in 1:length(original_order)) {
   #tmp_glm <- glm(nest_success_tf ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip + (1|Year) + (1|brood_ID), 
   #                 data = tmp, 
   #                 family = binomial(link = "logit"))
-  
-  tmp_glmer <- glmer(nest_success_tf ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip + (1|Year) + (1|brood_ID), 
-                 data = tmp, 
-                 family = binomial(link = "logit"))
+  if(sp == "Carolina Wren") {
+    #Gives warning is.singular() on model fit b/c year random effect variance and std.dev = 0
+    tmp_glmer <- glmer(nest_success_tf ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip  + (1|brood_ID), 
+                       data = tmp, 
+                       family = binomial(link = "logit"))
+  } else {
+    #all the other species have support for full models
+    tmp_glmer <- glmer(nest_success_tf ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + (1|Year) + (1|brood_ID), 
+                       data = tmp, 
+                       family = binomial(link = "logit")) 
+  }
   
   summary <- summary(tmp_glmer)
   
@@ -656,8 +663,8 @@ for(i in 1:length(original_order)) {
 }
 
 #save(binary_models, file = "model_results/binomial_BINARY_glms.rds")
-save(binary_glmer, file = "model_results/binomail_BINARY_glmER.rds")
-write.csv(binary_results, file = "model_results/binomial_BINARY_glmER.csv", row.names = FALSE)
+save(binary_glmer, file = "model_results/binomail_BINARY_hmid_glmER.rds")
+write.csv(binary_results, file = "model_results/binomial_BINARY_hmid_glmER.csv", row.names = FALSE)
 
 #Now, for interpretation. See model_results/ to find a helpful page from the University of Virginia on how to interpret binomial glm results :)
 #The fixed effect coefficients are not on the probability scale but on the log-odds, or logit, scale. The logit transformation takes values ranging from 0 to 1 (probabilities) and transforms them to values ranging from -inf  to inf  . This allows us to create additive linear models without worrying about going above 1 or below 0. To get probabilities out of our model, we need to use the inverse logit. There is function for this in base R called plogis(). To apply plogis() across all our variables at once we can use predict()
@@ -693,6 +700,8 @@ ttf <- analysis_df |>
   dplyr::select(-pre_emergence, -post_emergence)
 table2(ttf$Species.Name, ttf$time_to_fledge) #atch. this still contains some values that I would cut for just being like. an unreasonable amount of time to fledge on either end. which is fine... I can filter those... but it makes me have some caveats about interpretation bc it seems like in general, folks might be bad at reporting accurate values for this. Filtering based on when more than 3 species are represented at that time point.
 #hah. However! While some of those bluebird numbers are unreasonable, it does take like purple martin and tree swallow longer to fledge than these other species. Let's filter first just based on removing species that we don't have enough data on anyway (Purple Martin, Carolina Wren, House Sparrow, Prothonotary) and then look again
+table2(ttf$Species.Name, ttf$cicada_year_binary)
+#yup, we only have sufficient data for Eastern Bluebird and Tree Swallows.
 
 ttf_filtered <- ttf |>
   filter(!Species.Name %in% c("Purple Martin", "House Sparrow", "Carolina Wren", "Prothonotary Warbler"))
@@ -722,16 +731,18 @@ table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge) #
       theme_minimal()
 #Haha okay yeah, those basically all the way overlap, no reason to suspect that the presence of cicadas shifts how long it takes these species to fledge.
  
- glm_ttf_EABL <- glm(time_to_fledge ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip,
-                   data = ttf_filtered[ttf_filtered$Species.Name == "Eastern Bluebird",],
-                   family = gaussian)
+ glm_ttf_EABL <- lmer(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + (1|Year) + (1|brood_ID),
+                   data = ttf_filtered[ttf_filtered$Species.Name == "Eastern Bluebird",]
+                   )
  summary(glm_ttf_EABL) #no effect of cicada, no effect of precip, yes effect of temperature anomaly meaning they fledge like half a day earlier with a 1 unit change in y_anomaly_temp.
- glm_ttf_TS <- glm(time_to_fledge ~ cicada_year_binary + y_anomaly_temp + y_anomaly_precip,
-                   data = ttf_filtered[ttf_filtered$Species.Name == "Tree Swallow",],
-                   family = gaussian)
- summary(glm_ttf_TS) #effects of everything but like. Let's be realistic this is based on only 107 Tree Swallow records, 41 no cicada 66 cicada. I wouldn't draw conclusions based on that. Sample size is small enough it's unlikely to be robust.
+ glm_ttf_TS <- lmer(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + (1|brood_ID),
+                   data = ttf_filtered[ttf_filtered$Species.Name == "Tree Swallow",])
+ #drop (1|Year) because the fit is singular
+ summary(glm_ttf_TS) #439 non-cicada observations, 32 cicada observations. But! they are fledging earlier in cicada years :D
  
  plot(x = ttf_filtered$y_anomaly_temp[ttf_filtered$Species.Name == "Eastern Bluebird"],
       y = ttf_filtered$time_to_fledge[ttf_filtered$Species.Name == "Eastern Bluebird"]#,
      # pch = ttf_filtered$cicada_year_binary
      )
+
+ 

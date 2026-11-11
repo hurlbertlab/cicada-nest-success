@@ -23,6 +23,8 @@ cicada_emergence_years <- read.csv("data/cicada/cicada_emergence_years_wide.csv"
   dplyr::select(-emergence_2019_through_2024)
 cicada <- st_read(dsn = "data/cicada/periodical_cicada_with_county.gdb")
 #st_crs(cicada) #awesome, already the same crs as MAPs
+#and let's load in the cicada by latitude effects
+cicada_bounds <- read.csv("data/cicada_bounds_latitude_by_j_date.csv")
 
 #load in maps data
 locations <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_STATION_location_and_operations.csv") |>
@@ -202,7 +204,15 @@ location_years <- locations |>
   #ope, we also need to filter to years >= 1992 b/c there was another protocol used before then and capture efforts are not comprable.
   filter(year >= 1992) |>
   ungroup() |>
-  mutate(loc_year = paste0(LOC, year))
+  mutate(loc_year = paste0(LOC, year)) |>
+  #and lets calculate the mean/start/end cicada dates based on latitude
+  mutate(
+    lat_cicada_mid = cicada_bounds$intercept[cicada_bounds$bound == "mid"] + cicada_bounds$lat[cicada_bounds$bound == "mid"] * DECLAT,
+    lat_cicada_start = 
+      cicada_bounds$intercept[cicada_bounds$bound == "min"] + cicada_bounds$lat[cicada_bounds$bound == "min"] * DECLAT,
+    lat_cicada_end = 
+      cicada_bounds$intercept[cicada_bounds$bound == "max"] + cicada_bounds$lat[cicada_bounds$bound == "max"] * DECLAT,
+  )
 
 #some quick visualization
 hist(location_years$year)
@@ -212,6 +222,7 @@ table(location_years$cicada_year_binary)
 
 n_distinct(location_years$STATION_NAME)
 #cool, and we have 156 unique stations remaining where they banded in +-1 of a cicada year.
+#and 283 with all the years of data included.
 
 #k, and also, let's keep in mind stations are only suitable forr use if in SUITABILITY_station_and_year things look good.
 station_suitability <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_Analysis_SUITABILITY_station_and_year.csv") |>
@@ -297,11 +308,11 @@ captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_dat
   # 351825/728096 #without limits, just within brood areas.
   #and also filter only to the stations that are suitable for analysis
   filter(sta_year %in% station_suitability$sta_year) |>
-  #72346/728096
+  #72346/728096 ---- 346000/728096
   #add cicada year information based on location, I checked and all stations within a location experience the same cicada year.
   left_join(
     (location_years |>
-       select(LOC, year, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary) |>
+       select(LOC, year, BROOD_NAME, MULT_BROOD, cicada_year, cicada_year_binary, lat_cicada_start, lat_cicada_mid, lat_cicada_end) |>
        distinct(LOC, year, .keep_all = TRUE)), by = c("LOC", "year")) |>
   #create month and day columns, we'll see if we want to filter on those later.
   mutate(month = as.numeric(str_remove_all(str_extract(DATE, "-[0-9][0-9]-"), "-")),
@@ -312,13 +323,26 @@ captures <- read.csv("data/MAPS_1992-2018_cicada_region/MAPS_BANDING_capture_dat
   filter(C %in% c("N", "R"))  |>
   #and also filter to only records meant to be used in productivity or survivorship analyses
   filter(N %in% c("-")) |>
-  #68788/728096, #9.4% of data retained.
+  #68788/728096, #9.4% of data retained. ---- 330214/728096
   #combine the chickadees because I did that for the nestwatch data too and they're so ecologically similar ^u^
-  mutate(SPEC = case_when(SPEC == "BCCH" ~ "BCCC", #for black-capped/carolina chickadee
+  mutate(
+    chickadee = case_when(SPEC == "BCCH" ~ "BCCH", 
+                          SPEC == "CACH" ~ "CACH",
+                          TRUE ~ NA),
+    SPEC = case_when(SPEC == "BCCH" ~ "BCCC", #for black-capped/carolina chickadee
                           SPEC == "CACH" ~ "BCCC",
-                          TRUE ~ SPEC)) #mwhaha. MWHAHAHA
+                          TRUE ~ SPEC)) |> #mwhaha. MWHAHAHA
+  st_drop_geometry() |>
+  select(-geometry) |>
+  #okay, make a doy...
+  mutate(doy = lubridate::yday(as.Date(DATE)),
+         c_start = doy - lat_cicada_start,
+         c_mid = doy - lat_cicada_mid,  
+         c_end = doy - lat_cicada_end)
 
-#let's start consensing all this information down
+
+
+#let's start condensing all this information down
 summary_captures <- captures |>
   #ah! before we summarize, we need to remove duplicate captures. keep just one unique capture of each bird per year per location to filter out recaptures of the same bird within the season + year
   distinct(year, BAND, LOC, .keep_all = TRUE) |>
@@ -331,7 +355,7 @@ summary_captures <- captures |>
   #and, we can't use any years where no adults were captured, as that brings productivity to infinity
   filter(!is.infinite(productivity)) |>
   #let's also remove weirdly high values, like a productivity of 32 where 98 baltimore oriole young were captured and only 3 adults. That's an outlier adn should not be counted. that still leaves us some cases of high productivity but .. those are .. okay?
-  #filter(productivity < 20) |>
+  #filter(productivity < 20) |> #don't need this anymore bc grouping by brood solved some of this issue.
   #add in climate data
   left_join(brood_climate, by = c("BROOD_NAME", "year"))
 
@@ -340,7 +364,7 @@ table2(summary_captures$n_stations)
 table2(summary_captures$n_young >= 2, summary_captures$n_adults >= 5)
 
 
-table(summary_captures$productivity > 2) #6,875 cases where productivity is less than 2, and 284 cases where productivity is higher than that. Eh, we may filter those out at the end, but I think perhaps okay for now. Probably a lot of those are going to be affect by filters to remove sp without enough data.
+table(summary_captures$productivity > 2) #11,381 cases where productivity is less than 2, and 299 cases where productivity is higher than that. Eh, we may filter those out at the end, but I think perhaps okay for now. Probably a lot of those are going to be affect by filters to remove sp without enough data.
 table(summary_captures$cicada_year_binary)
 
 ggplot(summary_captures[summary_captures$productivity < 2,], aes(x = productivity, )) +
@@ -469,7 +493,7 @@ write.csv(maps_productivity_df, "data/maps_productivity_df.csv", row.names = FAL
 weight <- captures |>
   #what we want is WEIGHT and F (for fat content, which is an ORDINAL variable) and SEX b/c it should be a WEIGHT*SEX .. probably? are female warblers much heavier than males? Anyway! We can account for it. WNG is wing chord, if we want to create a body composition ratio like e.g. this bird is large (mass in grams) for it's wing size. Only some of that gets accounted for with fat content (variable F)
   #look there's so much info in captures, I AM going to trim it down.
-  select(BAND, WEIGHT, `F`, WNG, DATE, LOC:STATION, SPEC, AGE, SEX, year:day) |>
+  select(BAND, WEIGHT, `F`, WNG, DATE, LOC:STATION, SPEC, chickadee, AGE, SEX, year:c_end) |>
   left_join(
     (read.csv("data/MAPS_1992-2018_cicada_region/IBP-AOS-list25-birdcode-taxonomy.csv") |>
        select(SPEC, COMMONNAME, SCINAME)),
@@ -482,32 +506,62 @@ weight <- captures |>
   mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
   #haha okayyyyy when it comes to weight there might be differences in Black-Capped and Carolinas.. so I won't join them... here :3d
   #                                SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
-                                  TRUE ~ Species.Name)) |>
+                                  TRUE ~ Species.Name),
+  Species.Name = case_when(chickadee == "BCCH" ~ "Black-capped Chickadee",
+                           chickadee == "CACH" ~ "Carolina Chickadee",
+                           TRUE ~ Species.Name)) |>
   #hm! and because this is weight, and we're thinking about how asynch doesn't affect bc ADULT body conditions are better, let's just keep the birds that are adults
   filter(AGE %in% c(1, 5, 6, 7, 8)) |>
   #filter out when weight == 0
   filter(mass_in_g != 0) |>
   #m, and there's some weird cases when mass is too low for birds that wouldn't be. let's just cut it at 4 grams. going to cut like, a few BBGN but that's okay. there's like a 4 gram INBU which is. not correct.
-  filter(mass_in_g > 4)
+  filter(mass_in_g > 4) |> #this affects only four birds after filtering out outliers for species later, and yeah, a bird less than 4 grams is like, maybe a measurement error.
   #and just be aware there are some cases when fat_content == NA, so those will need to be removed for that analysis.
+  #and we also want to remove outliers by species, because um, some of those birds are definitely outliers / typos
+  group_by(Species.Name) |>
+  mutate(sp_mean_weight = mean(mass_in_g),
+         sp_sd_weight = sd(mass_in_g)) |>
+  ungroup() |>
+  mutate(
+    z_from_sp_mean = (mass_in_g - sp_mean_weight)/sp_sd_weight 
+  ) |>
+  #remove and observation more than 3 standard deviation different from the mean of the species
+  filter(z_from_sp_mean < 3 & z_from_sp_mean > -3)
+  #193,490 to 192,096
 
 #hm, how often are birds recaptured in the same year? if not often I'll just exclude them probably, rather than fussing about having to average their weight or smthng to account for catching them twice.
 recaptures <- weight |>
   summarize(n = n(), 
+            min = min(mass_in_g), 
+            max = max(mass_in_g),
+            weight_dif = max - min,
             .by = c(BAND, year)) |>
-  filter(n > 1) #huh! okay 33,252 examples of birds being captured more than once within a year. alright then, we'll average it. but some of the birds are caught multiple times..
+  filter(n > 1) #huh! okay 23,585 examples of birds being captured more than once within a year. alright then, we'll average it. but some of the birds are caught multiple times..
+#and like, if we're going to keep recaptures..probably only want the birds caught twice? hm hm. idk. Really it probably doesn't make that much of a different I just can't have a metric that relies on a comparison with capture date (asynchrony)
+#okay, most birds don't vary in weight that much before capture. U know what, let's just keep the first time a bird is caught, which feels reasonable. Let's cut all the later recaptures.
 all_captures <- sum(recaptures$n)
 
 weight_averaged <- weight |>
+  #mutate(recaptured = ifelse(BAND %in% recaptures$BAND, TRUE, FALSE)) |> 
+  arrange(DATE) |>
   group_by(BAND, year) |>
-  mutate(mass_in_g = mean(mass_in_g),
-         wing_chord = mean(wing_chord),
-         fat_content = mean(fat_content)) |>
-  distinct(BAND, year, .keep_all = TRUE) |>
-  ungroup() |>
-  #and since we still have geometry hanging around..
-  sf::st_drop_geometry() |>
-  select(-geometry)
+  #okay and so we're going to cut all the later recaptures and just keep the FIRST entry for each bird in each year.
+  slice_head(n = 1) |>
+  ungroup() 
+  
+  #group_by(BAND, year) |>
+  #mutate(avg_mass_in_g = ifelse(recaptured_so_averaged == TRUE, mean(mass_in_g), NA),
+  #       avg_wing_chord =  ifelse(recaptured_so_averaged == TRUE, mean(wing_chord), NA),
+  #       avg_fat_content = ifelse(recaptured_so_averaged == TRUE, mean(fat_content), NA)) |>
+  #prev method where I wasn't passing on the decision to average or not until later.
+  #group_by(BAND, year) |>
+  #mutate(mass_in_g = mean(mass_in_g),
+  #       wing_chord = mean(wing_chord),
+  #       fat_content = mean(fat_content),
+  #       #and label if it was a recapture in case we want to filter those out later
+  #       recaptured_so_averaged = ifelse(BAND %in% recaptures$BAND, TRUE, FALSE)) |>
+  #distinct(BAND, year, .keep_all = TRUE) |>
+  #ungroup() 
 
 #and just check really quick we didn't lose any birds or anything..
 nrow(weight_averaged) == nrow(weight) - all_captures + nrow(recaptures)
@@ -519,9 +573,27 @@ weight_obser <- weight_averaged |>
   #well, at the very least I think it's reasonable to say a species needs at least 30 weights within cicada years to be eligible. We can always filter more later. presumably, if there are 30 observations within cicada years, we will also have 30 or greater observations outside of cicada years since there's so many more opportunities.
   filter(cicada_year_binary == 1 & n >= 30)
 
+#and like, what's the correlation between the different c_s? 
+cor(weight_averaged$c_start, weight_averaged$c_mid)
+cor(weight_averaged$c_start, weight_averaged$c_end)
+cor(weight_averaged$c_mid, weight_averaged$c_end)
+#lmao awesome. Correlation of like 1, so it literally doesn't matter really which metric we use statistically. Just a matter of what we'd like to use.
+#and I think for measuring weight, c_end makes the most sense. Birds that are caught before the end of the emergence should do really well
+
+plot(y = weight_averaged$mass_in_g, x = weight_averaged$c_end)
+abline(lm(mass_in_g ~ c_end, data = weight_averaged), col = "red")
+#hm, interesting to look at. More than 40 days are probably also negative for c_start?
+table(weight_averaged$c_start < 0)
+#lmao okay there's only 241 observations that are before a cicada emergence starts. out of 161k observations, I'm not going to worry about it *thumbs up*
+table(weight_averaged$c_end < -40) #yeah that's fine.
+
+c <- weight_averaged |> filter(c_start <0)
+table(c$Species.Name, c$cicada_year_binary) #oh yeah okay that's fine, none of these are from a cicada year. I won't fuss about it.
+
 #we'll leave the filtering on which species should be used for this to the analysis script.
 weight_averaged |>
   filter(SPEC %in% weight_obser$SPEC) |>
+  #149,407 obs / 161,618 after filtering to species of interest.
   group_by(BROOD_NAME) |>
   mutate(brood_ID = cur_group_id()) |>
   ungroup() |>
@@ -531,4 +603,4 @@ weight_averaged |>
   mutate(sp_id = cur_group_id()) |>
   ungroup() |>
   write.csv("data/maps_weight_df.csv", row.names = FALSE)
-  #191,117 observations.
+

@@ -78,11 +78,7 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
     ) |>
       mutate(
         formula         = paste(deparse(formula(tmp_glmer)), collapse = " "),
-        odds_ratio      = exp(estimate),
-        or_conf_low     = exp(conf.low),
-        or_conf_high    = exp(conf.high),
-        pct_change_odds = (odds_ratio - 1) * 100,
-        baseline_prob   = ifelse(term == "(Intercept)", plogis(estimate), NA_real_)
+        signif = ifelse(conf.low < 0 & conf.high > 0, FALSE, TRUE)
       ) |>
       rename(
         std_error = std.error,
@@ -101,7 +97,8 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
              #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
              n_noncicada = sum(tmp$cicada_year_binary == 0),
              n_cicada = sum(tmp$cicada_year_binary == 1)) |>
-      relocate(Species.Name, .before = effect)
+      relocate(Species.Name, .before = effect) |>
+      relocate(signif, .before = formula)
   } else {
     tmp_results <- broom.mixed::tidy(
       tmp_glmer,
@@ -110,7 +107,8 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
       exponentiate = FALSE   # this is gaussian, doesn't need exponentiation.
     ) |>
       mutate(
-        formula         = paste(deparse(formula(tmp_glmer)), collapse = " ")
+        formula         = paste(deparse(formula(tmp_glmer)), collapse = " "),
+        signif = ifelse(conf.low < 0 & conf.high > 0, FALSE, TRUE)
       ) |>
       rename(
         std_error = std.error,
@@ -123,7 +121,8 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
              #mark as signif only if it's not the intercept term.
              #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
              n_noncicada = sum(tmp$cicada_year_binary == 0),
-             n_cicada = sum(tmp$cicada_year_binary == 1)) 
+             n_cicada = sum(tmp$cicada_year_binary == 1)) |>
+      relocate(signif, .before = formula)
   }
    #|>
     #relocate(signif, .before = p_value) |>
@@ -170,13 +169,15 @@ for(i in 1:length(unique(maps_productivity$Species.Name))) {
   
 }
 
-#ya just cardinal has an effect of cicada with a confidence interval that doesn't cross zero.
-
 #Hm, about half of the species have the issue:
 #boundary (singular) fit: see help('isSingular')
 #which is not good! suggests I need to drop one or more of the random effects for those species. But which one to drop?
 #Ah! Can look at the results. EG when i = 25, variance for the 1|year group in Black and White Warbler == 0. So that's the group I want to drop for that species. Going through by hand.
 #Logic for methods = when model fits were singular, I dropped the random effect with 0 variance / 0 std.dev.
+
+#Okay so cicada_year_binary has a positive effect on Cardinals of +15% productivity, and has a negative effect on white-eyed vrieos of -10% productivity.
+#Precipitation impacts Grey Catbirds
+#Temperature impacts: Grey Catbirds.
 
 write.csv(maps_results, "model_results/maps_gaussian_results.csv")
 save(maps_models, file = "model_results/maps_gaussian_glms.rds")
@@ -202,10 +203,11 @@ save(maps_models, file = "model_results/maps_gaussian_glms.rds")
     mutate(lab = make_n_labels(filter_species = Species.Name, labs = "cicada/non")) |>
     ungroup() |>
     #add in results
-    left_join(maps_results, by = c("Species.Name"))
+    left_join(maps_results[maps_results$term == "cicada_year_binary",], by = c("Species.Name"))
+  
 }
 
-ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_signif)) +
+ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = signif)) +
   ylim(0, 2) + 
   geom_line(linewidth = 1.5) +
   geom_errorbar(aes(ymin = mean_pct_young - se_pct_young, ymax = mean_pct_young + se_pct_young), width = 0.2, linewidth = 1.5) +
@@ -219,7 +221,7 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_s
   #scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
   #                  labels = c("-1", "X", "1")) +  # Custom text labels) 
   scale_color_discrete() + #limits = original_order) +  # Fix color order to original
-  theme_minimal(base_size = 19) + # increase text size) +
+  theme_minimal(base_size = 15) + # increase text size) +
   theme(
     legend.position = "none", # remove legend
     #panel.grid.major = element_blank(), # Remove major gridlines
@@ -231,7 +233,7 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_s
                       arrange(desc(n)) |>
                       ungroup() |>
                       mutate(
-                        x = .2,
+                        x = .35,
                         y = 1.9
                       )),
             aes(x = x, y = y, label = lab),
@@ -244,10 +246,10 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = e_s
                       arrange(desc(n)) |>
                       ungroup() |>
                       mutate(
-                        x = .8,
-                        y = 1.9
+                        x = .38,
+                        y = 1.7
                       )),
-            aes(x = x, y = y, label = as.character(round(e_p, 3))),
+            aes(x = x, y = y, label = paste0("t-value = ", as.character(round(t_value, 3)))),
             size = 3, 
             vjust = 1,
             inherit.aes = FALSE)
@@ -268,6 +270,7 @@ tmp <- maps_weight |>
 tmp_glm <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary + (1|year) + (1|brood_ID),
                data = tmp)
 #urg, still have to compute a p-value
+#nope, don't have to compute a p-value. Does the credible interval cross 0 or not?
 summary(tmp_glm)
 
 broom.mixed::tidy(tmp_glm,
@@ -281,12 +284,13 @@ table(maps_weight$cicada_year_binary)
 #142281   8544 
 #kinda a pretty compelling reason here to jointly model all the species. Even if that becomes like, supplementary data? terns unstoned and all. If all the birds are gaining weight, we might not see the effect within individual species but we might see it ACROSS species....
 
-test <- lme4::lmer(log_mass ~ cicada_year_binary + (1|brood_ID) + (1|year) + (1|sp_id),
+test <- lme4::lmer(log_mass ~ cicada_year_binary  + (1|brood_ID) + (1|year) + (1|sp_id),
      data = maps_weight)
 summary(test)
 a <- broom.mixed::tidy(test,
-                  conf.int = TRUE)
-#alright, hm! across all species there's a small effect on log_mass going up.
+                  conf.int = TRUE) |>
+  filter(term == "cicada_year_binary")
+#alright, hm! across all species there's a small effect on log_mass going up. (assessing this b/c the confidence interval on the effect size doesn't cross zero.) (and I DO need to control for random effects bc there could be sampling variation by species so some are better represented in the cicada year than others.)
 summary(
   glm(log_mass ~ cicada_year_binary + SEX, 
       data = maps_weight))
