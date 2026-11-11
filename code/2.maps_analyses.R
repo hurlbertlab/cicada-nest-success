@@ -207,6 +207,7 @@ save(maps_models, file = "model_results/maps_gaussian_glms.rds")
   
 }
 
+#good aspect ratio for saving is 1100 w x 700 h
 ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = signif)) +
   ylim(0, 2) + 
   geom_line(linewidth = 1.5) +
@@ -255,22 +256,30 @@ ggplot(summary_data, aes(x = cicada_year_binary, y = mean_pct_young, color = sig
             inherit.aes = FALSE)
 
 
+
+
+
+####################################################
+
+
+
+
 #okay, now run the analyses on weight :D
 n_distinct(maps_weight$SPEC)
 #species needed at least 30 weights within cicada years to be eligible.
 
-#let's test just on NOCA
+#let's test just on WOTH
 tmp <- maps_weight |>
-  filter(SPEC == "WOTH") |> #504 cicada year captures, out of like 8536 overall
-  filter(!is.na(wing_chord)) |>
-  filter(!is.na(relative_mass)) |>
-  filter(!is.infinite(relative_mass))
-#um, there's some unexpectedly high numbers in there. Going to need to remove outliers in mass and wing_chord for each species b/c they're probably data entry errors.
+  filter(SPEC == "WOTH") #504 cicada year captures, out of like 8437 overall
+  #I decided I'm not going to do a relative weight per size analysis. I've already filtered for outliers and all the tests are within a species.
+  #filter(!is.na(wing_chord)) |>
+  #flter(!is.na(relative_mass)) |>
+  #filter(!is.infinite(relative_mass))
   
-tmp_glm <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary + (1|year) + (1|brood_ID),
+tmp_glm <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|year) + (1|brood_ID),
                data = tmp)
-#urg, still have to compute a p-value
-#nope, don't have to compute a p-value. Does the credible interval cross 0 or not?
+#still have to compute a p-value
+#nope, don't have to compute a p-value. Does the credible interval cross 0 or not? t-value is also a quick comparison if it's >|2| probably it's having an impact
 summary(tmp_glm)
 
 broom.mixed::tidy(tmp_glm,
@@ -281,16 +290,110 @@ broom.mixed::tidy(tmp_glm,
 
 table(maps_weight$cicada_year_binary)
 #0      1 
-#142281   8544 
+#140984   8459 
 #kinda a pretty compelling reason here to jointly model all the species. Even if that becomes like, supplementary data? terns unstoned and all. If all the birds are gaining weight, we might not see the effect within individual species but we might see it ACROSS species....
 
-test <- lme4::lmer(log_mass ~ cicada_year_binary  + (1|brood_ID) + (1|year) + (1|sp_id),
+test <- lme4::lmer(log_mass ~ cicada_year_binary*c_end  + (1|brood_ID) + (1|year) + (1|sp_id),
      data = maps_weight)
 summary(test)
 a <- broom.mixed::tidy(test,
-                  conf.int = TRUE) |>
-  filter(term == "cicada_year_binary")
-#alright, hm! across all species there's a small effect on log_mass going up. (assessing this b/c the confidence interval on the effect size doesn't cross zero.) (and I DO need to control for random effects bc there could be sampling variation by species so some are better represented in the cicada year than others.)
+                  conf.int = TRUE) 
+#alright, hm! across all species there's a small effect on log_mass going up in cicada years, and there's support for a different slope of c_end in cicada years. (assessing this b/c the confidence interval on the effect size doesn't cross zero.) (and I DO need to control for random effects bc there could be sampling variation by species so some are better represented in the cicada year than others.)
+#but this cross-species comparison it's hard to be biologically meaningful b/c everything only adds like. 0.006 g. OH WAIT LOG SCALE, okay exp(0.0064) = 1 gram increase across species in a cicada year.
 summary(
   glm(log_mass ~ cicada_year_binary + SEX, 
       data = maps_weight))
+
+#right, well, let's run this within each species because each species may respond differently to cicada emergences:
+#Modeling time!! YAYYYY
+weight_results <- as.data.frame(NULL)
+
+weight_models = list()
+
+#loop through the species!
+for(i in 1:length(unique(maps_weight$Species.Name))) {
+  
+  sp <- unique(maps_weight$Species.Name)[i]
+  print(i); print(sp)
+  
+  tmp <- maps_weight |>
+    filter(Species.Name == sp)
+  
+  if(sp %in% c("Yellow Warbler", "Dickcissel", "Cedar Waxwing")) { #brood_id is gives is.singular() fit error
+    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|year),
+                            data = tmp) #gaussian? 
+    
+  } else if(sp %in% c("Northern House Wren", "Black-capped Chickadee", "Worm-eating Warbler", "Scarlet Tanager", "Tufted Titmouse")) { #year gives is.singular (.....huh.)
+    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|brood_ID),
+                            data = tmp) #gaussian? 
+  
+  } else { #run the full model
+    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|year) + (1|brood_ID),
+                            data = tmp) #gaussian? 
+  }
+
+  maps_models[[i]] = tmp_glmer
+  
+  summary <- summary(tmp_glmer)
+  summary
+  
+
+    tmp_results <- broom.mixed::tidy(
+      tmp_glmer,
+      effects      = "fixed",
+      conf.int     = TRUE
+    ) |>
+      mutate(
+        formula         = paste(deparse(formula(tmp_glmer)), collapse = " "),
+        signif = ifelse(conf.low < 0 & conf.high > 0, FALSE, TRUE)
+      ) |>
+      rename(
+        std_error = std.error,
+        t_value   = statistic,
+        #p_value   = p.value
+      ) |>
+      #add in the random effects
+      bind_rows(
+        (broom.mixed::tidy(tmp_glmer, effects = "ran_pars", scales = "vcov") |>
+           mutate(term = paste0(group, ", ", term)) |>
+           select(-group))
+      ) |>
+      #add species and significance, and rearrange to my preferences
+      mutate(Species.Name = sp,
+             #mark as signif only if it's not the intercept term.
+             #signif = ifelse(p_value < 0.05 & term != "(Intercept)", TRUE, FALSE),
+             n_noncicada = sum(tmp$cicada_year_binary == 0),
+             n_cicada = sum(tmp$cicada_year_binary == 1)) |>
+      relocate(Species.Name, .before = effect) |>
+      relocate(signif, .before = formula)
+
+  weight_results <- bind_rows(weight_results, tmp_results)
+  #basically rows_update() without the issues caused by the postcicada_results originally all having logical() rows.
+  #postcicada_results |>
+  #rows_update(tmp_results, by = c("Species.Name"))
+  
+}
+
+write.csv(weight_results, "model_results/maps_weight_results.csv")
+save(weight_models, file = "model_results/maps_weight_lmers.rds")
+
+
+plot(y = weight_results$signif[weight_results$term == "cicada_year_binary"], 
+     x = weight_results$n_cicada[weight_results$term == "cicada_year_binary"],
+     pch = 16,
+     cex = 2,
+     xlab = "N cicada samples",
+     ylab = "Cicada_Year_Binary Significant")
+table(weight_results$signif[weight_results$term == "cicada_year_binary"])
+#alright, 10 species respond to cicadas, 39 don't.
+#wow, I really have 49 species? epic!
+
+table(weight_results$signif[weight_results$term == "c_end"])
+#almost all species lose weight over time
+
+table(weight_results$signif[weight_results$term == "cicada_year_binary:c_end"])
+#oh cool! For 5 species, the influence of c_end is different in a cicada year.
+
+table(weight_results$signif[weight_results$term == "SEXM"])
+#most species have a difference between female and male weight by sex.
+#hm, for the species that don't have that difference, I'm tempted to cut sex from the model?

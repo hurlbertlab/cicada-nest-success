@@ -1,0 +1,434 @@
+"","Species.Name","effect","term","estimate","std_error","t_value","conf.low","conf.high","signif","formula","n_noncicada","n_cicada"
+"1","Northern Cardinal","fixed","(Intercept)",41.9704000829724,0.169745163227188,247.255351993735,41.6377056764972,42.3030944894475,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",10159,497
+"2","Northern Cardinal","fixed","SEXM",-0.0615175963350711,0.0632892642183699,-0.972006818136076,-0.185562274811116,0.0625270821409734,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",10159,497
+"3","Northern Cardinal","fixed","SEXU",-0.727204237306397,0.499344717806194,-1.45631707190431,-1.70590190007685,0.251493425464058,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",10159,497
+"4","Northern Cardinal","fixed","cicada_year_binary",0.166857717610353,0.156663651397605,1.06506976009947,-0.14019739681549,0.473912832036197,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",10159,497
+"5","Northern Cardinal","fixed","c_end",-0.0106207905040259,0.00133457714014966,-7.95816905932834,-0.0132365136333097,-0.00800506737474214,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",10159,497
+"6","Northern Cardinal","fixed","cicada_year_binary:c_end",-0.00507940017652896,0.00635059910755149,-0.799830077525922,-0.0175263457075821,0.00736754535452417,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",10159,497
+"7","Northern Cardinal","ran_pars","year, var__(Intercept)",0.0534772280479013,NA,NA,NA,NA,NA,NA,10159,497
+"8","Northern Cardinal","ran_pars","brood_ID, var__(Intercept)",0.242894225894684,NA,NA,NA,NA,NA,NA,10159,497
+"9","Northern Cardinal","ran_pars","Residual, var__Observation",10.5790771506281,NA,NA,NA,NA,NA,NA,10159,497
+"10","Common Yellowthroat","fixed","(Intercept)",9.95775521855233,0.0535282835044503,186.027919571238,9.85284171072936,10.0626687263753,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6849,500
+"11","Common Yellowthroat","fixed","SEXM",-0.0240337009764042,0.0229912955994606,-1.04533913160457,-0.0690958123092612,0.0210284103564529,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6849,500
+"12","Common Yellowthroat","fixed","SEXU",0.085091340870168,0.147819602861894,0.575643143552939,-0.204629756948159,0.374812438688495,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6849,500
+"13","Common Yellowthroat","fixed","cicada_year_binary",0.0573485064476387,0.0479450801697645,1.1961291178277,-0.0366221239209852,0.151319136816263,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6849,500
+"14","Common Yellowthroat","fixed","c_end",-0.00829678672594245,0.000488527577406012,-16.9832515290064,-0.00925428318311283,-0.00733929026877206,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6849,500
+"15","Common Yellowthroat","fixed","cicada_year_binary:c_end",-0.00300614992569464,0.00187761358495963,-1.60104824005056,-0.00668620492909865,0.000673905077709378,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6849,500
+"16","Common Yellowthroat","ran_pars","year, var__(Intercept)",0.00872170523332809,NA,NA,NA,NA,NA,NA,6849,500
+"17","Common Yellowthroat","ran_pars","brood_ID, var__(Intercept)",0.0196365883778565,NA,NA,NA,NA,NA,NA,6849,500
+"18","Common Yellowthroat","ran_pars","Residual, var__Observation",0.876014673638802,NA,NA,NA,NA,NA,NA,6849,500
+"19","Carolina Chickadee","fixed","(Intercept)",9.41716406443394,0.207420798456935,45.4012525961283,9.0106267698138,9.82370135905407,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1945,91
+"20","Carolina Chickadee","fixed","SEXM",0.401492060598004,0.0647528033900152,6.2003811353118,0.274578898055572,0.528405223140437,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1945,91
+"21","Carolina Chickadee","fixed","SEXU",0.377287684083138,0.051318687041701,7.35185769223905,0.276704905747522,0.477870462418754,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1945,91
+"22","Carolina Chickadee","fixed","cicada_year_binary",-0.167688111472582,0.112751660976283,-1.48723406839971,-0.388677306183167,0.0533010832380023,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1945,91
+"23","Carolina Chickadee","fixed","c_end",-0.00341190164170101,0.00101113973879311,-3.3743126798413,-0.00539369911307275,-0.00143010417032928,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1945,91
+"24","Carolina Chickadee","fixed","cicada_year_binary:c_end",-0.0137515152291281,0.00480856835499074,-2.85979406216731,-0.023176136022109,-0.00432689443614728,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1945,91
+"25","Carolina Chickadee","ran_pars","year, var__(Intercept)",0.00774083812452455,NA,NA,NA,NA,NA,NA,1945,91
+"26","Carolina Chickadee","ran_pars","brood_ID, var__(Intercept)",0.343344724513476,NA,NA,NA,NA,NA,NA,1945,91
+"27","Carolina Chickadee","ran_pars","Residual, var__Observation",1.04187759101798,NA,NA,NA,NA,NA,NA,1945,91
+"28","Yellow-breasted Chat","fixed","(Intercept)",25.4932851412864,0.132630380739325,192.213013332078,25.2333343717815,25.7532359107913,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4299,157
+"29","Yellow-breasted Chat","fixed","SEXM",-0.481144349526229,0.0609118038634265,-7.89903301181208,-0.600529291331913,-0.361759407720545,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4299,157
+"30","Yellow-breasted Chat","fixed","SEXU",-0.122916953023807,0.188627797887793,-0.651637533811031,-0.492620643366983,0.246786737319368,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4299,157
+"31","Yellow-breasted Chat","fixed","cicada_year_binary",-0.0178242693124083,0.167140664020517,-0.106642326790207,-0.345413951144732,0.309765412519915,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4299,157
+"32","Yellow-breasted Chat","fixed","c_end",-0.0108452616468703,0.00153452931085615,-7.06748419215238,-0.0138528838293694,-0.00783763946437118,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4299,157
+"33","Yellow-breasted Chat","fixed","cicada_year_binary:c_end",-0.0105207646897913,0.00813066242271627,-1.29396156706708,-0.0264565702087684,0.00541504082918573,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4299,157
+"34","Yellow-breasted Chat","ran_pars","year, var__(Intercept)",0.0189111676210535,NA,NA,NA,NA,NA,NA,4299,157
+"35","Yellow-breasted Chat","ran_pars","brood_ID, var__(Intercept)",0.106889912607914,NA,NA,NA,NA,NA,NA,4299,157
+"36","Yellow-breasted Chat","ran_pars","Residual, var__Observation",3.89328347247441,NA,NA,NA,NA,NA,NA,4299,157
+"37","Brown-headed Cowbird","fixed","(Intercept)",38.746340319374,0.417335802139066,92.8421192736845,37.9283771777223,39.5643034610257,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1193,95
+"38","Brown-headed Cowbird","fixed","SEXM",7.92749620828802,0.202222959699765,39.2017613630904,7.53114649042939,8.32384592614666,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1193,95
+"39","Brown-headed Cowbird","fixed","SEXU",-0.390370675422863,0.967805148321826,-0.403356684038895,-2.28723391018609,1.50649255934036,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1193,95
+"40","Brown-headed Cowbird","fixed","cicada_year_binary",-0.0344204155386831,0.383438937939714,-0.0897676582447003,-0.785946924170812,0.717106093093445,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1193,95
+"41","Brown-headed Cowbird","fixed","c_end",-0.0313929838380264,0.00541957316012308,-5.7925196155694,-0.0420151520434476,-0.0207708156326052,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1193,95
+"42","Brown-headed Cowbird","fixed","cicada_year_binary:c_end",-0.0148172316927079,0.0219744771209991,-0.674292799374433,-0.0578864154289656,0.0282519520435498,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1193,95
+"43","Brown-headed Cowbird","ran_pars","year, var__(Intercept)",0.0946209659514378,NA,NA,NA,NA,NA,NA,1193,95
+"44","Brown-headed Cowbird","ran_pars","brood_ID, var__(Intercept)",1.4630929365611,NA,NA,NA,NA,NA,NA,1193,95
+"45","Brown-headed Cowbird","ran_pars","Residual, var__Observation",8.23703248906543,NA,NA,NA,NA,NA,NA,1193,95
+"46","Carolina Wren","fixed","(Intercept)",18.8281570890885,0.128719381186512,146.272899353104,18.5758717378506,19.0804424403263,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5970,223
+"47","Carolina Wren","fixed","SEXM",1.4937983667877,0.0616675614295582,24.2234058256713,1.37293216737136,1.61466456620405,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5970,223
+"48","Carolina Wren","fixed","SEXU",0.613796788183067,0.0568272437455567,10.8011008052992,0.502417437101097,0.725176139265037,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5970,223
+"49","Carolina Wren","fixed","cicada_year_binary",0.264728794162804,0.133522697993442,1.98265012721512,0.00302911497703912,0.526428473348569,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5970,223
+"50","Carolina Wren","fixed","c_end",-0.0167194525353644,0.00102134811021133,-16.3699843062371,-0.0187212580470566,-0.0147176470236721,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5970,223
+"51","Carolina Wren","fixed","cicada_year_binary:c_end",-0.0136669045299859,0.00604621509817962,-2.26040660281846,-0.0255172683652002,-0.00181654069477149,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5970,223
+"52","Carolina Wren","ran_pars","year, var__(Intercept)",0.0216346894720442,NA,NA,NA,NA,NA,NA,5970,223
+"53","Carolina Wren","ran_pars","brood_ID, var__(Intercept)",0.11662747990684,NA,NA,NA,NA,NA,NA,5970,223
+"54","Carolina Wren","ran_pars","Residual, var__Observation",3.29916344884689,NA,NA,NA,NA,NA,NA,5970,223
+"55","Tufted Titmouse","fixed","(Intercept)",20.7987447228119,0.170268904107054,122.152337984951,20.465023803075,21.1324656425489,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",3334,223
+"56","Tufted Titmouse","fixed","SEXM",0.595458492699876,0.115939225652544,5.1359536804601,0.368221786025428,0.822695199374325,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",3334,223
+"57","Tufted Titmouse","fixed","SEXU",0.328522772315801,0.0882121972074263,3.72423296002136,0.155630042792101,0.501415501839501,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",3334,223
+"58","Tufted Titmouse","fixed","cicada_year_binary",0.354327428777318,0.136895138797182,2.58831271797222,0.0860178870762298,0.622636970478406,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",3334,223
+"59","Tufted Titmouse","fixed","c_end",-0.0115633943955041,0.00167935573989454,-6.88561340566845,-0.014854871162928,-0.00827191762808021,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",3334,223
+"60","Tufted Titmouse","fixed","cicada_year_binary:c_end",-0.00807091613730624,0.00661303377594388,-1.22045590734251,-0.0210322241667032,0.00489039189209068,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",3334,223
+"61","Tufted Titmouse","ran_pars","brood_ID, var__(Intercept)",0.192944181531487,NA,NA,NA,NA,NA,NA,3334,223
+"62","Tufted Titmouse","ran_pars","Residual, var__Observation",3.82437514962059,NA,NA,NA,NA,NA,NA,3334,223
+"63","Scarlet Tanager","fixed","(Intercept)",29.5431318913899,0.150884485679811,195.79966593837,29.2474037336316,29.8388600491482,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1028,80
+"64","Scarlet Tanager","fixed","SEXM",-1.17386816923454,0.138542488884942,-8.47298311646054,-1.44540645777757,-0.90232988069151,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1028,80
+"65","Scarlet Tanager","fixed","SEXU",2.71142401086634,2.31043344437343,1.1735564239989,-1.81694232878241,7.2397903505151,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1028,80
+"66","Scarlet Tanager","fixed","cicada_year_binary",-0.00463502695759653,0.284099806140107,-0.0163147839506469,-0.561460415007018,0.552190361091825,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1028,80
+"67","Scarlet Tanager","fixed","c_end",-0.0196085249535103,0.00342024867442626,-5.7330699665572,-0.0263120891735566,-0.0129049607334639,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1028,80
+"68","Scarlet Tanager","fixed","cicada_year_binary:c_end",-0.0106064509674922,0.0114213543396399,-0.92865089831603,-0.0329918941278566,0.0117789921928721,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1028,80
+"69","Scarlet Tanager","ran_pars","brood_ID, var__(Intercept)",0.057261594708525,NA,NA,NA,NA,NA,NA,1028,80
+"70","Scarlet Tanager","ran_pars","Residual, var__Observation",5.26787405454271,NA,NA,NA,NA,NA,NA,1028,80
+"71","Downy Woodpecker","fixed","(Intercept)",25.2579475531218,0.263578968995801,95.8268698346879,24.7413422668079,25.7745528394358,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1948,132
+"72","Downy Woodpecker","fixed","SEXM",0.345569881747469,0.0854248771001531,4.04530733292503,0.178140199247409,0.51299956424753,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1948,132
+"73","Downy Woodpecker","fixed","SEXU",-0.703750647138075,0.200684555819951,-3.50675040370053,-1.0970851487986,-0.310416145477553,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1948,132
+"74","Downy Woodpecker","fixed","cicada_year_binary",0.20900380212613,0.180210037280571,1.15977891842245,-0.14420138059641,0.562208984848671,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1948,132
+"75","Downy Woodpecker","fixed","c_end",-0.0196917476326097,0.0020215936298133,-9.74070522493105,-0.0236539983384194,-0.0157294969268001,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1948,132
+"76","Downy Woodpecker","fixed","cicada_year_binary:c_end",-0.0129794490161962,0.00860336347930552,-1.50864822199096,-0.0298417315815422,0.00388283354914982,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1948,132
+"77","Downy Woodpecker","ran_pars","year, var__(Intercept)",0.0485442307660448,NA,NA,NA,NA,NA,NA,1948,132
+"78","Downy Woodpecker","ran_pars","brood_ID, var__(Intercept)",0.653179790692365,NA,NA,NA,NA,NA,NA,1948,132
+"79","Downy Woodpecker","ran_pars","Residual, var__Observation",3.52274019067624,NA,NA,NA,NA,NA,NA,1948,132
+"80","Brown Thrasher","fixed","(Intercept)",66.8415714951504,0.521255841156375,128.231793713556,65.8199288197528,67.863214170548,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",774,46
+"81","Brown Thrasher","fixed","SEXM",0.906487163216751,0.494238817397772,1.83410758383875,-0.0622031186445507,1.87517744507805,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",774,46
+"82","Brown Thrasher","fixed","SEXU",-0.0342966500244941,0.505783519953076,-0.0678089512044124,-1.02561413310642,0.957020833057431,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",774,46
+"83","Brown Thrasher","fixed","cicada_year_binary",2.78602516657096,0.749719207114899,3.71609149149621,1.31660252210783,4.25544781103409,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",774,46
+"84","Brown Thrasher","fixed","c_end",-0.0106920776932525,0.00796898415981942,-1.34171150033943,-0.0263109996398687,0.00492684425336377,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",774,46
+"85","Brown Thrasher","fixed","cicada_year_binary:c_end",0.035630960772544,0.0330578009993706,1.07783820143459,-0.0291611385943145,0.100423060139403,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",774,46
+"86","Brown Thrasher","ran_pars","year, var__(Intercept)",0.478930279171879,NA,NA,NA,NA,NA,NA,774,46
+"87","Brown Thrasher","ran_pars","brood_ID, var__(Intercept)",0.442219912525657,NA,NA,NA,NA,NA,NA,774,46
+"88","Brown Thrasher","ran_pars","Residual, var__Observation",21.864855331797,NA,NA,NA,NA,NA,NA,774,46
+"89","Eastern Towhee","fixed","(Intercept)",40.2346622643861,0.396818658943066,101.39307050619,39.4569119844642,41.0124125443079,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1381,90
+"90","Eastern Towhee","fixed","SEXM",0.639723888250328,0.166715558062625,3.83721768792582,0.312967398785087,0.966480377715568,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1381,90
+"91","Eastern Towhee","fixed","SEXU",-0.516070411178006,1.29717213955297,-0.397842657456283,-3.05848108645059,2.02634026409458,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1381,90
+"92","Eastern Towhee","fixed","cicada_year_binary",0.33019078347307,0.361255407772982,0.914009247663822,-0.377856804982305,1.03823837192844,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1381,90
+"93","Eastern Towhee","fixed","c_end",-0.0125818734122319,0.00385236800348285,-3.26601025677113,-0.0201323759542527,-0.00503137087021104,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1381,90
+"94","Eastern Towhee","fixed","cicada_year_binary:c_end",-0.0102750932138645,0.0159220901892415,-0.645335699756762,-0.0414818165433764,0.0209316301156475,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1381,90
+"95","Eastern Towhee","ran_pars","year, var__(Intercept)",0.0844333480722681,NA,NA,NA,NA,NA,NA,1381,90
+"96","Eastern Towhee","ran_pars","brood_ID, var__(Intercept)",1.28176096038543,NA,NA,NA,NA,NA,NA,1381,90
+"97","Eastern Towhee","ran_pars","Residual, var__Observation",9.94889283519983,NA,NA,NA,NA,NA,NA,1381,90
+"98","Blue Jay","fixed","(Intercept)",84.3105455151419,0.719839217270726,117.124134796109,82.8996865746318,85.721404455652,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",898,46
+"99","Blue Jay","fixed","SEXM",1.09541288948279,0.818504669490018,1.33830988424941,-0.508826783895508,2.69965256286108,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",898,46
+"100","Blue Jay","fixed","SEXU",1.41484639003722,0.454651108002424,3.11193872649636,0.523746592821241,2.3059461872532,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",898,46
+"101","Blue Jay","fixed","cicada_year_binary",-1.64307348774717,1.16904956604931,-1.40547803571732,-3.934368533346,0.648221557851652,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",898,46
+"102","Blue Jay","fixed","c_end",-0.0449284871923065,0.0111561530064651,-4.0272383469705,-0.0667941452909963,-0.0230628290936166,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",898,46
+"103","Blue Jay","fixed","cicada_year_binary:c_end",-0.0851019999977606,0.0592037513482382,-1.43744269678433,-0.201139220389972,0.0309352203944508,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",898,46
+"104","Blue Jay","ran_pars","year, var__(Intercept)",2.57644550305926,NA,NA,NA,NA,NA,NA,898,46
+"105","Blue Jay","ran_pars","brood_ID, var__(Intercept)",2.68480497879128,NA,NA,NA,NA,NA,NA,898,46
+"106","Blue Jay","ran_pars","Residual, var__Observation",41.9894793531156,NA,NA,NA,NA,NA,NA,898,46
+"107","American Robin","fixed","(Intercept)",77.3865272568651,0.292799513888632,264.298687621112,76.8126507549526,77.9604037587777,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",3178,191
+"108","American Robin","fixed","SEXM",-2.90144276611267,0.194383636164923,-14.926373553641,-3.28242769217986,-2.52045784004549,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",3178,191
+"109","American Robin","fixed","SEXU",-1.0857702707669,0.456994539494928,-2.37589331366387,-1.98146310930843,-0.190077432225374,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",3178,191
+"110","American Robin","fixed","cicada_year_binary",0.567998967335623,0.461025329368643,1.23203418804228,-0.335594074187634,1.47159200885888,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",3178,191
+"111","American Robin","fixed","c_end",-0.0170760134870644,0.00470691396236333,-3.62785757793851,-0.0263013953316252,-0.00785063164250354,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",3178,191
+"112","American Robin","fixed","cicada_year_binary:c_end",0.00429565060730497,0.0201847428561489,0.21281671200465,-0.0352657184279491,0.043857019642559,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",3178,191
+"113","American Robin","ran_pars","year, var__(Intercept)",0.391198160083429,NA,NA,NA,NA,NA,NA,3178,191
+"114","American Robin","ran_pars","brood_ID, var__(Intercept)",0.354110280046621,NA,NA,NA,NA,NA,NA,3178,191
+"115","American Robin","ran_pars","Residual, var__Observation",28.9744463453602,NA,NA,NA,NA,NA,NA,3178,191
+"116","Common Grackle","fixed","(Intercept)",92.9023575642557,0.57775884926207,160.797809817908,91.7699710279527,94.0347441005586,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",873,80
+"117","Common Grackle","fixed","SEXM",24.8602620834255,0.631342503747253,39.3768230966085,23.6228535141715,26.0976706526794,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",873,80
+"118","Common Grackle","fixed","SEXU",21.1783256315812,1.43273775499493,14.7817181181605,18.3702112325004,23.9864400306621,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",873,80
+"119","Common Grackle","fixed","cicada_year_binary",0.823556170908135,1.60708008560887,0.512454966173086,-2.3262629171568,3.97337525897307,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",873,80
+"120","Common Grackle","fixed","c_end",-0.00658894281590241,0.0154865059018564,-0.425463487868659,-0.036941936629908,0.0237640509981031,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",873,80
+"121","Common Grackle","fixed","cicada_year_binary:c_end",0.12200428750548,0.0783500577757412,1.55716908154285,-0.0315590039216051,0.275567578932565,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",873,80
+"122","Common Grackle","ran_pars","year, var__(Intercept)",2.05787526004487,NA,NA,NA,NA,NA,NA,873,80
+"123","Common Grackle","ran_pars","brood_ID, var__(Intercept)",0.0381678763167737,NA,NA,NA,NA,NA,NA,873,80
+"124","Common Grackle","ran_pars","Residual, var__Observation",86.5952417498999,NA,NA,NA,NA,NA,NA,873,80
+"125","Red-winged Blackbird","fixed","(Intercept)",39.5468535839856,0.24048425264747,164.446749209637,39.0755131099475,40.0181940580236,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1046,102
+"126","Red-winged Blackbird","fixed","SEXM",20.9853264233265,0.242814460493469,86.4253569605297,20.5094188258338,21.4612340208193,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1046,102
+"127","Red-winged Blackbird","fixed","SEXU",9.81732385333988,2.86549426444061,3.42604903285555,4.20105829713019,15.4335894095496,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1046,102
+"128","Red-winged Blackbird","fixed","cicada_year_binary",0.445892916985836,0.544862475967438,0.818358643975481,-0.622017912437664,1.51380374640934,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1046,102
+"129","Red-winged Blackbird","fixed","c_end",-0.0397100074002216,0.0071032660241813,-5.59038719161563,-0.053632152980224,-0.0257878618202193,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1046,102
+"130","Red-winged Blackbird","fixed","cicada_year_binary:c_end",-0.0116966061972816,0.0246165564951471,-0.475152005910636,-0.0599441703511655,0.0365509579566023,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1046,102
+"131","Red-winged Blackbird","ran_pars","year, var__(Intercept)",0.427710533621912,NA,NA,NA,NA,NA,NA,1046,102
+"132","Red-winged Blackbird","ran_pars","brood_ID, var__(Intercept)",0.0479289665167659,NA,NA,NA,NA,NA,NA,1046,102
+"133","Red-winged Blackbird","ran_pars","Residual, var__Observation",16.1661449935399,NA,NA,NA,NA,NA,NA,1046,102
+"134","Wood Thrush","fixed","(Intercept)",48.754398234508,0.374028833628464,130.349304254274,48.0213151914167,49.4874812775993,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7924,513
+"135","Wood Thrush","fixed","SEXM",-3.21099846164549,0.0795011877737021,-40.3893143179887,-3.3668179264101,-3.05517899688088,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7924,513
+"136","Wood Thrush","fixed","SEXU",-2.96216280615709,0.130718231358147,-22.6606707831078,-3.21836583174183,-2.70595978057235,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7924,513
+"137","Wood Thrush","fixed","cicada_year_binary",0.280839100172651,0.177969584583489,1.57801739454476,-0.0679748759545429,0.629653076299845,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7924,513
+"138","Wood Thrush","fixed","c_end",-0.0184207095347853,0.00183970382872899,-10.0128668795084,-0.0220264627813146,-0.0148149562882561,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7924,513
+"139","Wood Thrush","fixed","cicada_year_binary:c_end",0.00156322746765841,0.0079509226225202,0.196609568709764,-0.0140202945163459,0.0171467494516628,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7924,513
+"140","Wood Thrush","ran_pars","year, var__(Intercept)",0.146145851095405,NA,NA,NA,NA,NA,NA,7924,513
+"141","Wood Thrush","ran_pars","brood_ID, var__(Intercept)",1.23130367664686,NA,NA,NA,NA,NA,NA,7924,513
+"142","Wood Thrush","ran_pars","Residual, var__Observation",11.3028043359646,NA,NA,NA,NA,NA,NA,7924,513
+"143","Gray Catbird","fixed","(Intercept)",36.8484909522635,0.244317115244299,150.822388826169,36.369638205578,37.3273436989491,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",12930,946
+"144","Gray Catbird","fixed","SEXM",-1.92154966149487,0.0530443526378206,-36.225339097169,-2.02551468224824,-1.8175846407415,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",12930,946
+"145","Gray Catbird","fixed","SEXU",-1.79794710810366,0.0706065764503945,-25.4643008979034,-1.93633345501811,-1.65956076118922,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",12930,946
+"146","Gray Catbird","fixed","cicada_year_binary",0.106514907467474,0.106419366396732,1.00089777898495,-0.102063217927692,0.315093032862641,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",12930,946
+"147","Gray Catbird","fixed","c_end",-0.0163524509157942,0.00115907438986475,-14.1081979368919,-0.0186241949753318,-0.0140807068562565,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",12930,946
+"148","Gray Catbird","fixed","cicada_year_binary:c_end",-0.00112919869122029,0.0044446769592764,-0.254056414350555,-0.00984060545431703,0.00758220807187645,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",12930,946
+"149","Gray Catbird","ran_pars","year, var__(Intercept)",0.0429515592211558,NA,NA,NA,NA,NA,NA,12930,946
+"150","Gray Catbird","ran_pars","brood_ID, var__(Intercept)",0.634203067765355,NA,NA,NA,NA,NA,NA,12930,946
+"151","Gray Catbird","ran_pars","Residual, var__Observation",7.82641014762067,NA,NA,NA,NA,NA,NA,12930,946
+"152","Great Crested Flycatcher","fixed","(Intercept)",32.7853010833165,0.41370364862368,79.2482763746162,31.9744568317413,33.5961453348917,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",556,30
+"153","Great Crested Flycatcher","fixed","SEXM",0.301973884771553,0.61007213274454,0.494980623706019,-0.893745523379284,1.49769329292239,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",556,30
+"154","Great Crested Flycatcher","fixed","SEXU",-0.212042273613058,0.333697987363109,-0.635431682667978,-0.866078310558255,0.441993763332138,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",556,30
+"155","Great Crested Flycatcher","fixed","cicada_year_binary",-1.30516509369268,0.680911292415814,-1.91679167055971,-2.63972670349429,0.0293965161089393,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",556,30
+"156","Great Crested Flycatcher","fixed","c_end",-0.0647714189399176,0.00789390241032278,-8.20524698344594,-0.0802431833616241,-0.049299654518211,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",556,30
+"157","Great Crested Flycatcher","fixed","cicada_year_binary:c_end",0.0253786047733888,0.0364424924756478,0.696401454712454,-0.0460473679857528,0.0968045775325304,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",556,30
+"158","Great Crested Flycatcher","ran_pars","year, var__(Intercept)",0.541519888269417,NA,NA,NA,NA,NA,NA,556,30
+"159","Great Crested Flycatcher","ran_pars","brood_ID, var__(Intercept)",0.459393819940472,NA,NA,NA,NA,NA,NA,556,30
+"160","Great Crested Flycatcher","ran_pars","Residual, var__Observation",11.16762073342,NA,NA,NA,NA,NA,NA,556,30
+"161","Summer Tanager","fixed","(Intercept)",30.4797941224026,0.180820009664515,168.564276591696,30.1253934157759,30.8341948290292,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",945,37
+"162","Summer Tanager","fixed","SEXM",-1.24261790189385,0.142296734554997,-8.73258199339484,-1.5215143767393,-0.963721427048402,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",945,37
+"163","Summer Tanager","fixed","SEXU",-2.48770230579148,1.11181137983018,-2.23752189527998,-4.66681256786042,-0.30859204372254,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",945,37
+"164","Summer Tanager","fixed","cicada_year_binary",-0.236409412617954,0.380927094014785,-0.620615903495639,-0.983012797622436,0.510193972386528,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",945,37
+"165","Summer Tanager","fixed","c_end",-0.00146549697111453,0.00294868773065781,-0.496999718172123,-0.00724481872485897,0.00431382478262992,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",945,37
+"166","Summer Tanager","fixed","cicada_year_binary:c_end",-0.0109006085672535,0.0148301940466415,-0.735028047035038,-0.0399672547824112,0.0181660376479041,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",945,37
+"167","Summer Tanager","ran_pars","year, var__(Intercept)",0.0122241740151777,NA,NA,NA,NA,NA,NA,945,37
+"168","Summer Tanager","ran_pars","brood_ID, var__(Intercept)",0.0940031911359508,NA,NA,NA,NA,NA,NA,945,37
+"169","Summer Tanager","ran_pars","Residual, var__Observation",4.86666632926715,NA,NA,NA,NA,NA,NA,945,37
+"170","Ovenbird","fixed","(Intercept)",18.591789748502,0.106097629365941,175.232847893115,18.3838422160997,18.7997372809043,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5022,309
+"171","Ovenbird","fixed","SEXM",-0.238408756812225,0.0499669624447138,-4.77132779636173,-0.33634220362073,-0.140475310003721,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5022,309
+"172","Ovenbird","fixed","SEXU",0.210329139581692,0.0757166676375103,2.7778446429871,0.0619271979827829,0.358731081180602,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5022,309
+"173","Ovenbird","fixed","cicada_year_binary",-0.119855633863379,0.109562298634806,-1.09394961001031,-0.33459379325102,0.094882525524262,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5022,309
+"174","Ovenbird","fixed","c_end",-0.00833927089624902,0.00123218332133664,-6.7678816551443,-0.0107543058284198,-0.00592423596407826,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5022,309
+"175","Ovenbird","fixed","cicada_year_binary:c_end",-0.000924264924254589,0.00508039011956604,-0.181927943032363,-0.0108816465860172,0.00903311673750798,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5022,309
+"176","Ovenbird","ran_pars","year, var__(Intercept)",0.0177032607600734,NA,NA,NA,NA,NA,NA,5022,309
+"177","Ovenbird","ran_pars","brood_ID, var__(Intercept)",0.0619787111017907,NA,NA,NA,NA,NA,NA,5022,309
+"178","Ovenbird","ran_pars","Residual, var__Observation",2.60429042707176,NA,NA,NA,NA,NA,NA,5022,309
+"179","Indigo Bunting","fixed","(Intercept)",13.9222676010207,0.044202237226787,314.967487495942,13.8356328080201,14.0089023940213,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7981,504
+"180","Indigo Bunting","fixed","SEXM",0.287199234794962,0.0255922308202393,11.2221258401528,0.237039384103257,0.337359085486667,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7981,504
+"181","Indigo Bunting","fixed","SEXU",-0.452064137663931,0.196722798924141,-2.29797532434587,-0.837633738493162,-0.0664945368346997,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7981,504
+"182","Indigo Bunting","fixed","cicada_year_binary",0.174651076165006,0.0572012631877197,3.05327306482458,0.062538660446879,0.286763491883134,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7981,504
+"183","Indigo Bunting","fixed","c_end",-0.00276922695032938,0.000563353667069413,-4.91561005493228,-0.003873379848344,-0.00166507405231476,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7981,504
+"184","Indigo Bunting","fixed","cicada_year_binary:c_end",-0.00544122391773211,0.00242556585159711,-2.24328022846683,-0.0101952456289927,-0.000687202206471546,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",7981,504
+"185","Indigo Bunting","ran_pars","year, var__(Intercept)",0.00538481839213385,NA,NA,NA,NA,NA,NA,7981,504
+"186","Indigo Bunting","ran_pars","brood_ID, var__(Intercept)",0.0119460684512092,NA,NA,NA,NA,NA,NA,7981,504
+"187","Indigo Bunting","ran_pars","Residual, var__Observation",1.37550001811761,NA,NA,NA,NA,NA,NA,7981,504
+"188","Red-eyed Vireo","fixed","(Intercept)",16.8061961804717,0.0912574246232238,184.16250787111,16.6273349148883,16.9850574460551,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6152,423
+"189","Red-eyed Vireo","fixed","SEXM",-0.394024032934513,0.0541424233239229,-7.27754704618871,-0.500141232685124,-0.287906833183903,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6152,423
+"190","Red-eyed Vireo","fixed","SEXU",-0.360977508925756,0.0505158783869418,-7.14582266907721,-0.459986811211568,-0.261968206639945,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6152,423
+"191","Red-eyed Vireo","fixed","cicada_year_binary",0.107617320912124,0.087615401563148,1.22829227501239,-0.0641057106426608,0.279340352466908,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6152,423
+"192","Red-eyed Vireo","fixed","c_end",-0.00207133258606603,0.000876267563363207,-2.36381291818681,-0.00378878545107859,-0.000353879721053474,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6152,423
+"193","Red-eyed Vireo","fixed","cicada_year_binary:c_end",0.0000382953933212633,0.00353551862414062,0.0108316197402501,-0.00689119377666495,0.00696778456330747,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6152,423
+"194","Red-eyed Vireo","ran_pars","year, var__(Intercept)",0.0147349246779085,NA,NA,NA,NA,NA,NA,6152,423
+"195","Red-eyed Vireo","ran_pars","brood_ID, var__(Intercept)",0.047965274282309,NA,NA,NA,NA,NA,NA,6152,423
+"196","Red-eyed Vireo","ran_pars","Residual, var__Observation",2.36239600623602,NA,NA,NA,NA,NA,NA,6152,423
+"197","Kentucky Warbler","fixed","(Intercept)",14.256512845947,0.136449221898458,104.482185003271,13.9890772853075,14.5239484065865,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5260,223
+"198","Kentucky Warbler","fixed","SEXM",-0.50697534652837,0.0355893155628468,-14.2451558427165,-0.576729123265981,-0.437221569790759,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5260,223
+"199","Kentucky Warbler","fixed","SEXU",-0.348080246221358,0.0875394328996771,-3.97626800507456,-0.519654381931786,-0.17650611051093,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5260,223
+"200","Kentucky Warbler","fixed","cicada_year_binary",-0.0315682107446903,0.0882418238554136,-0.357746580537768,-0.204519007431428,0.141382585942048,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5260,223
+"201","Kentucky Warbler","fixed","c_end",-0.00371669613610047,0.000817709482419846,-4.54525258176248,-0.00531937727146026,-0.00211401500074068,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5260,223
+"202","Kentucky Warbler","fixed","cicada_year_binary:c_end",-0.00116674043607542,0.00405690987954188,-0.287593382825445,-0.00911813768850222,0.00678465681635139,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5260,223
+"203","Kentucky Warbler","ran_pars","year, var__(Intercept)",0.0145125766855914,NA,NA,NA,NA,NA,NA,5260,223
+"204","Kentucky Warbler","ran_pars","brood_ID, var__(Intercept)",0.121715800517102,NA,NA,NA,NA,NA,NA,5260,223
+"205","Kentucky Warbler","ran_pars","Residual, var__Observation",1.44127370320089,NA,NA,NA,NA,NA,NA,5260,223
+"206","Field Sparrow","fixed","(Intercept)",12.4432452556271,0.104811264130155,118.720495920887,12.2378189527579,12.6486715584963,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2861,218
+"207","Field Sparrow","fixed","SEXM",0.119808130501987,0.0411303889819384,2.91288590911693,0.0391940494272645,0.200422211576709,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2861,218
+"208","Field Sparrow","fixed","SEXU",0.0332398955769039,0.119628916594062,0.27785836838845,-0.201228472457003,0.267708263610811,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2861,218
+"209","Field Sparrow","fixed","cicada_year_binary",-0.083704251311487,0.0815046568723143,-1.02698734677969,-0.243450443353518,0.076041940730544,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2861,218
+"210","Field Sparrow","fixed","c_end",-0.00375439149398019,0.000935030027462854,-4.01526302226625,-0.00558701667227088,-0.0019217663156895,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2861,218
+"211","Field Sparrow","fixed","cicada_year_binary:c_end",0.000460372187889115,0.00343262812437,0.134116534389698,-0.00626745530819536,0.00718819968397359,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2861,218
+"212","Field Sparrow","ran_pars","year, var__(Intercept)",0.00296890117989482,NA,NA,NA,NA,NA,NA,2861,218
+"213","Field Sparrow","ran_pars","brood_ID, var__(Intercept)",0.081977173126347,NA,NA,NA,NA,NA,NA,2861,218
+"214","Field Sparrow","ran_pars","Residual, var__Observation",1.21300393897435,NA,NA,NA,NA,NA,NA,2861,218
+"215","Louisiana Waterthrush","fixed","(Intercept)",19.7703840370933,0.137564834250879,143.716845549625,19.5007619164223,20.0400061577642,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1586,123
+"216","Louisiana Waterthrush","fixed","SEXM",-0.0938811628692114,0.106648719749256,-0.88028401175314,-0.302908812575059,0.115146486836636,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1586,123
+"217","Louisiana Waterthrush","fixed","SEXU",0.0173246167388592,0.121412615526923,0.142692064277435,-0.220639736962719,0.255288970440438,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1586,123
+"218","Louisiana Waterthrush","fixed","cicada_year_binary",0.127482641066946,0.177407094547333,0.718588179307186,-0.220228874847719,0.47519415698161,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1586,123
+"219","Louisiana Waterthrush","fixed","c_end",0.0159858816967393,0.00235135979124898,6.79856896262058,0.0113773011911957,0.020594462202283,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1586,123
+"220","Louisiana Waterthrush","fixed","cicada_year_binary:c_end",0.0100622488480441,0.00741311672117665,1.35735740128033,-0.00446719293865377,0.024591690634742,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1586,123
+"221","Louisiana Waterthrush","ran_pars","year, var__(Intercept)",0.0366539231952833,NA,NA,NA,NA,NA,NA,1586,123
+"222","Louisiana Waterthrush","ran_pars","brood_ID, var__(Intercept)",0.0773321892844809,NA,NA,NA,NA,NA,NA,1586,123
+"223","Louisiana Waterthrush","ran_pars","Residual, var__Observation",3.21956572101455,NA,NA,NA,NA,NA,NA,1586,123
+"224","Worm-eating Warbler","fixed","(Intercept)",13.266002140786,0.0644378535679948,205.872812426748,13.1397062685517,13.3922980130204,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1630,86
+"225","Worm-eating Warbler","fixed","SEXM",-0.303471375184855,0.0669282787951312,-4.53427729874522,-0.434648391170568,-0.172294359199142,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1630,86
+"226","Worm-eating Warbler","fixed","SEXU",-0.167418717877852,0.0740382649912138,-2.26124582873086,-0.312531050738464,-0.0223063850172406,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1630,86
+"227","Worm-eating Warbler","fixed","cicada_year_binary",0.105613028435831,0.128761434841693,0.820222518999397,-0.146754746451589,0.357980803323251,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1630,86
+"228","Worm-eating Warbler","fixed","c_end",-0.000437825019666789,0.00150046147203615,-0.291793576727201,-0.00337867546504759,0.00250302542571401,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1630,86
+"229","Worm-eating Warbler","fixed","cicada_year_binary:c_end",-0.00203045716330965,0.00636455968459916,-0.319025551480477,-0.0145047649225796,0.0104438505959603,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1630,86
+"230","Worm-eating Warbler","ran_pars","brood_ID, var__(Intercept)",0.00960792999457861,NA,NA,NA,NA,NA,NA,1630,86
+"231","Worm-eating Warbler","ran_pars","Residual, var__Observation",1.34322284183126,NA,NA,NA,NA,NA,NA,1630,86
+"232","Rose-breasted Grosbeak","fixed","(Intercept)",44.0952224037593,0.272912126140144,161.572968659941,43.5603244655804,44.6301203419382,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",477,33
+"233","Rose-breasted Grosbeak","fixed","SEXM",-2.36667551079299,0.322869126888703,-7.33013878904816,-2.99948737121474,-1.73386365037124,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",477,33
+"234","Rose-breasted Grosbeak","fixed","SEXU",-4.49555421238295,2.56310415401598,-1.75394909541195,-9.51914604287927,0.528037618113376,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",477,33
+"235","Rose-breasted Grosbeak","fixed","cicada_year_binary",-0.716746257372719,0.93478517153584,-0.766749708058713,-2.54889152686506,1.11539901211962,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",477,33
+"236","Rose-breasted Grosbeak","fixed","c_end",-0.0448800757468217,0.00914230509664824,-4.90905469379661,-0.0627986644719293,-0.0269614870217142,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",477,33
+"237","Rose-breasted Grosbeak","fixed","cicada_year_binary:c_end",0.00840879783365062,0.0504428452738333,0.166699514827182,-0.0904573621807891,0.10727495784809,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",477,33
+"238","Rose-breasted Grosbeak","ran_pars","year, var__(Intercept)",0.270990888519596,NA,NA,NA,NA,NA,NA,477,33
+"239","Rose-breasted Grosbeak","ran_pars","brood_ID, var__(Intercept)",0.0168002879154615,NA,NA,NA,NA,NA,NA,477,33
+"240","Rose-breasted Grosbeak","ran_pars","Residual, var__Observation",12.8512604172576,NA,NA,NA,NA,NA,NA,477,33
+"241","Baltimore Oriole","fixed","(Intercept)",32.701142252747,0.282288055272876,115.843166729588,32.1478678311463,33.2544166743477,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",524,61
+"242","Baltimore Oriole","fixed","SEXM",0.927709262325358,0.225037280793776,4.12246921511423,0.48664429679073,1.36877422785999,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",524,61
+"243","Baltimore Oriole","fixed","SEXU",-0.0503894098783539,0.669327808504272,-0.0752836042939224,-1.36224780839785,1.26146898864114,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",524,61
+"244","Baltimore Oriole","fixed","cicada_year_binary",0.929370756942556,0.4143428224428,2.24299953227947,0.117273747701994,1.74146776618312,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",524,61
+"245","Baltimore Oriole","fixed","c_end",-0.0176388015971207,0.00598461432328836,-2.94735811604126,-0.0293684301321284,-0.00590917306211297,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",524,61
+"246","Baltimore Oriole","fixed","cicada_year_binary:c_end",0.0243126506485047,0.0183548752001666,1.32458817525951,-0.0116622436845491,0.0602875449815586,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",524,61
+"247","Baltimore Oriole","ran_pars","year, var__(Intercept)",0.244746677218615,NA,NA,NA,NA,NA,NA,524,61
+"248","Baltimore Oriole","ran_pars","brood_ID, var__(Intercept)",0.307962589558304,NA,NA,NA,NA,NA,NA,524,61
+"249","Baltimore Oriole","ran_pars","Residual, var__Observation",6.6768305767618,NA,NA,NA,NA,NA,NA,524,61
+"250","Song Sparrow","fixed","(Intercept)",20.0494844552657,0.0800110120992871,250.584062483623,19.8926657531845,20.2063031573469,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2623,155
+"251","Song Sparrow","fixed","SEXM",0.41157106579499,0.0670052589594452,6.14236960182622,0.280243171459698,0.542898960130283,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2623,155
+"252","Song Sparrow","fixed","SEXU",-0.812220847990067,0.147866650587175,-5.49292788309437,-1.1020341576555,-0.522407538324635,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2623,155
+"253","Song Sparrow","fixed","cicada_year_binary",0.552192327853617,0.148234876184363,3.7251174761791,0.261657309279511,0.842727346427723,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2623,155
+"254","Song Sparrow","fixed","c_end",-0.0109370182899696,0.0014657910641216,-7.46151246086618,-0.0138099159845086,-0.00806412059543062,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2623,155
+"255","Song Sparrow","fixed","cicada_year_binary:c_end",0.00524058092553401,0.00613066642717692,0.854814233947357,-0.00677530447296159,0.0172564663240296,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2623,155
+"256","Song Sparrow","ran_pars","year, var__(Intercept)",0.0373740988793915,NA,NA,NA,NA,NA,NA,2623,155
+"257","Song Sparrow","ran_pars","brood_ID, var__(Intercept)",0.012405242309956,NA,NA,NA,NA,NA,NA,2623,155
+"258","Song Sparrow","ran_pars","Residual, var__Observation",2.76981970769551,NA,NA,NA,NA,NA,NA,2623,155
+"259","American Goldfinch","fixed","(Intercept)",12.3030493344446,0.0975392222101462,126.134380156712,12.1118759718327,12.4942226970565,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4610,263
+"260","American Goldfinch","fixed","SEXM",-0.261915812955523,0.0279051605953397,-9.38592745455351,-0.316608922705196,-0.207222703205851,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4610,263
+"261","American Goldfinch","fixed","SEXU",-0.184320350181066,0.14091638094954,-1.3080122334895,-0.460511381673891,0.0918706813117596,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4610,263
+"262","American Goldfinch","fixed","cicada_year_binary",0.0722640049815256,0.0675342868617477,1.07003432389033,-0.0601007649890964,0.204628774952148,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4610,263
+"263","American Goldfinch","fixed","c_end",0.00586805948722728,0.000604937289962697,9.70027734211778,0.00468240418599513,0.00705371478845943,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4610,263
+"264","American Goldfinch","fixed","cicada_year_binary:c_end",-0.00393730554713593,0.00248588534005082,-1.58386450239714,-0.00880955128333164,0.000934940189059779,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4610,263
+"265","American Goldfinch","ran_pars","year, var__(Intercept)",0.0125523838126962,NA,NA,NA,NA,NA,NA,4610,263
+"266","American Goldfinch","ran_pars","brood_ID, var__(Intercept)",0.0850579292970377,NA,NA,NA,NA,NA,NA,4610,263
+"267","American Goldfinch","ran_pars","Residual, var__Observation",0.925294952652013,NA,NA,NA,NA,NA,NA,4610,263
+"268","Eastern Wood-Pewee","fixed","(Intercept)",14.0268412938368,0.113321910725069,123.778722085506,13.8047344301564,14.2489481575172,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1350,83
+"269","Eastern Wood-Pewee","fixed","SEXM",-0.0246405141857464,0.137780163082068,-0.178839345480158,-0.294684671610654,0.245403643239161,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1350,83
+"270","Eastern Wood-Pewee","fixed","SEXU",-0.225599423316045,0.079339804986873,-2.84345825343749,-0.381102583630747,-0.0700962630013426,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1350,83
+"271","Eastern Wood-Pewee","fixed","cicada_year_binary",-0.2991053675832,0.173912268239899,-1.71986353010246,-0.639967149803071,0.0417564146366717,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1350,83
+"272","Eastern Wood-Pewee","fixed","c_end",-0.0033061330724625,0.00164974718728083,-2.00402406984053,-0.00653957814312917,-0.0000726880017958191,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1350,83
+"273","Eastern Wood-Pewee","fixed","cicada_year_binary:c_end",0.0000809879708254275,0.00673245365991088,0.0120294880464873,-0.0131143787301848,0.0132763546718356,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1350,83
+"274","Eastern Wood-Pewee","ran_pars","year, var__(Intercept)",0.0513577126822592,NA,NA,NA,NA,NA,NA,1350,83
+"275","Eastern Wood-Pewee","ran_pars","brood_ID, var__(Intercept)",0.0531388238886993,NA,NA,NA,NA,NA,NA,1350,83
+"276","Eastern Wood-Pewee","ran_pars","Residual, var__Observation",1.96074944444403,NA,NA,NA,NA,NA,NA,1350,83
+"277","Black-and-white Warbler","fixed","(Intercept)",10.7537743533604,0.089625380372373,119.9858154987,10.5781118357298,10.9294368709909,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1119,58
+"278","Black-and-white Warbler","fixed","SEXM",-0.405433094793241,0.0624116982245875,-6.49610740176138,-0.527757775527415,-0.283108414059067,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1119,58
+"279","Black-and-white Warbler","fixed","SEXU",-0.0206496520618253,0.153957960511803,-0.134125263761481,-0.322401709798199,0.281102405674548,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1119,58
+"280","Black-and-white Warbler","fixed","cicada_year_binary",0.16058668948447,0.144004478747055,1.11515065976901,-0.121656902472221,0.442830281441162,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1119,58
+"281","Black-and-white Warbler","fixed","c_end",-0.000251838260573817,0.00144344599010506,-0.174470165354429,-0.00308094041480849,0.00257726389366086,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1119,58
+"282","Black-and-white Warbler","fixed","cicada_year_binary:c_end",-0.00558469861106465,0.00720605827910626,-0.77500047803628,-0.0197083133086096,0.0085389160864803,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1119,58
+"283","Black-and-white Warbler","ran_pars","year, var__(Intercept)",0.00832871009548982,NA,NA,NA,NA,NA,NA,1119,58
+"284","Black-and-white Warbler","ran_pars","brood_ID, var__(Intercept)",0.038925039690767,NA,NA,NA,NA,NA,NA,1119,58
+"285","Black-and-white Warbler","ran_pars","Residual, var__Observation",1.05435076644675,NA,NA,NA,NA,NA,NA,1119,58
+"286","Black-capped Chickadee","fixed","(Intercept)",11.0228804236571,0.169007307484334,65.2213243778164,10.6916321878637,11.3541286594505,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1268,91
+"287","Black-capped Chickadee","fixed","SEXM",0.377607022828169,0.0701161010167109,5.3854538023752,0.240181990099044,0.515032055557295,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1268,91
+"288","Black-capped Chickadee","fixed","SEXU",0.0526506418753497,0.0745843046586002,0.705921200396666,-0.0935319090674697,0.198833192818169,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1268,91
+"289","Black-capped Chickadee","fixed","cicada_year_binary",0.0158208269607105,0.127189188723156,0.124388142730799,-0.233465402159543,0.265107056080964,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1268,91
+"290","Black-capped Chickadee","fixed","c_end",-0.00148240178645117,0.00151945428001105,-0.975614604501548,-0.00446047745142807,0.00149567387852573,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1268,91
+"291","Black-capped Chickadee","fixed","cicada_year_binary:c_end",-0.00729678659842193,0.00603117984611354,-1.20984397491047,-0.0191176818810883,0.00452410868424442,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1268,91
+"292","Black-capped Chickadee","ran_pars","brood_ID, var__(Intercept)",0.243461414618214,NA,NA,NA,NA,NA,NA,1268,91
+"293","Black-capped Chickadee","ran_pars","Residual, var__Observation",1.13920282053587,NA,NA,NA,NA,NA,NA,1268,91
+"294","Acadian Flycatcher","fixed","(Intercept)",12.6677563216452,0.082862520880674,152.87679142525,12.5053487650509,12.8301638782395,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6167,352
+"295","Acadian Flycatcher","fixed","SEXM",0.146229038190647,0.0414516415058489,3.52770198907596,0.0649853137391175,0.227472762642176,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6167,352
+"296","Acadian Flycatcher","fixed","SEXU",-0.0298043109153859,0.0279540732616297,-1.06618848124348,-0.0845932877293741,0.0249846658986024,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6167,352
+"297","Acadian Flycatcher","fixed","cicada_year_binary",0.144620755850922,0.0574668264192271,2.51659548407801,0.031987845763422,0.257253665938422,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6167,352
+"298","Acadian Flycatcher","fixed","c_end",-0.00347045728830021,0.000587456534170231,-5.90759841185892,-0.00462185093775658,-0.00231906363884383,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6167,352
+"299","Acadian Flycatcher","fixed","cicada_year_binary:c_end",-0.000948364056958586,0.00249640013150668,-0.379892648213494,-0.00584121840571272,0.00394449029179555,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",6167,352
+"300","Acadian Flycatcher","ran_pars","year, var__(Intercept)",0.00232971345311078,NA,NA,NA,NA,NA,NA,6167,352
+"301","Acadian Flycatcher","ran_pars","brood_ID, var__(Intercept)",0.0405067004196714,NA,NA,NA,NA,NA,NA,6167,352
+"302","Acadian Flycatcher","ran_pars","Residual, var__Observation",0.999975760823079,NA,NA,NA,NA,NA,NA,6167,352
+"303","Hooded Warbler","fixed","(Intercept)",10.680292114852,0.056481093580604,189.094995117439,10.5695912056265,10.7909930240774,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4105,184
+"304","Hooded Warbler","fixed","SEXM",0.0086726554908643,0.0297833122346112,0.291191772847407,-0.0497015638292848,0.0670468748110134,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4105,184
+"305","Hooded Warbler","fixed","SEXU",-0.111280293147926,0.154682221727825,-0.719412301587782,-0.414451876783102,0.191891290487249,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4105,184
+"306","Hooded Warbler","fixed","cicada_year_binary",0.192848827318286,0.0932931749340972,2.06712685525512,0.00999756444406055,0.375700090192511,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4105,184
+"307","Hooded Warbler","fixed","c_end",-0.00373991118819071,0.000632228138816976,-5.91544564148763,-0.00497905557028478,-0.00250076680609665,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4105,184
+"308","Hooded Warbler","fixed","cicada_year_binary:c_end",-0.004719679296267,0.00317215325835865,-1.4878471851354,-0.0109369854360913,0.00149762684355734,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",4105,184
+"309","Hooded Warbler","ran_pars","year, var__(Intercept)",0.0190998978889319,NA,NA,NA,NA,NA,NA,4105,184
+"310","Hooded Warbler","ran_pars","brood_ID, var__(Intercept)",0.0106355580492795,NA,NA,NA,NA,NA,NA,4105,184
+"311","Hooded Warbler","ran_pars","Residual, var__Observation",0.877290365412427,NA,NA,NA,NA,NA,NA,4105,184
+"312","Bell's Vireo","fixed","(Intercept)",10.5536754312525,0.432892110308198,24.3794589458763,9.70522248585684,11.4021283766481,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",436,44
+"313","Bell's Vireo","fixed","SEXM",-0.442369729129311,0.15889503854873,-2.78403739455743,-0.753798282006926,-0.130941176251695,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",436,44
+"314","Bell's Vireo","fixed","SEXU",-0.273065000400104,0.133114652654943,-2.05135193574772,-0.533964925418352,-0.0121650753818558,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",436,44
+"315","Bell's Vireo","fixed","cicada_year_binary",-0.348149057597254,0.762854776508137,-0.456376584794892,-1.84331694498755,1.14701882979305,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",436,44
+"316","Bell's Vireo","fixed","c_end",-0.00201462477852846,0.00233330308946097,-0.86342181074893,-0.006587814798888,0.00255856524183107,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",436,44
+"317","Bell's Vireo","fixed","cicada_year_binary:c_end",0.00911603114744291,0.00858060079600477,1.06240010043206,-0.00770163737844215,0.025933699673328,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",436,44
+"318","Bell's Vireo","ran_pars","year, var__(Intercept)",0.947969692661844,NA,NA,NA,NA,NA,NA,436,44
+"319","Bell's Vireo","ran_pars","brood_ID, var__(Intercept)",0.199144584352699,NA,NA,NA,NA,NA,NA,436,44
+"320","Bell's Vireo","ran_pars","Residual, var__Observation",1.14277028902476,NA,NA,NA,NA,NA,NA,436,44
+"321","Orchard Oriole","fixed","(Intercept)",20.753051397625,0.148985238316565,139.296024439205,20.4610456962965,21.0450570989536,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",571,30
+"322","Orchard Oriole","fixed","SEXM",0.172045641021677,0.147303011067969,1.16797097204137,-0.116662955485847,0.460754237529201,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",571,30
+"323","Orchard Oriole","fixed","SEXU",-1.89642335272899,1.78706019552938,-1.06119724308851,-5.39899697417169,1.6061502687137,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",571,30
+"324","Orchard Oriole","fixed","cicada_year_binary",0.198045633893278,0.360995990624302,0.548608956988082,-0.509493506293713,0.905584774080268,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",571,30
+"325","Orchard Oriole","fixed","c_end",-0.0121432994061289,0.0037550500229082,-3.23385822613469,-0.0195030622111753,-0.00478353660108255,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",571,30
+"326","Orchard Oriole","fixed","cicada_year_binary:c_end",-0.00780020102449661,0.0154283926411957,-0.505574443553447,-0.038039294940583,0.0224388928915897,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",571,30
+"327","Orchard Oriole","ran_pars","year, var__(Intercept)",0.0250430632702777,NA,NA,NA,NA,NA,NA,571,30
+"328","Orchard Oriole","ran_pars","brood_ID, var__(Intercept)",0.068996083322303,NA,NA,NA,NA,NA,NA,571,30
+"329","Orchard Oriole","ran_pars","Residual, var__Observation",3.14569989519197,NA,NA,NA,NA,NA,NA,571,30
+"330","White-eyed Vireo","fixed","(Intercept)",12.0257758146579,0.0972569500598802,123.649526406634,11.8351556952943,12.2163959340214,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5827,213
+"331","White-eyed Vireo","fixed","SEXM",-0.538941366075467,0.033614613846639,-16.0329483043981,-0.604824798569101,-0.473057933581834,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5827,213
+"332","White-eyed Vireo","fixed","SEXU",-0.433040299134861,0.031504906012298,-13.7451703225467,-0.494788780255285,-0.371291818014438,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5827,213
+"333","White-eyed Vireo","fixed","cicada_year_binary",0.0492178613692592,0.0722817631030298,0.680916724445479,-0.0924517910517354,0.190887513790254,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5827,213
+"334","White-eyed Vireo","fixed","c_end",-0.00284105921591622,0.000592000156675966,-4.79908524326842,-0.00400135820184318,-0.00168076022998926,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5827,213
+"335","White-eyed Vireo","fixed","cicada_year_binary:c_end",0.00200090194346305,0.00339812905996542,0.588824587928811,-0.00465930862888811,0.00866111251581422,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",5827,213
+"336","White-eyed Vireo","ran_pars","year, var__(Intercept)",0.00764059738299564,NA,NA,NA,NA,NA,NA,5827,213
+"337","White-eyed Vireo","ran_pars","brood_ID, var__(Intercept)",0.0730265388421533,NA,NA,NA,NA,NA,NA,5827,213
+"338","White-eyed Vireo","ran_pars","Residual, var__Observation",0.947233633822166,NA,NA,NA,NA,NA,NA,5827,213
+"339","Prothonotary Warbler","fixed","(Intercept)",14.3379238307774,0.148871587181626,96.3106802460894,14.0461408815801,14.6297067799747,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2284,47
+"340","Prothonotary Warbler","fixed","SEXM",-0.419254434188663,0.055369989224196,-7.57187133432661,-0.527777618892458,-0.310731249484868,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2284,47
+"341","Prothonotary Warbler","fixed","SEXU",-0.347182000501063,0.175791392274138,-1.97496587295725,-0.691726798150526,-0.00263720285160041,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2284,47
+"342","Prothonotary Warbler","fixed","cicada_year_binary",0.290570412966588,0.213936464902594,1.35820891075716,-0.128737353222312,0.709878179155489,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2284,47
+"343","Prothonotary Warbler","fixed","c_end",-0.00392931826893054,0.00131495095245953,-2.9881861841166,-0.00650657477718785,-0.00135206176067322,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2284,47
+"344","Prothonotary Warbler","fixed","cicada_year_binary:c_end",-0.0135574998028115,0.00874092882644695,-1.55103651705655,-0.0306894054940755,0.00357440588845248,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2284,47
+"345","Prothonotary Warbler","ran_pars","year, var__(Intercept)",0.0352242723911002,NA,NA,NA,NA,NA,NA,2284,47
+"346","Prothonotary Warbler","ran_pars","brood_ID, var__(Intercept)",0.0959839305958163,NA,NA,NA,NA,NA,NA,2284,47
+"347","Prothonotary Warbler","ran_pars","Residual, var__Observation",1.69279955780111,NA,NA,NA,NA,NA,NA,2284,47
+"348","American Redstart","fixed","(Intercept)",8.26030016483232,0.0717630932771994,115.105129776461,8.11964708658982,8.40095324307482,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2241,183
+"349","American Redstart","fixed","SEXM",0.0730588319215353,0.0320139783025329,2.28209162982269,0.0103125874467242,0.135805076396346,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2241,183
+"350","American Redstart","fixed","SEXU",0.150677125198575,0.123327253674024,1.22176664694766,-0.0910398503147462,0.392394100711896,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2241,183
+"351","American Redstart","fixed","cicada_year_binary",-0.101967573638107,0.0731150570117392,-1.39461798712316,-0.245270452108708,0.0413353048324948,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2241,183
+"352","American Redstart","fixed","c_end",-0.00444648458755561,0.000789438033756776,-5.63246815762814,-0.00599375470174501,-0.00289921447336621,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2241,183
+"353","American Redstart","fixed","cicada_year_binary:c_end",0.00364068816348533,0.00278505780757631,1.30722175804804,-0.00181792483422633,0.00909930116119699,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2241,183
+"354","American Redstart","ran_pars","year, var__(Intercept)",0.00992213981639666,NA,NA,NA,NA,NA,NA,2241,183
+"355","American Redstart","ran_pars","brood_ID, var__(Intercept)",0.0339777988448996,NA,NA,NA,NA,NA,NA,2241,183
+"356","American Redstart","ran_pars","Residual, var__Observation",0.593222436469097,NA,NA,NA,NA,NA,NA,2241,183
+"357","Veery","fixed","(Intercept)",30.9480160808409,0.290337534139974,106.59323181384,30.3789649705664,31.5170671911155,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2391,152
+"358","Veery","fixed","SEXM",0.086603345628126,0.102926304947295,0.841411198745279,-0.11512850513036,0.288335196386612,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2391,152
+"359","Veery","fixed","SEXU",0.251073138550026,0.173684117909902,1.44557338674034,-0.0893414772399902,0.591487754340043,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2391,152
+"360","Veery","fixed","cicada_year_binary",0.385782726497082,0.309346929291894,1.24708762223744,-0.220526113643089,0.992091566637254,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2391,152
+"361","Veery","fixed","c_end",0.00439644636578,0.0030754276006313,1.42953986784717,-0.00163128096851778,0.0104241737000778,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2391,152
+"362","Veery","fixed","cicada_year_binary:c_end",0.00826270283712755,0.0116550541264038,0.708937320025732,-0.0145807834884888,0.0311061891627439,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",2391,152
+"363","Veery","ran_pars","year, var__(Intercept)",0.132003483697603,NA,NA,NA,NA,NA,NA,2391,152
+"364","Veery","ran_pars","brood_ID, var__(Intercept)",0.350409072250472,NA,NA,NA,NA,NA,NA,2391,152
+"365","Veery","ran_pars","Residual, var__Observation",5.57879626724971,NA,NA,NA,NA,NA,NA,2391,152
+"366","Northern House Wren","fixed","(Intercept)",11.2092968076484,0.0524752092283081,213.611283737417,11.1064472874797,11.3121463278171,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1029,91
+"367","Northern House Wren","fixed","SEXM",-0.66508975627647,0.0575222196839791,-11.5623103546838,-0.77783123516787,-0.55234827738507,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1029,91
+"368","Northern House Wren","fixed","SEXU",-0.563704561437777,0.0835245480180671,-6.74896871415386,-0.727409667378175,-0.399999455497379,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1029,91
+"369","Northern House Wren","fixed","cicada_year_binary",0.110493408803734,0.0951689327125287,1.16102393558931,-0.0760342717599376,0.297021089367406,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1029,91
+"370","Northern House Wren","fixed","c_end",-0.00873030387673549,0.00125285836243604,-6.96830873983263,-0.01118586114484,-0.00627474660863101,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1029,91
+"371","Northern House Wren","fixed","cicada_year_binary:c_end",0.00604654652033432,0.00421390901654326,1.43490201060259,-0.00221256338621906,0.0143056564268877,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | brood_ID)",1029,91
+"372","Northern House Wren","ran_pars","brood_ID, var__(Intercept)",0.00580781596875734,NA,NA,NA,NA,NA,NA,1029,91
+"373","Northern House Wren","ran_pars","Residual, var__Observation",0.736727583421179,NA,NA,NA,NA,NA,NA,1029,91
+"374","Cedar Waxwing","fixed","(Intercept)",32.6427094296786,0.18948233973789,172.273096663431,32.271330868086,33.0140879912713,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",689,51
+"375","Cedar Waxwing","fixed","SEXM",-2.32559480335482,0.208776002901757,-11.1391863577787,-2.73478824987849,-1.91640135683115,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",689,51
+"376","Cedar Waxwing","fixed","SEXU",-2.16487609309814,0.318145332472981,-6.80467658057502,-2.78842948659471,-1.54132269960158,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",689,51
+"377","Cedar Waxwing","fixed","cicada_year_binary",0.230404384414786,0.43414149896273,0.530712647754888,-0.620497317746397,1.08130608657597,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",689,51
+"378","Cedar Waxwing","fixed","c_end",-0.0286703093194902,0.00479232930070434,-5.98254158270727,-0.0380631021509267,-0.0192775164880536,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",689,51
+"379","Cedar Waxwing","fixed","cicada_year_binary:c_end",-0.0137772405570129,0.0192844472917225,-0.714422370970756,-0.05157406271055,0.0240195815965241,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",689,51
+"380","Cedar Waxwing","ran_pars","year, var__(Intercept)",0.245743666381289,NA,NA,NA,NA,NA,NA,689,51
+"381","Cedar Waxwing","ran_pars","Residual, var__Observation",6.81147860511904,NA,NA,NA,NA,NA,NA,689,51
+"382","Traill's Flycatcher","fixed","(Intercept)",12.5786938229474,0.198139778218014,63.483940156161,12.1903469937354,12.9670406521595,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",894,69
+"383","Traill's Flycatcher","fixed","SEXM",0.415946883083857,0.195456443823503,2.12807966290155,0.0328592926435145,0.7990344735242,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",894,69
+"384","Traill's Flycatcher","fixed","SEXU",-0.0200718571643808,0.122603373116,-0.16371374338445,-0.260370052854868,0.220226338526106,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",894,69
+"385","Traill's Flycatcher","fixed","cicada_year_binary",-0.105406349159063,0.217756605115738,-0.484055806725307,-0.532201452581619,0.321388754263494,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",894,69
+"386","Traill's Flycatcher","fixed","c_end",0.000445172401843946,0.00195842401501723,0.227311551753019,-0.00339326813404816,0.00428361293773605,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",894,69
+"387","Traill's Flycatcher","fixed","cicada_year_binary:c_end",-0.0108304577777816,0.00712133285750858,-1.52084700918904,-0.0247880137004201,0.00312709814485696,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",894,69
+"388","Traill's Flycatcher","ran_pars","year, var__(Intercept)",0.150337986260888,NA,NA,NA,NA,NA,NA,894,69
+"389","Traill's Flycatcher","ran_pars","brood_ID, var__(Intercept)",0.174719361420626,NA,NA,NA,NA,NA,NA,894,69
+"390","Traill's Flycatcher","ran_pars","Residual, var__Observation",2.16898627666105,NA,NA,NA,NA,NA,NA,894,69
+"391","Dickcissel","fixed","(Intercept)",23.8844934183409,0.227714949863516,104.88768274835,23.4381803178671,24.3308065188148,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",575,75
+"392","Dickcissel","fixed","SEXM",4.50395151531207,0.180206460222571,24.9932855334337,4.15075334349438,4.85714968712976,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",575,75
+"393","Dickcissel","fixed","SEXU",4.52958007376688,0.84589564657039,5.35477406951043,2.87165507180969,6.18750507572407,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",575,75
+"394","Dickcissel","fixed","cicada_year_binary",0.822589921202633,0.549411807481206,1.49721922609166,-0.254237434141584,1.89941727654685,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",575,75
+"395","Dickcissel","fixed","c_end",-0.0114117078857165,0.00480917198073604,-2.37290492655035,-0.0208375117634183,-0.00198590400801468,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",575,75
+"396","Dickcissel","fixed","cicada_year_binary:c_end",-0.041602604900512,0.0125107142482536,-3.32535809506794,-0.0661231542479612,-0.0170820555530629,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",575,75
+"397","Dickcissel","ran_pars","year, var__(Intercept)",0.228174185998059,NA,NA,NA,NA,NA,NA,575,75
+"398","Dickcissel","ran_pars","Residual, var__Observation",4.82303447811649,NA,NA,NA,NA,NA,NA,575,75
+"399","Prairie Warbler","fixed","(Intercept)",7.41102286008507,0.117006645486644,63.3384781630292,7.1816940489794,7.64035167119074,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1042,101
+"400","Prairie Warbler","fixed","SEXM",-0.111686138302723,0.0527669530211873,-2.11659252445139,-0.215107465798167,-0.00826481080727884,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1042,101
+"401","Prairie Warbler","fixed","SEXU",0.206074312762433,0.18280808420633,1.12727133297805,-0.152222948364739,0.564371573889606,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1042,101
+"402","Prairie Warbler","fixed","cicada_year_binary",0.167452666409214,0.110002398541251,1.52226377451596,-0.0481480729446601,0.383053405763088,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1042,101
+"403","Prairie Warbler","fixed","c_end",-0.00652443547459077,0.00138257625230915,-4.71904205188958,-0.00923423513499706,-0.00381463581418448,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1042,101
+"404","Prairie Warbler","fixed","cicada_year_binary:c_end",0.00631522685549518,0.00474821638943694,1.33002086205344,-0.00299110625860402,0.0156215599695944,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1042,101
+"405","Prairie Warbler","ran_pars","year, var__(Intercept)",0.024588657668988,NA,NA,NA,NA,NA,NA,1042,101
+"406","Prairie Warbler","ran_pars","brood_ID, var__(Intercept)",0.0583518676708694,NA,NA,NA,NA,NA,NA,1042,101
+"407","Prairie Warbler","ran_pars","Residual, var__Observation",0.750724279765623,NA,NA,NA,NA,NA,NA,1042,101
+"408","Yellow Warbler","fixed","(Intercept)",9.70963680357998,0.0367324054932382,264.334357448149,9.63764261174771,9.78163099541224,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",1323,64
+"409","Yellow Warbler","fixed","SEXM",-0.0798722695203058,0.047029956223234,-1.69832753280019,-0.17204928991234,0.0123047508717281,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",1323,64
+"410","Yellow Warbler","fixed","SEXU",-0.0788553114419321,0.163279781591939,-0.482945963505779,-0.398877802765698,0.241167179881834,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",1323,64
+"411","Yellow Warbler","fixed","cicada_year_binary",0.0858957598165921,0.115831147339798,0.741560122551592,-0.141129117257364,0.312920636890549,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",1323,64
+"412","Yellow Warbler","fixed","c_end",-0.003761312026488,0.00116955065249246,-3.21603174558722,-0.00605358918346855,-0.00146903486950746,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",1323,64
+"413","Yellow Warbler","fixed","cicada_year_binary:c_end",-0.00550001560869446,0.00511595442683415,-1.07507126721963,-0.0155271020318376,0.00452707081444872,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year)",1323,64
+"414","Yellow Warbler","ran_pars","year, var__(Intercept)",0.0054815557128036,NA,NA,NA,NA,NA,NA,1323,64
+"415","Yellow Warbler","ran_pars","Residual, var__Observation",0.702417731461023,NA,NA,NA,NA,NA,NA,1323,64
+"416","Blue-winged Warbler","fixed","(Intercept)",8.27706948818332,0.0873312008161635,94.7779191266012,8.105903479857,8.44823549650963,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1261,64
+"417","Blue-winged Warbler","fixed","SEXM",0.0422570325672828,0.0585687470180167,0.721494563547413,-0.0725356022076675,0.157049667342233,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1261,64
+"418","Blue-winged Warbler","fixed","SEXU",0.028039150606579,0.150660701452029,0.186107925532968,-0.26725039812494,0.323328699338098,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1261,64
+"419","Blue-winged Warbler","fixed","cicada_year_binary",0.315073742489466,0.142663699232944,2.20850674827243,0.0354580300916409,0.594689454887291,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1261,64
+"420","Blue-winged Warbler","fixed","c_end",-0.0045040107684648,0.00149438550967711,-3.01395505998849,-0.00743295254645047,-0.00157506899047914,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1261,64
+"421","Blue-winged Warbler","fixed","cicada_year_binary:c_end",-0.0207961950839126,0.00677128534425272,-3.07123301214352,-0.0340676704876918,-0.00752471968013333,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",1261,64
+"422","Blue-winged Warbler","ran_pars","year, var__(Intercept)",0.00540853801833437,NA,NA,NA,NA,NA,NA,1261,64
+"423","Blue-winged Warbler","ran_pars","brood_ID, var__(Intercept)",0.0261146628129878,NA,NA,NA,NA,NA,NA,1261,64
+"424","Blue-winged Warbler","ran_pars","Residual, var__Observation",1.03675226788178,NA,NA,NA,NA,NA,NA,1261,64
+"425","Northern Parula","fixed","(Intercept)",7.42842420994697,0.103517862049982,71.7598302634986,7.22553292857242,7.63131549132152,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",420,30
+"426","Northern Parula","fixed","SEXM",0.235087612917887,0.0792503008890938,2.96639394778928,0.0797598774113011,0.390415348424474,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",420,30
+"427","Northern Parula","fixed","SEXU",1.08500659030351,0.481658995887269,2.25264471247922,0.140972305534736,2.02904087507228,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",420,30
+"428","Northern Parula","fixed","cicada_year_binary",0.513626275939658,0.158905135741003,3.232282415194,0.202177932928844,0.825074618950472,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",420,30
+"429","Northern Parula","fixed","c_end",-0.00469892538459968,0.00187688608024987,-2.50357516849084,-0.00837755450497398,-0.00102029626422538,TRUE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",420,30
+"430","Northern Parula","fixed","cicada_year_binary:c_end",0.00459356821445652,0.00731244561650041,0.628184940492578,-0.00973856183279206,0.0189256982617051,FALSE,"mass_in_g ~ SEX + cicada_year_binary * c_end + (1 | year) + (1 |      brood_ID)",420,30
+"431","Northern Parula","ran_pars","year, var__(Intercept)",0.00112828950146531,NA,NA,NA,NA,NA,NA,420,30
+"432","Northern Parula","ran_pars","brood_ID, var__(Intercept)",0.0473216151348556,NA,NA,NA,NA,NA,NA,420,30
+"433","Northern Parula","ran_pars","Residual, var__Observation",0.677386196705379,NA,NA,NA,NA,NA,NA,420,30
