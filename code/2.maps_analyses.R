@@ -332,7 +332,7 @@ for(i in 1:length(unique(maps_weight$Species.Name))) {
                             data = tmp) #gaussian? 
   }
 
-  maps_models[[i]] = tmp_glmer
+  weight_models[[i]] = tmp_glmer
   
   summary <- summary(tmp_glmer)
   summary

@@ -9,13 +9,17 @@
 
 library(dplyr)
 library(effects) # plotting logistic regression effects
+#ah, effects needs the data to be available as well as the model in order to run. hm...
 
 # get the order of the models
 original_order <- c("Eastern Bluebird", "Tree Swallow", "Northern House Wren"  , "Black-capped and\n Carolina Chickadee", "Purple Martin", "Carolina Wren", "American Robin", "House Sparrow", "Prothonotary Warbler")  
 
 # load the glms
-load("model_results/binomial_POSTcicada_glms.rds")
-load("model_results/binomial_PREcicada_glms.rds")
+load("model_results/binomail_BINARY_hmid_glmER.rds")
+load("model_results/maps_gaussian_glms.rds")
+load("model_results/maps_weight_lmers.rds")
+
+load("model_results/depricated_models/binomial_POSTcicada_async_glms.rds")
 
 #plot
 plot(allEffects(postcicada_models[[1]]))

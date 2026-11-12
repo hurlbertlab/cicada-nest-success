@@ -1,0 +1,52 @@
+# 1. Extract estimates and CIs for readability
+int_est  <- tmp_cic$estimate[tmp_cic$term == "(Intercept)"]
+int_low  <- tmp_cic$conf.low[tmp_cic$term == "(Intercept)"]
+int_high <- tmp_cic$conf.high[tmp_cic$term == "(Intercept)"]
+
+cic_est  <- tmp_cic$estimate[tmp_cic$term == "cicada_year_binary"]
+cic_low  <- tmp_cic$conf.low[tmp_cic$term == "cicada_year_binary"]
+cic_high <- tmp_cic$conf.high[tmp_cic$term == "cicada_year_binary"]
+
+# 2. Calculate the 4 corners of the polygon in probability space
+# x = 0 (FALSE condition)
+y_x0_low  <- plogis(int_low)
+y_x0_high <- plogis(int_high)
+
+# x = 1 (TRUE condition: Intercept + Cicada effect)
+y_x1_low  <- plogis(int_est + cic_low)
+y_x1_high <- plogis(int_est + cic_high)
+
+plot(x = cic_sum$cicada_year_binary,
+    y = cic_sum$mean_pct_nest_success,
+    xlim = c(0,1),
+    ylim = c(0,1),
+    xlab = "Cicada Year",
+    ylab = "% Nest Success",
+    pch = 16,
+    xaxt = "n")
+#add axis
+axis(1, at = 0:1, labels = c("FALSE", "TRUE"))
+#add means + sd at each bar
+segments(y0 = cic_sum$mean_pct_nest_success - cic_sum$se_pct_nest_success,
+        y1 = cic_sum$mean_pct_nest_success + cic_sum$se_pct_nest_success,
+        x0 = cic_sum$cicada_year_binary)
+#draw the polygon
+polygon(x = c(0, 1, 1, 0), 
+        y = c(y_x0_low, y_x1_low, y_x1_high, y_x0_high),
+        col = adjustcolor("orange", alpha.f = 0.5), # Semi-transparent blue
+        border = NA)                              # No border line
+#add the line connecting the two... ..
+segments(y0 = plogis(tmp_cic$estimate[tmp_cic$term == "(Intercept)"]),
+         y1 = plogis(tmp_cic$estimate[tmp_cic$term == "(Intercept)"] + tmp_cic$estimate[tmp_cic$term == "cicada_year_binary"]),
+         x0 = 0,
+         x1 = 1,
+         lwd = 2)
+#text 
+text(x = .5,
+     y = .1,
+     paste0("Odds Ratio = ", round(tmp_cic$pct_change_odds[tmp_cic$term == "cicada_year_binary"], 2)))
+if(tmp_cic$signif[tmp_cic$term == "cicada_year_binary"] == TRUE) {
+  text(x = .5,
+       y = .05,
+       paste0("p = ", round(tmp_cic$p_value[tmp_cic$term == "cicada_year_binary"], 3)))
+}
