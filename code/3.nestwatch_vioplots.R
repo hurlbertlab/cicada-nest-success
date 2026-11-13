@@ -21,9 +21,10 @@ cicada_bounds <- read.csv("data/cicada_bounds_latitude_by_j_date.csv")
 nestwatch_df <- read.csv("data/nestwatch_analysis_df.csv")
 nestwatch_results <- read.csv("model_results/binomial_BINARY_hmid_glmER.csv")
 cicada_results <- nestwatch_results |>
-  filter(term %in% c("cicada_year_binary", "(Intercept)")) |>
+  filter(term %in% c("cicada_year_binary", "(Intercept)", "h_mid", "cicada_year_binary:h_mid")) |>
   mutate(term = case_when(term == "(Intercept)" ~ "Int",
-                          term == "cicada_year_binary" ~ "cic")) |>
+                          term == "cicada_year_binary" ~ "cic",
+                          TRUE ~ term)) |>
   pivot_wider(
     id_cols = c(Species.Name, formula, n_noncicada, n_cicada), # Keep static columns as single rows
     names_from = term, # Values here become prefixes
@@ -32,9 +33,32 @@ cicada_results <- nestwatch_results |>
                     or_conf_high, pct_change_odds, baseline_prob), # Varying columns
     names_sep = "_"
   ) |>
-  arrange(desc(n_noncicada)) |>
+  arrange(desc(n_cicada)) |>
   mutate(sp_id = row_number()) |>
   ungroup() 
+
+weight_results <- read.csv("model_results/maps_weight_results.csv") |>
+  filter(term %in% c("cicada_year_binary", "(Intercept)", "c_end", "cicada_year_binary:c_end")) |>
+  select(-X) |>
+  mutate(term = case_when(term == "(Intercept)" ~ "Int",
+                          term == "cicada_year_binary" ~ "cic",
+                          term == "cicada_year_binary:c_end" ~ "cic_end_interaction",
+                          term == "c_end" ~ "c_end"),
+         Species.Name = case_when(str_detect(Species.Name, "hickadee") == TRUE ~ "Chickadees",
+         TRUE ~ Species.Name)) |>
+  pivot_wider(
+    id_cols = c(Species.Name, formula, n_noncicada, n_cicada), # Keep static columns as single rows
+    names_from = term, # Values here become prefixes
+    values_from = c(effect, estimate, std_error, signif, t_value, 
+                    conf.low, conf.high, signif), # Varying columns
+    names_sep = "_"
+  ) |>
+  arrange(desc(n_cicada)) |>
+  mutate(sp_id = row_number()) |>
+  ungroup() |>
+  mutate(color = ifelse(signif_cic == TRUE, "orange", "black"),
+         c_end_color = ifelse(signif_c_end == TRUE, "orange", "black"),
+         color_interaction = ifelse(signif_cic_end_interaction == TRUE, "orange", "black"))
 
 plot(y = plogis(cicada_results$estimate_Int + cicada_results$estimate_cic),
      x = cicada_results$sp_id,
@@ -258,17 +282,186 @@ dev.off()
 
 
 #let's plot nestwatch results
+par(mar = c(7, 4, 4, 2))
 plot(y = cicada_results$estimate_cic, #log odds ratio
      x = cicada_results$sp_id,
      ylim = c(-0.5, 2.8),
      pch = 16,
      cex = 1.5,
-     col = c("orange", "orange", "black", "black", "black", "black", "black", "orange"))
-axis(1, at = c(1:8), labels = cicada_results$Species.Name) #need to tilt labels
+     col = c("orange", "orange", "black", "black", "black", "black", "orange", "black"),
+     xaxt = "n",
+     xlab = "",
+     ylab = "Log Odds Ratio effect of Cicadas")
+axis(1, at = c(1:8), labels = FALSE) #need to tilt labels
+text(
+  x = 1:8,
+  y = par("usr")[3] - .2, # Position slightly below the x-axis line
+  labels = cicada_results$Species.Name,
+  srt = 45,                # Tilt angle in degrees
+  adj = 1,                 # Right-align text so the end touches the tick
+  xpd = TRUE               # Allow text to draw outside the plot box
+)
 abline(h = 0, lty = "dashed", lwd = 1.5)
 segments(y0 = cicada_results$conf.low_cic, 
          y1 = cicada_results$conf.high_cic,
          x0 = cicada_results$sp_id,
          x1 = cicada_results$sp_id,
          lwd = 3,
-         col = c("orange", "orange", "black", "black", "black", "black", "black", "orange"))
+         col = c("orange", "orange", "black", "black", "black", "black", "orange", "black"))
+
+
+#let's plot nestwatch results, DOY
+par(mar = c(7, 4, 4, 2))
+plot(y = cicada_results$estimate_h_mid, #log odds ratio
+     x = cicada_results$sp_id,
+     ylim = c(-0.2, 0.2),
+     pch = 16,
+     cex = 1.5,
+     col = c("orange", "orange", "orange", "orange", "orange", "black", "orange", "orange"),
+     xaxt = "n",
+     xlab = "",
+     ylab = "Log Odds Ratio effect of Latitude Adjusted DOY")
+axis(1, at = c(1:8), labels = FALSE) #need to tilt labels
+text(
+  x = 1:8,
+  y = par("usr")[3] - .02, # Position slightly below the x-axis line
+  labels = cicada_results$Species.Name,
+  srt = 45,                # Tilt angle in degrees
+  adj = 1,                 # Right-align text so the end touches the tick
+  xpd = TRUE               # Allow text to draw outside the plot box
+)
+abline(h = 0, lty = "dashed", lwd = 1.5)
+segments(y0 = cicada_results$conf.low_h_mid, 
+         y1 = cicada_results$conf.high_h_mid,
+         x0 = cicada_results$sp_id,
+         x1 = cicada_results$sp_id,
+         lwd = 3,
+         col = c("orange", "orange", "orange", "orange", "orange", "black", "orange", "orange"))
+
+
+
+# Cicada*h_mid
+par(mar = c(7, 4, 4, 2))
+plot(y = cicada_results$`estimate_cicada_year_binary:h_mid`, #log odds ratio
+     x = cicada_results$sp_id,
+     ylim = c(-0.2, 0.2),
+     pch = 16,
+     cex = 1.5,
+     col = c("black", "orange", "black", "black","black", "black", "black", "black"),
+     xaxt = "n",
+     xlab = "",
+     ylab = "Log Odds Ratio effect of Cicada * Latitude Adjusted DOY")
+axis(1, at = c(1:8), labels = FALSE) #need to tilt labels
+text(
+  x = 1:8,
+  y = par("usr")[3] - .02, # Position slightly below the x-axis line
+  labels = cicada_results$Species.Name,
+  srt = 45,                # Tilt angle in degrees
+  adj = 1,                 # Right-align text so the end touches the tick
+  xpd = TRUE               # Allow text to draw outside the plot box
+)
+abline(h = 0, lty = "dashed", lwd = 1.5)
+segments(y0 = cicada_results$`conf.low_cicada_year_binary:h_mid`, 
+         y1 = cicada_results$`conf.high_cicada_year_binary:h_mid`,
+         x0 = cicada_results$sp_id,
+         x1 = cicada_results$sp_id,
+         lwd = 3,
+         col = c("black", "orange", "black", "black","black", "black", "black", "black"))
+
+
+
+#MAPS weight results
+par(mar = c(8, 4, 2, 1))
+plot(y = weight_results$estimate_cic, #increase in weight in g in a cicada year
+     x = weight_results$sp_id,
+     ylim = c(-4, 4),
+     pch = 16,
+     cex = 1.5,
+     col = weight_results$color,
+     xaxt = "n",
+     xlab = "",
+     ylab = "Change in Mass (g) in Cicada Year")
+axis(1, at = c(1:48), labels = FALSE) #need to tilt labels
+text(
+  x = 1:48,
+  y = par("usr")[3] - .4, # Position slightly below the x-axis line
+  labels = weight_results$Species.Name,
+  srt = 45,                # Tilt angle in degrees
+  adj = 1,                 # Right-align text so the end touches the tick
+  xpd = TRUE               # Allow text to draw outside the plot box
+)
+abline(h = 0, lty = "dashed", lwd = 1.5)
+segments(y0 = weight_results$conf.low_cic, 
+         y1 = weight_results$conf.high_cic,
+         x0 = weight_results$sp_id,
+         x1 = weight_results$sp_id,
+         lwd = 3,
+         col = weight_results$color
+         )
+
+
+
+#MAPS doy results
+par(mar = c(8, 4, 2, 1))
+plot(y = weight_results$estimate_c_end, #increase in weight in g in a cicada year
+     x = weight_results$sp_id,
+     ylim = c(-.1, .1),
+     pch = 16,
+     cex = 1.5,
+     col = weight_results$c_end_color,
+     xaxt = "n",
+     xlab = "",
+     ylab = "Change in Mass (g) with Latitude-Adjusted DOY")
+axis(1, at = c(1:48), labels = FALSE) #need to tilt labels
+text(
+  x = 1:48,
+  y = par("usr")[3] - .01, # Position slightly below the x-axis line
+  labels = weight_results$Species.Name,
+  srt = 45,                # Tilt angle in degrees
+  adj = 1,                 # Right-align text so the end touches the tick
+  xpd = TRUE               # Allow text to draw outside the plot box
+)
+abline(h = 0, lty = "dashed", lwd = 1.5)
+segments(y0 = weight_results$conf.low_c_end, 
+         y1 = weight_results$conf.high_c_end,
+         x0 = weight_results$sp_id,
+         x1 = weight_results$sp_id,
+         lwd = 3,
+         col = weight_results$c_end_color
+)
+
+
+
+
+#MAPS doy*cic results
+w_filtered <- weight_results |>
+  filter(signif_cic == TRUE) |>
+  mutate(sp_id = row_number())
+
+par(mar = c(8, 4, 2, 1))
+plot(y = w_filtered$estimate_cic_end_interaction, #increase in weight in g in a cicada year
+     x = w_filtered$sp_id,
+     ylim = c(-.1, .1),
+     pch = 16,
+     cex = 1.5,
+     col = w_filtered$color_interaction,
+     xaxt = "n",
+     xlab = "",
+     ylab = "Change in Mass (g) with Latitude-Adjusted DOY")
+axis(1, at = c(1:10), labels = FALSE) #need to tilt labels
+text(
+  x = 1:10,
+  y = par("usr")[3] - .01, # Position slightly below the x-axis line
+  labels = w_filtered$Species.Name,
+  srt = 45,                # Tilt angle in degrees
+  adj = 1,                 # Right-align text so the end touches the tick
+  xpd = TRUE               # Allow text to draw outside the plot box
+)
+abline(h = 0, lty = "dashed", lwd = 1.5)
+segments(y0 = w_filtered$conf.low_cic_end_interaction, 
+         y1 = w_filtered$conf.high_cic_end_interaction,
+         x0 = w_filtered$sp_id,
+         x1 = w_filtered$sp_id,
+         lwd = 3,
+         col = w_filtered$color_interaction
+)
