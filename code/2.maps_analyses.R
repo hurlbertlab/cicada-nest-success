@@ -293,16 +293,16 @@ table(maps_weight$cicada_year_binary)
 #140984   8459 
 #kinda a pretty compelling reason here to jointly model all the species. Even if that becomes like, supplementary data? terns unstoned and all. If all the birds are gaining weight, we might not see the effect within individual species but we might see it ACROSS species....
 
-test <- lme4::lmer(log_mass ~ cicada_year_binary*c_end  + (1|brood_ID) + (1|year) + (1|sp_id),
-     data = maps_weight)
+test <- lme4::lmer(log10(mass_in_g) ~ cicada_year_binary*c_end  + (1|brood_ID) + (1|year) + (1|sp_id),
+     data = maps_weight[is.na(maps_weight$chickadee),])
 summary(test)
 a <- broom.mixed::tidy(test,
                   conf.int = TRUE) 
 #alright, hm! across all species there's a small effect on log_mass going up in cicada years, and there's support for a different slope of c_end in cicada years. (assessing this b/c the confidence interval on the effect size doesn't cross zero.) (and I DO need to control for random effects bc there could be sampling variation by species so some are better represented in the cicada year than others.)
 #but this cross-species comparison it's hard to be biologically meaningful b/c everything only adds like. 0.006 g. OH WAIT LOG SCALE, okay exp(0.0064) = 1 gram increase across species in a cicada year.
-summary(
-  glm(log_mass ~ cicada_year_binary + SEX, 
-      data = maps_weight))
+#summary(
+#  glm(log_mass ~ cicada_year_binary + SEX, 
+#      data = maps_weight))
 
 #right, well, let's run this within each species because each species may respond differently to cicada emergences:
 #Modeling time!! YAYYYY
@@ -385,8 +385,8 @@ plot(y = weight_results$signif[weight_results$term == "cicada_year_binary"],
      xlab = "N cicada samples",
      ylab = "Cicada_Year_Binary Significant")
 table(weight_results$signif[weight_results$term == "cicada_year_binary"])
-#alright, 10 species respond to cicadas, 39 don't.
-#wow, I really have 49 species? epic!
+#alright, 10 species respond to cicadas, 38 don't.
+#wow, I really have 48 species? epic!
 
 table(weight_results$signif[weight_results$term == "c_end"])
 #almost all species lose weight over time

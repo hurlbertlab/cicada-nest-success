@@ -731,13 +731,13 @@ table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge) #
       theme_minimal()
 #Haha okay yeah, those basically all the way overlap, no reason to suspect that the presence of cicadas shifts how long it takes these species to fledge.
  
- glm_ttf_EABL <- lmer(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + (1|Year) + (1|brood_ID),
+ glm_ttf_EABL <- lmer(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + Latitude + (1|Year) + (1|brood_ID),
                    data = ttf_filtered[ttf_filtered$Species.Name == "Eastern Bluebird",]
                    )
  summary(glm_ttf_EABL) #no effect of cicada, no effect of precip, yes effect of temperature anomaly meaning they fledge like half a day earlier with a 1 unit change in y_anomaly_temp.
- glm_ttf_TS <- lmer(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + (1|brood_ID),
+ glm_ttf_TS <- glm(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + Latitude,
                    data = ttf_filtered[ttf_filtered$Species.Name == "Tree Swallow",])
- #drop (1|Year) because the fit is singular
+ #drop (1|Year) and (1|brood) because the fit is singular
  summary(glm_ttf_TS) #439 non-cicada observations, 32 cicada observations. But! they are fledging earlier in cicada years :D
  
  plot(x = ttf_filtered$y_anomaly_temp[ttf_filtered$Species.Name == "Eastern Bluebird"],

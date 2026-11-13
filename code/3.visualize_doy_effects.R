@@ -70,7 +70,7 @@ b_data_0 <- subset(binary_summary_data, cicada_year_binary == 0) #cicada
 b_data_1 <- subset(binary_summary_data, cicada_year_binary == 1) #no cicada
 
 ## ok now graph
-png(filename = "figures/2026.09.03_doy_effects.png", 
+png(filename = "figures/2026.11.013_doy_effects.png", 
     width = 630,
     height = 630,
     units = "px", 

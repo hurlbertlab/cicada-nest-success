@@ -504,13 +504,14 @@ weight <- captures |>
          mass_in_g = WEIGHT,
          wing_chord = WNG) |>
   mutate(Species.Name = case_when(SPEC == "HOWR" ~ "Northern House Wren",
-  #haha okayyyyy when it comes to weight there might be differences in Black-Capped and Carolinas.. so I won't join them... here :3d
-  #                                SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
+  #haha okayyyyy when it comes to weight there might be differences in Black-Capped and Carolinas.. so I will alter those later in this pipe so that each species weight is mass compared within it's species mean
+                                  SPEC == "BCCC" ~ "Black-capped and\n Carolina Chickadee",
                                   SPEC == "AMGO" ~ "American Goldfinch",
-                                  TRUE ~ Species.Name),
-  Species.Name = case_when(chickadee == "BCCH" ~ "Black-capped Chickadee",
-                           chickadee == "CACH" ~ "Carolina Chickadee",
-                           TRUE ~ Species.Name)) |>
+                                  TRUE ~ Species.Name)#,
+  #Species.Name = case_when(chickadee == "BCCH" ~ "Black-capped Chickadee",
+   #                        chickadee == "CACH" ~ "Carolina Chickadee",
+    #                       TRUE ~ Species.Name)
+  ) |>
   #hm! and because this is weight, and we're thinking about how asynch doesn't affect bc ADULT body conditions are better, let's just keep the birds that are adults
   filter(AGE %in% c(1, 5, 6, 7, 8)) |>
   #filter out when weight == 0
@@ -527,8 +528,23 @@ weight <- captures |>
     z_from_sp_mean = (mass_in_g - sp_mean_weight)/sp_sd_weight 
   ) |>
   #remove and observation more than 3 standard deviation different from the mean of the species
-  filter(z_from_sp_mean < 3 & z_from_sp_mean > -3)
+  filter(z_from_sp_mean < 3 & z_from_sp_mean > -3) |>
   #193,490 to 192,096
+  #fix chickadees with an anonymous function because I DO want them to be the same species to match all the other analyses, but Black-Capped are just sliiiightly larger on average (1-2g) than Carolina Chickadees
+  mutate(row_id = row_number()) |> #give every row a unique key
+  (\(df) {
+    df |>
+      rows_update(
+        (
+          df |>
+            #filter to chickadee
+            filter(!is.na(chickadee)) |>
+            #subtract mean from the species weights
+            mutate(mass_in_g = mass_in_g - sp_mean_weight)
+        ), 
+        by = "row_id"
+      ) #close left join
+  })() #close and execute anonymous function
 
 #hm, how often are birds recaptured in the same year? if not often I'll just exclude them probably, rather than fussing about having to average their weight or smthng to account for catching them twice.
 recaptures <- weight |>
@@ -599,7 +615,8 @@ weight_averaged |>
   mutate(brood_ID = cur_group_id()) |>
   ungroup() |>
   mutate(relative_mass = mass_in_g/wing_chord,
-         log_mass = log(mass_in_g)) |>
+         #log_mass = log(mass_in_g) #don't need this b/c we're not going to look across species.
+         ) |>
   group_by(SPEC) |>
   mutate(sp_id = cur_group_id()) |>
   ungroup() |>
