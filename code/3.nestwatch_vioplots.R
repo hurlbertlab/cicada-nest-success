@@ -8,6 +8,7 @@
 ############################
 
 library(dplyr)
+library(tidyr)
 library(stringr)
 library(lubridate)
 library(vioplot)
@@ -111,6 +112,26 @@ tmp_cic <- nestwatch_results |>
 #or don't.. worry about it.... because the sd is really wide for years without a lot of data.
 #but I think this nicely shows that cicada nests are doing better for Eastern Bluebirds
 #OR! When n = 1, plot_size = .5, else plot_size = 1
+
+#to plot one species (need summary data from nestwatch_analyses cut to one_sp)
+# ggplot(one_sp, aes(x = cicada_year_binary, y = mean_pct_nest_success, color = "orange")) +
+#   +     ylim(0, 1) + 
+#   +     geom_line(linewidth = 1.5, color = "orange") +
+#   +     geom_errorbar(aes(ymin = mean_pct_nest_success - se_pct_nest_success, ymax = mean_pct_nest_success + se_pct_nest_success), width = 0.2, linewidth = 1.5, color = "orange") +
+#   +     labs(
+#     +         x = "Cicada Year",
+#     +         y = "Mean Nest Success"
+#     +     ) +
+#   +     scale_x_continuous(breaks = c(0, 1),  # Numeric breaks at -1, 0, and 1
+#                            +                        labels = c("0", "X")) +  # Custom text labels) 
+#   +     #scale_x_continuous(breaks = c(-1, 0, 1),  # Numeric breaks at -1, 0, and 1
+#   +     #                  labels = c("-1", "X", "1")) +  # Custom text labels) 
+#   +     theme_minimal(base_size = 19) + # increase text size) +
+#   +     theme(
+#     +         legend.position = "none", # remove legend
+#     +         #panel.grid.major = element_blank(), # Remove major gridlines
+#       +         panel.grid.minor = element_blank()  # Remove minor gridlines
+#     +     ) 
 
 plot(
   x = nc$Year,
@@ -233,3 +254,21 @@ for(i in 1:length(unique(maps$Species.Name))) {
 }
 
 dev.off()
+
+
+
+#let's plot nestwatch results
+plot(y = cicada_results$estimate_cic, #log odds ratio
+     x = cicada_results$sp_id,
+     ylim = c(-0.5, 2.8),
+     pch = 16,
+     cex = 1.5,
+     col = c("orange", "orange", "black", "black", "black", "black", "black", "orange"))
+axis(1, at = c(1:8), labels = cicada_results$Species.Name) #need to tilt labels
+abline(h = 0, lty = "dashed", lwd = 1.5)
+segments(y0 = cicada_results$conf.low_cic, 
+         y1 = cicada_results$conf.high_cic,
+         x0 = cicada_results$sp_id,
+         x1 = cicada_results$sp_id,
+         lwd = 3,
+         col = c("orange", "orange", "black", "black", "black", "black", "black", "orange"))
