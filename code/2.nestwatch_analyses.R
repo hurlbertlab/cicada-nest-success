@@ -712,33 +712,46 @@ ttf_filtered <- ttf_filtered |>
   filter(!Species.Name %in% c("American Robin", "Black-capped and\n Carolina Chickadee", "Northern House Wren"))
 table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge)
 
-#alright and now remove the kinda impossible times. Basing it on where both species have at least one observation but also, that might be hurting the tree swallow tail since they do seem to take a few days longer than bluebirds. No bluebirds days 24/25 but there are tree swallows so we'll cut it there, bc then there's a gap and an outlier tree swallow nest at day 26.
+#alright and now remove the kinda impossible times. Basing it on where both species have at least one observation but also, that might be hurting the tree swallow tail since they do seem to take a few days longer than bluebirds. Tree Swallow observations up until day 29 and then there's a gap of obviously incorrect records (41 and 42 days to fledge) so let's cut it there. Bluebirds have enough data I think they'll be okay if there's a couple like, outlier/typo nests.
 
 ttf_filtered <- ttf_filtered |>
   filter(time_to_fledge >= 13) |>
-  filter(time_to_fledge <= 25)
-table2(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge) #
+  filter(time_to_fledge <= 29)
+table(ttf_filtered$Species.Name, ttf_filtered$time_to_fledge) #
 
  ggplot(ttf_filtered, aes(x = time_to_fledge, fill = as.factor(cicada_year_binary))) +
        geom_density(alpha = 0.5) +
        facet_wrap(~ Species.Name, ncol = 1) +
        scale_fill_manual(values = c("0" = "blue", "1" = "red"),
                       labels = c("No Cicada", "Cicada")) +
-     labs(title = "Time to Fledge by Species and Cicada Status",
+     labs(
+       #title = "Time to Fledge by Species and Cicada Status",
                        x = "Time to Fledge (days)",
                        y = "Density",
                        fill = "Cicada") +
-      theme_minimal()
+      theme_minimal() +
+   annotate(geom = "text",
+            x = 22.5,
+            y = .6,
+            label = "a",
+            color = "red")
 #Haha okay yeah, those basically all the way overlap, no reason to suspect that the presence of cicadas shifts how long it takes these species to fledge.
  
  glm_ttf_EABL <- lmer(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + Latitude + (1|Year) + (1|brood_ID),
                    data = ttf_filtered[ttf_filtered$Species.Name == "Eastern Bluebird",]
                    )
- summary(glm_ttf_EABL) #no effect of cicada, no effect of precip, yes effect of temperature anomaly meaning they fledge like half a day earlier with a 1 unit change in y_anomaly_temp.
+ summary(glm_ttf_EABL) #no effect of cicada, yes effect of h_mid with earlier nests fledging earlier, but that doesn't vary depending on cicada presence. No effect of temp and precipitation but nests at higher latitudes fledge later. 
+ 
+ broom::tidy(glm_ttf_EABL,
+             conf.int = TRUE)
+ 
  glm_ttf_TS <- glm(time_to_fledge ~ cicada_year_binary*h_mid + y_anomaly_temp + y_anomaly_precip + Latitude,
                    data = ttf_filtered[ttf_filtered$Species.Name == "Tree Swallow",])
  #drop (1|Year) and (1|brood) because the fit is singular
- summary(glm_ttf_TS) #439 non-cicada observations, 32 cicada observations. But! they are fledging earlier in cicada years :D
+ summary(glm_ttf_TS) #439 non-cicada observations, 32 cicada observations. But! they are fledging earlier in cicada years :D Earlier nests are fledge earlier, and nests at higher Latitudes fledge earlier. No cicdada*h_mid interaction.
+ 
+ broom::tidy(glm_ttf_TS, 
+             conf.int = TRUE)
  
  plot(x = ttf_filtered$y_anomaly_temp[ttf_filtered$Species.Name == "Eastern Bluebird"],
       y = ttf_filtered$time_to_fledge[ttf_filtered$Species.Name == "Eastern Bluebird"]#,

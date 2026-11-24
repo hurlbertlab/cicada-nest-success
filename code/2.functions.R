@@ -46,3 +46,29 @@ make_n_labels = function(df = summary_data,
                  df$n[df$cicada_year_binary == 1] #when cicadas have emerged
     )
 }
+
+
+#function to add segments
+add_segments <- function(df,
+                         y,
+                         x_displacement = 0.2,
+                         y0, #string
+                         y1, #string
+                         signif, #string
+                         color,
+                         lwd = 3) {
+  
+  points(x = df$sp_id + x_displacement,
+         y = y, 
+         pch = ifelse(signif == TRUE, 16, 1),
+         col = color,
+         cex = 2)
+  
+  segments(y0 = y0, 
+           y1 = y1,
+           x0 = df$sp_id + x_displacement,
+           x1 = df$sp_id + x_displacement,
+           lwd = 4,
+           lty = ifelse(signif == TRUE, "solid", "dotted"),
+           col = color)
+}

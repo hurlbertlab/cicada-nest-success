@@ -2,7 +2,6 @@
 #
 # Getting climate data for the nestbox locations in the eastern united states
 # from 2007-2025
-# !!!!!!!!!!!!!!2025 daymet data is not yet available for download. So we can only use the subset of nests through 2024 for now.
 # writes filtered_climate_data.csv as the ultimate output (available in the git repository)
 #
 # For those interested in recreating the full all_climate_data.csv, see the last section separated by

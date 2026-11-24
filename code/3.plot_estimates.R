@@ -13,17 +13,31 @@ library(stringr)
 library(lubridate)
 library(vioplot)
 
-# Read in location.ID climate data
-climate_data<- read.csv("data/filtered_climate_data.csv")
-# Read in the cicada emergence data
-cicada_bounds <- read.csv("data/cicada_bounds_latitude_by_j_date.csv")
+#set colors
+cicada_color <- "orange"
+doy_color <- "violet"
+end_color  <- doy_color
+cd_color <- "darkorange2"
+temp_color <- "maroon"
+precip_color <- "deepskyblue"
+sexm_color <- "slateblue"
+sexu_color <- "darkgreen"
+sexf_color <- "black"
+dotted_abline_color <- "grey50"
 
+label_cex = 1.3
+
+#load in functions
+source("code/2.functions.R")
+
+#read in the result datasets
 nestwatch_df <- read.csv("data/nestwatch_analysis_df.csv")
 nestwatch_results <- read.csv("model_results/binomial_BINARY_hmid_glmER.csv")
 cicada_results <- nestwatch_results |>
-  filter(term %in% c("cicada_year_binary", "(Intercept)", "h_mid", "cicada_year_binary:h_mid")) |>
+  filter(term %in% c("cicada_year_binary", "(Intercept)", "h_mid", "cicada_year_binary:h_mid", "y_anomaly_precip", "y_anomaly_temp")) |>
   mutate(term = case_when(term == "(Intercept)" ~ "Int",
                           term == "cicada_year_binary" ~ "cic",
+                          term == "cicada_year_binary:h_mid" ~ "cic:h_mid",
                           TRUE ~ term)) |>
   pivot_wider(
     id_cols = c(Species.Name, formula, n_noncicada, n_cicada), # Keep static columns as single rows
@@ -37,9 +51,28 @@ cicada_results <- nestwatch_results |>
   mutate(sp_id = row_number()) |>
   ungroup() 
 
+productivity_results <- read.csv("model_results/maps_gaussian_results.csv") |>
+  filter(term %in% c("cicada_year_binary", "(Intercept)",
+                     "brood_y_anomaly_temp", "brood_y_anomaly_precip")) |>
+  mutate(term = case_when(term == "(Intercept)"            ~ "Int",
+                          term == "cicada_year_binary"     ~ "cic",
+                          term == "brood_y_anomaly_temp"   ~ "temp",
+                          term == "brood_y_anomaly_precip" ~ "precip",
+                          TRUE ~ term)) |>
+  pivot_wider(
+    id_cols     = c(Species.Name, formula, n_noncicada, n_cicada),
+    names_from  = term,
+    values_from = c(effect, estimate, std_error, t_value, signif,
+                    conf.low, conf.high),
+    names_sep   = "_"
+  ) |>
+  arrange(desc(n_cicada)) |>
+  mutate(sp_id = row_number()) |>
+  ungroup()
+
+
 weight_results <- read.csv("model_results/maps_weight_results.csv") |>
   filter(term %in% c("cicada_year_binary", "(Intercept)", "c_end", "cicada_year_binary:c_end")) |>
-  select(-X) |>
   mutate(term = case_when(term == "(Intercept)" ~ "Int",
                           term == "cicada_year_binary" ~ "cic",
                           term == "cicada_year_binary:c_end" ~ "cic_end_interaction",
@@ -60,18 +93,18 @@ weight_results <- read.csv("model_results/maps_weight_results.csv") |>
          c_end_color = ifelse(signif_c_end == TRUE, "orange", "black"),
          color_interaction = ifelse(signif_cic_end_interaction == TRUE, "orange", "black"))
 
-plot(y = plogis(cicada_results$estimate_Int + cicada_results$estimate_cic),
-     x = cicada_results$sp_id,
-     ylim = c(0, 1),
-     pch = 16,
-     cex = 1.5,
-     ylab = "Odds Ratio" #but it shouldn't be odds ratio. Convert to +/- percent nest success?
-     )
-abline(h = 1, lty = "dashed")
-segments(y0 = cicada_results$or_conf_low,
-         y1 = cicada_results$or_conf_high,
-         x0 = cicada_results$sp_id,
-         lwd = 3)
+#plot(y = plogis(cicada_results$estimate_Int + cicada_results$estimate_cic),
+#     x = cicada_results$sp_id,
+#     ylim = c(0, 2),
+#     pch = 16,
+#     cex = 1.5,
+#     ylab = "Log Odds Ratio" #but it shouldn't be odds ratio. Convert to +/- percent nest success?
+#     )
+#abline(h = 1, lty = "dashed")
+#segments(y0 = cicada_results$or_conf_low_cic,
+#         y1 = cicada_results$or_conf_high_cic,
+#         x0 = cicada_results$sp_id,
+#         lwd = 3)
                        
 hist(nestwatch_df$Year) #cool, yup
 
@@ -105,11 +138,286 @@ cicada_summary <- nestwatch_df |>
   ungroup() |>
   arrange(desc((n)))
 
+##########################################
+#
+#let's plot nestwatch results
+#
+######################################
+png(filename = "figures/2026.11.24_nestwatch_all_log_odds.png",
+    width = 820,
+    height = 550)
+{
+  par(mar = c(10, 4, 1, 1),
+      mfrow = c(1, 2))
+  plot(y = cicada_results$estimate_cic, #log odds ratio
+       x = cicada_results$sp_id,
+       ylim = c(-0.5, 2.8),
+       pch = ifelse(cicada_results$signif_cic == TRUE, 16, 1),
+       cex = 2,
+       col = cicada_color,
+       xaxt = "n",
+       yaxt = "n",
+       xlab = "",
+       ylab = "Log Odds Ratio Effect on Nest Success",
+       cex.lab = label_cex)
+  axis(1, at = c(1:8), labels = FALSE) #need to tilt labels
+  axis(2, 
+       at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5),
+       labels = TRUE,
+       las = 1,
+       cex.axis = label_cex)
+  text(
+    x = 1:8,
+    y = par("usr")[3] - .15, # Position slightly below the x-axis line
+    labels = cicada_results$Species.Name,
+    cex = label_cex,
+    srt = 55,                # Tilt angle in degrees
+    adj = 1,                 # Right-align text so the end touches the tick
+    xpd = TRUE               # Allow text to draw outside the plot box
+  )
+  abline(h = 0, lty = "dashed", lwd = 1.5)
+  abline(h = -0.3, lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  abline(h = 0.47, lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  segments(y0 = cicada_results$conf.low_cic, 
+           y1 = cicada_results$conf.high_cic,
+           x0 = cicada_results$sp_id,
+           x1 = cicada_results$sp_id,
+           lwd = 4,
+           lty = ifelse(cicada_results$signif_cic == TRUE, "solid", "dotted"),
+           col = cicada_color)
+  #hm, all the other effects are on a very different scale. Need 2 plots.
+  #but, effects of cicada*h_mid are so so so small they would need another plot over again. Let's plot them with the cicada results b/c that's like, is there an effect of syncrhony w cicadas?
+  add_segments(df = cicada_results, 
+               y = cicada_results$`estimate_cic:h_mid`,
+               x_displacement = 0.2,
+               y0 = NA,
+               y1 = NA,
+               signif = cicada_results$`signif_cic:h_mid`,
+               color = cd_color)
+  legend("topleft",
+         legend = c("Cicada", 
+                    "Cicada Synchrony"),
+         pch = 16,
+         col = c(cicada_color, 
+                 cd_color),
+         cex = label_cex,
+         bty = "n")
+  # Exact NDC coordinates of the left plot's right edge, and the two ablines
+  usr_L <- par("usr")
+  x_end_left <- grconvertX(usr_L[2], from = "user", to = "ndc")
+  y_neg_left <- grconvertY(-0.3,     from = "user", to = "ndc")
+  y_pos_left <- grconvertY(0.47,     from = "user", to = "ndc")
+  
+  plot(x = cicada_results$sp_id,
+       y = cicada_results$estimate_h_mid,
+       col = doy_color,
+       pch = ifelse(cicada_results$signif_h_mid == TRUE, 16, 1),
+       cex = 2,
+       xaxt = "n",
+       yaxt = "n",
+       xlab = "",
+       ylab = "",
+       ylim = c(-0.3, 0.45),
+       xlim = c(1, nrow(cicada_results)+.8))
+  axis(1, at = c(1:8), labels = FALSE) 
+  axis(2, 
+       at = c(-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4),
+       labels = TRUE,
+       las = 1,
+       cex.axis = label_cex)
+  text(
+    x = 1:8,
+    y = par("usr")[3] - .03, # Position slightly below the x-axis line
+    labels = cicada_results$Species.Name,
+    cex = label_cex,
+    srt = 55,                # Tilt angle in degrees
+    adj = 1,                 # Right-align text so the end touches the tick
+    xpd = TRUE               # Allow text to draw outside the plot box
+  )
+  abline(h = 0, lty = "dashed", lwd = 1.5)
+  abline(h = -0.3, lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  abline(h = 0.47, lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  add_segments(cicada_results,
+               y = cicada_results$estimate_h_mid,
+               x_displacement = 0,
+               y0 = cicada_results$conf.low_h_mid,
+               y1 = cicada_results$conf.high_h_mid,
+               signif = cicada_results$signif_h_mid,
+               color = doy_color)
+  #add temp
+  add_segments(cicada_results,
+               y = cicada_results$estimate_y_anomaly_temp,
+               x_displacement = +.25,
+               y0 = cicada_results$conf.low_y_anomaly_temp,
+               y1 = cicada_results$conf.high_y_anomaly_temp,
+               signif = cicada_results$signif_y_anomaly_temp,
+               color = temp_color)
+  #add precip
+  add_segments(cicada_results,
+               y = cicada_results$estimate_y_anomaly_precip,
+               x_displacement = +.5,
+               y0 = cicada_results$conf.low_y_anomaly_precip,
+               y1 = cicada_results$conf.high_y_anomaly_precip,
+               signif = cicada_results$signif_y_anomaly_precip,
+               color = precip_color)
+  #legend
+  legend("topleft",
+         legend = c("Lat. adjusted DOY", 
+                    "Temperature Anomaly",
+                    "Precipitation Anomaly"),
+         pch = 16,
+         col = c(doy_color, 
+                 temp_color,
+                 precip_color),
+         cex = label_cex,
+         bty = "n"
+  )
+  # Exact NDC coordinates of the right plot's left edge, and the two ablines
+  usr_R <- par("usr")
+  x_start_right <- grconvertX(usr_R[1], from = "user", to = "ndc")
+  y_neg_right   <- grconvertY(-0.3,     from = "user", to = "ndc")
+  y_pos_right   <- grconvertY(0.47,     from = "user", to = "ndc")
+  
+  # Transparent overlay whose user coordinates = NDC exactly (0-1, no padding)
+  par(new = TRUE, fig = c(0, 1, 0, 1), mar = c(0, 0, 0, 0), oma = c(0, 0, 0, 0))
+  plot(0, 0, type = "n", axes = FALSE, xlab = "", ylab = "",
+       xlim = c(0, 1), ylim = c(0, 1),
+       xaxs = "i", yaxs = "i")   # <-- no 4% padding
+  
+  # Connect the ends of the ablines between the two plots
+  segments(x0 = x_end_left, y0 = y_pos_left,
+           x1 = x_start_right, y1 = y_pos_right,
+           lty = 3, col = dotted_abline_color, lwd = 1.5)
+  
+  segments(x0 = x_end_left, y0 = y_neg_left,
+           x1 = x_start_right, y1 = y_neg_right,
+           lty = 3, col = dotted_abline_color, lwd = 1.5)
+}
+dev.off()
+
+
+
+
+
+##################################
+#
+#
+# Plot MAPS productivity results
+#
+#
+#################################
+png(filename = "figures/2026.11.24_maps_producitivty.png",
+    width = 800,
+    height = 800)
+{
+  n_sp <- nrow(productivity_results)
+  xlim_both <- c(0.5, n_sp + 0.5)        # same x-range so species line up across panels
+  ylim_top  <- c(-0.5, 0.9)              # cicada effect
+  ylim_bot  <- c(-0.25, 0.4)             # temp & precip effects (smaller scale)
+  
+  par(mfrow = c(2, 1))
+  
+  ## ---------- TOP: cicada effect ----------
+  par(mar = c(1, 4.5, 1, 1))
+  plot(y = productivity_results$estimate_cic,
+       x = productivity_results$sp_id,
+       xlim = xlim_both,
+       ylim = ylim_top,
+       pch = ifelse(productivity_results$signif_cic == TRUE, 16, 1),
+       cex = 2,
+       col = cicada_color,
+       xaxt = "n",
+       yaxt = "n",
+       xlab = "",
+       ylab = "Effect on Productivity",
+       cex.lab = label_cex)
+  axis(1, at = 1:n_sp, labels = FALSE)    # ticks only; labels are on the bottom panel
+  axis(2,
+       at = seq(-0.5, 0.9, by = 0.1),
+       labels = TRUE,
+       las = 1,
+       cex.axis = label_cex)
+  abline(h = 0, lty = "dashed", lwd = 1.5)
+  # dotted lines marking the y-range of the bottom panel
+  abline(h = ylim_bot[1], lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  abline(h = ylim_bot[2], lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  segments(y0 = productivity_results$conf.low_cic,
+           y1 = productivity_results$conf.high_cic,
+           x0 = productivity_results$sp_id,
+           x1 = productivity_results$sp_id,
+           lwd = 4,
+           lty = ifelse(productivity_results$signif_cic == TRUE, "solid", "dotted"),
+           col = cicada_color)
+  legend("topleft",
+         legend = "Cicada",
+         pch = 16,
+         col = cicada_color,
+         cex = label_cex,
+         bty = "n")
+  
+  ## ---------- BOTTOM: temperature & precipitation ----------
+  par(mar = c(11, 4.5, 1, 1))
+  plot(x = productivity_results$sp_id,
+       y = productivity_results$estimate_temp,
+       type = "n",                         # empty frame; add_segments draws the series
+       xlim = xlim_both,
+       ylim = ylim_bot,
+       xaxt = "n",
+       yaxt = "n",
+       xlab = "",
+       ylab = "Effect on Productivity",
+       cex.lab = label_cex)
+  axis(1, at = 1:n_sp, labels = FALSE)
+  axis(2,
+       at = seq(-0.2, 0.4, by = 0.1),
+       labels = TRUE,
+       las = 1,
+       cex.axis = label_cex)
+  text(
+    x = 1:n_sp,
+    y = par("usr")[3] - 0.06 * diff(par("usr")[3:4]),  # just below the axis
+    labels = productivity_results$Species.Name,
+    cex = label_cex,
+    srt = 55,
+    adj = 1,
+    xpd = TRUE
+  )
+  abline(h = 0, lty = "dashed", lwd = 1.5)
+  abline(h = ylim_bot[1], lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  abline(h = ylim_bot[2], lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  
+  # temperature anomaly
+  add_segments(productivity_results,
+               y = productivity_results$estimate_temp,
+               x_displacement = 0,
+               y0 = productivity_results$conf.low_temp,
+               y1 = productivity_results$conf.high_temp,
+               signif = productivity_results$signif_temp,
+               color = temp_color)
+  # precipitation anomaly
+  add_segments(productivity_results,
+               y = productivity_results$estimate_precip,
+               x_displacement = +0.25,
+               y0 = productivity_results$conf.low_precip,
+               y1 = productivity_results$conf.high_precip,
+               signif = productivity_results$signif_precip,
+               color = precip_color)
+  legend("topleft",
+         legend = c("Temperature Anomaly", "Precipitation Anomaly"),
+         pch = 16,
+         col = c(temp_color, precip_color),
+         cex = label_cex,
+         bty = "n",
+         horiz = TRUE)
+} 
+dev.off()
+
+
 pdf(file = "figures/2026.11.12.nestwatch_vioplots.pdf")
 
 for(i in 1:length(unique(year_summary$Species.Name))) {
 
-  par(mfrow = c(1,2))
+  #par(mfrow = c(1,2))
   
   one_sp <- year_summary |>
   filter(Species.Name == unique(year_summary$Species.Name)[i]) |>
@@ -207,7 +515,7 @@ dev.off()
 
 
 #okay, let's also actually do maps vioplots too while we're here.
-maps <- read.csv("data/maps_nestwatch_df.csv") 
+maps <- read.csv("data/maps_productivity_df.csv") 
 
 pdf(file = "figures/maps_vioplots.pdf")
 
@@ -238,7 +546,7 @@ for(i in 1:length(unique(maps$Species.Name))) {
     x = nc$year,
     y = nc$mean_productivity,
     pch = 16,
-    ylim = c(0, 5), #this does cut just one outlier productivity at like. 7 but that's okay, probably a species I should cut from analysis anyway.
+    ylim = c(0, 4), #this does cut just one outlier productivity at like. 7 but that's okay, probably a species I should cut from analysis anyway.
     cex = nc$plot_size,
     main = nc$Species.Name[1],
     xlab = "Year",
@@ -280,34 +588,30 @@ for(i in 1:length(unique(maps$Species.Name))) {
 dev.off()
 
 
-
-#let's plot nestwatch results
-par(mar = c(7, 4, 4, 2))
-plot(y = cicada_results$estimate_cic, #log odds ratio
-     x = cicada_results$sp_id,
-     ylim = c(-0.5, 2.8),
-     pch = 16,
-     cex = 1.5,
-     col = c("orange", "orange", "black", "black", "black", "black", "orange", "black"),
-     xaxt = "n",
-     xlab = "",
-     ylab = "Log Odds Ratio effect of Cicadas")
-axis(1, at = c(1:8), labels = FALSE) #need to tilt labels
-text(
-  x = 1:8,
-  y = par("usr")[3] - .2, # Position slightly below the x-axis line
-  labels = cicada_results$Species.Name,
-  srt = 45,                # Tilt angle in degrees
-  adj = 1,                 # Right-align text so the end touches the tick
-  xpd = TRUE               # Allow text to draw outside the plot box
-)
-abline(h = 0, lty = "dashed", lwd = 1.5)
-segments(y0 = cicada_results$conf.low_cic, 
-         y1 = cicada_results$conf.high_cic,
-         x0 = cicada_results$sp_id,
-         x1 = cicada_results$sp_id,
-         lwd = 3,
-         col = c("orange", "orange", "black", "black", "black", "black", "orange", "black"))
+png(filename = "figures/2026.11.24_nestwatch_all_log_odds_legend.png",
+    width = 800,
+    height = 550)
+{
+  par(mfrow = c(1,1))
+  plot(x = c(1,10),
+       y = c(1,10),
+       cex = 1.5)
+  abline(h = -0.3, lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  abline(h = 0.47, lty = "dotted", lwd = 1.5, col = dotted_abline_color)
+  legend("center",
+         legend = c("Cicada", 
+                    "Lat. adjusted DOY",
+                    "Cicada*DOY",
+                    "Temperature Anomaly",
+                    "Precipitation Anomaly"),
+         fill = c(cicada_color,
+                 doy_color,
+                 cd_color,
+                 temp_color,
+                 precip_color),
+         cex = label_cex)
+}
+dev.off()
 
 
 #let's plot nestwatch results, DOY
