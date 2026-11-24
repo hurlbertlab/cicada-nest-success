@@ -293,7 +293,7 @@ table(maps_weight$cicada_year_binary)
 #140984   8459 
 #kinda a pretty compelling reason here to jointly model all the species. Even if that becomes like, supplementary data? terns unstoned and all. If all the birds are gaining weight, we might not see the effect within individual species but we might see it ACROSS species....
 
-test <- lme4::lmer(log10(mass_in_g) ~ cicada_year_binary*c_end  + (1|brood_ID) + (1|year) + (1|sp_id),
+test <- lme4::lmer(log10(mass_in_g) ~ cicada_year_binary*c_end  + y_anomaly_precip + y_anomaly_temp +  (1|brood_ID) + (1|year) + (1|sp_id),
      data = maps_weight[is.na(maps_weight$chickadee),])
 summary(test)
 a <- broom.mixed::tidy(test,
@@ -319,16 +319,29 @@ for(i in 1:length(unique(maps_weight$Species.Name))) {
   tmp <- maps_weight |>
     filter(Species.Name == sp)
   
-  if(sp %in% c("Yellow Warbler", "Dickcissel", "Cedar Waxwing")) { #brood_id is gives is.singular() fit error
-    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|year),
+  if(sp %in% c("Yellow Warbler", "Dickcissel", "Cedar Waxwing", "Common Grackle")) { #brood_id is gives is.singular() fit error
+    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + 
+                              cicada_year_binary*c_end + 
+                              y_anomaly_temp + 
+                              y_anomaly_precip + 
+                              (1|year),
                             data = tmp) #gaussian? 
     
-  } else if(sp %in% c("Northern House Wren", "Black-capped Chickadee", "Worm-eating Warbler", "Scarlet Tanager", "Tufted Titmouse")) { #year gives is.singular (.....huh.)
-    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|brood_ID),
+  } else if(sp %in% c("Northern House Wren", "Black-capped Chickadee", "Worm-eating Warbler", "Scarlet Tanager", "Tufted Titmouse", "Black-and-white Warbler", "Northern Parula")) { #year gives is.singular (.....huh.)
+    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + 
+                              cicada_year_binary*c_end + 
+                              y_anomaly_temp + 
+                              y_anomaly_precip +
+                              (1|brood_ID),
                             data = tmp) #gaussian? 
   
   } else { #run the full model
-    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + cicada_year_binary*c_end + (1|year) + (1|brood_ID),
+    tmp_glmer <- lme4::lmer(mass_in_g ~ SEX + 
+                              cicada_year_binary*c_end + 
+                              y_anomaly_temp + 
+                              y_anomaly_precip +
+                              (1|year) + 
+                              (1|brood_ID),
                             data = tmp) #gaussian? 
   }
 
@@ -374,7 +387,7 @@ for(i in 1:length(unique(maps_weight$Species.Name))) {
   
 }
 
-write.csv(weight_results, "model_results/maps_weight_results.csv")
+write.csv(weight_results, "model_results/maps_weight_results.csv", row.names = FALSE)
 save(weight_models, file = "model_results/maps_weight_lmers.rds")
 
 
@@ -385,15 +398,21 @@ plot(y = weight_results$signif[weight_results$term == "cicada_year_binary"],
      xlab = "N cicada samples",
      ylab = "Cicada_Year_Binary Significant")
 table(weight_results$signif[weight_results$term == "cicada_year_binary"])
-#alright, 10 species respond to cicadas, 38 don't.
+#alright, 12 species respond to cicadas, 36 don't.
 #wow, I really have 48 species? epic!
 
 table(weight_results$signif[weight_results$term == "c_end"])
 #almost all species lose weight over time
 
 table(weight_results$signif[weight_results$term == "cicada_year_binary:c_end"])
-#oh cool! For 5 species, the influence of c_end is different in a cicada year.
+#oh cool! For 3 species, the influence of c_end is different in a cicada year.
 
 table(weight_results$signif[weight_results$term == "SEXM"])
 #most species have a difference between female and male weight by sex.
-#hm, for the species that don't have that difference, I'm tempted to cut sex from the model?
+#hm, for the species that don't have that difference, I'm tempted to cut sex from the model? Nah, it's fine to leave it. 
+
+table(weight_results$signif[weight_results$term == "y_anomaly_precip"])
+#most species don't differ depending on precipitation
+
+table(weight_results$signif[weight_results$term == "y_anomaly_temp"])
+#slightly more species differ depending on temperature. 10 vs 38

@@ -544,7 +544,13 @@ weight <- captures |>
         ), 
         by = "row_id"
       ) #close left join
-  })() #close and execute anonymous function
+  })() |> #close and execute anonymous function
+  #also add in climate data so we can have that for each capture...
+  left_join(
+    (maps_climate |>
+       dplyr::select(Year, STATION, STA, y_anomaly_precip, y_anomaly_temp) |>
+       rename(year = Year)), 
+    by = c("year", "STATION", "STA"))
 
 #hm, how often are birds recaptured in the same year? if not often I'll just exclude them probably, rather than fussing about having to average their weight or smthng to account for catching them twice.
 recaptures <- weight |>
